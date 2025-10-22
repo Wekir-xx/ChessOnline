@@ -6,6 +6,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    this->setWindowTitle("Chess Online");
+    this->setWindowIcon(QIcon(":/images/src/avatar.png"));
 }
 
 MainWindow::~MainWindow()
