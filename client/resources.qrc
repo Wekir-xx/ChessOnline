@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/images">
         <file>src/avatar.png</file>
-    </qresource>
-    <qresource prefix="/">
         <file>src/bBishop.png</file>
         <file>src/bKing.png</file>
         <file>src/bKnight.png</file>
