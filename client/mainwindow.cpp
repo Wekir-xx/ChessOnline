@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <iostream>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -10,17 +12,33 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowTitle("Chess Online");
     this->setWindowIcon(QIcon(":/images/src/avatar.png"));
 
+    m_chessBoardLabels = {
+        {ui->a1, ui->b1, ui->c1, ui->d1, ui->e1, ui->f1, ui->g1, ui->h1},
+        {ui->a2, ui->b2, ui->c2, ui->d2, ui->e2, ui->f2, ui->g2, ui->h2},
+        {ui->a3, ui->b3, ui->c3, ui->d3, ui->e3, ui->f3, ui->g3, ui->h3},
+        {ui->a4, ui->b4, ui->c4, ui->d4, ui->e4, ui->f4, ui->g4, ui->h4},
+        {ui->a5, ui->b5, ui->c5, ui->d5, ui->e5, ui->f5, ui->g5, ui->h5},
+        {ui->a6, ui->b6, ui->c6, ui->d6, ui->e6, ui->f6, ui->g6, ui->h6},
+        {ui->a7, ui->b7, ui->c7, ui->d7, ui->e7, ui->f7, ui->g7, ui->h7},
+        {ui->a8, ui->b8, ui->c8, ui->d8, ui->e8, ui->f8, ui->g8, ui->h8}
+    };
+
+
     m_imagesOfPieces.reserve(20);
-    m_chessBoard.resize(8, std::vector<QString>(8));
 
     fillMap();
     fillStandartChessBoard();
-    fillChessScene();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+void MainWindow::showEvent(QShowEvent *event) {
+    QMainWindow::showEvent(event);
+    fillChessScene();
 }
 
 void MainWindow::fillMap()
@@ -41,6 +59,8 @@ void MainWindow::fillMap()
 
 void MainWindow::fillStandartChessBoard()
 {
+    m_chessBoard.resize(8, std::vector<QString>(8));
+
     m_chessBoard[0][4] = "wK";
     m_chessBoard[0][3] = "wQ";
     m_chessBoard[0][0] = "wR";
@@ -67,75 +87,14 @@ void MainWindow::fillStandartChessBoard()
 
 void MainWindow::fillChessScene()
 {
-    ui->a1->setPixmap(m_imagesOfPieces[m_chessBoard[0][0]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->a2->setPixmap(m_imagesOfPieces[m_chessBoard[1][0]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->a3->setPixmap(m_imagesOfPieces[m_chessBoard[2][0]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->a4->setPixmap(m_imagesOfPieces[m_chessBoard[3][0]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->a5->setPixmap(m_imagesOfPieces[m_chessBoard[4][0]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->a6->setPixmap(m_imagesOfPieces[m_chessBoard[5][0]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->a7->setPixmap(m_imagesOfPieces[m_chessBoard[6][0]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->a8->setPixmap(m_imagesOfPieces[m_chessBoard[7][0]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-    ui->b1->setPixmap(m_imagesOfPieces[m_chessBoard[0][1]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->b2->setPixmap(m_imagesOfPieces[m_chessBoard[1][1]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->b3->setPixmap(m_imagesOfPieces[m_chessBoard[2][1]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->b4->setPixmap(m_imagesOfPieces[m_chessBoard[3][1]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->b5->setPixmap(m_imagesOfPieces[m_chessBoard[4][1]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->b6->setPixmap(m_imagesOfPieces[m_chessBoard[5][1]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->b7->setPixmap(m_imagesOfPieces[m_chessBoard[6][1]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->b8->setPixmap(m_imagesOfPieces[m_chessBoard[7][1]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-    ui->c1->setPixmap(m_imagesOfPieces[m_chessBoard[0][2]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->c2->setPixmap(m_imagesOfPieces[m_chessBoard[1][2]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->c3->setPixmap(m_imagesOfPieces[m_chessBoard[2][2]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->c4->setPixmap(m_imagesOfPieces[m_chessBoard[3][2]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->c5->setPixmap(m_imagesOfPieces[m_chessBoard[4][2]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->c6->setPixmap(m_imagesOfPieces[m_chessBoard[5][2]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->c7->setPixmap(m_imagesOfPieces[m_chessBoard[6][2]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->c8->setPixmap(m_imagesOfPieces[m_chessBoard[7][2]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-    ui->d1->setPixmap(m_imagesOfPieces[m_chessBoard[0][3]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->d2->setPixmap(m_imagesOfPieces[m_chessBoard[1][3]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->d3->setPixmap(m_imagesOfPieces[m_chessBoard[2][3]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->d4->setPixmap(m_imagesOfPieces[m_chessBoard[3][3]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->d5->setPixmap(m_imagesOfPieces[m_chessBoard[4][3]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->d6->setPixmap(m_imagesOfPieces[m_chessBoard[5][3]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->d7->setPixmap(m_imagesOfPieces[m_chessBoard[6][3]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->d8->setPixmap(m_imagesOfPieces[m_chessBoard[7][3]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-    ui->e1->setPixmap(m_imagesOfPieces[m_chessBoard[0][4]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->e2->setPixmap(m_imagesOfPieces[m_chessBoard[1][4]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->e3->setPixmap(m_imagesOfPieces[m_chessBoard[2][4]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->e4->setPixmap(m_imagesOfPieces[m_chessBoard[3][4]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->e5->setPixmap(m_imagesOfPieces[m_chessBoard[4][4]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->e6->setPixmap(m_imagesOfPieces[m_chessBoard[5][4]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->e7->setPixmap(m_imagesOfPieces[m_chessBoard[6][4]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->e8->setPixmap(m_imagesOfPieces[m_chessBoard[7][4]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-    ui->f1->setPixmap(m_imagesOfPieces[m_chessBoard[0][5]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->f2->setPixmap(m_imagesOfPieces[m_chessBoard[1][5]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->f3->setPixmap(m_imagesOfPieces[m_chessBoard[2][5]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->f4->setPixmap(m_imagesOfPieces[m_chessBoard[3][5]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->f5->setPixmap(m_imagesOfPieces[m_chessBoard[4][5]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->f6->setPixmap(m_imagesOfPieces[m_chessBoard[5][5]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->f7->setPixmap(m_imagesOfPieces[m_chessBoard[6][5]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->f8->setPixmap(m_imagesOfPieces[m_chessBoard[7][5]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-    ui->g1->setPixmap(m_imagesOfPieces[m_chessBoard[0][6]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->g2->setPixmap(m_imagesOfPieces[m_chessBoard[1][6]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->g3->setPixmap(m_imagesOfPieces[m_chessBoard[2][6]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->g4->setPixmap(m_imagesOfPieces[m_chessBoard[3][6]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->g5->setPixmap(m_imagesOfPieces[m_chessBoard[4][6]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->g6->setPixmap(m_imagesOfPieces[m_chessBoard[5][6]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->g7->setPixmap(m_imagesOfPieces[m_chessBoard[6][6]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->g8->setPixmap(m_imagesOfPieces[m_chessBoard[7][6]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-    ui->h1->setPixmap(m_imagesOfPieces[m_chessBoard[0][7]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->h2->setPixmap(m_imagesOfPieces[m_chessBoard[1][7]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->h3->setPixmap(m_imagesOfPieces[m_chessBoard[2][7]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->h4->setPixmap(m_imagesOfPieces[m_chessBoard[3][7]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->h5->setPixmap(m_imagesOfPieces[m_chessBoard[4][7]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->h6->setPixmap(m_imagesOfPieces[m_chessBoard[5][7]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->h7->setPixmap(m_imagesOfPieces[m_chessBoard[6][7]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->h8->setPixmap(m_imagesOfPieces[m_chessBoard[7][7]].scaled(ui->a1->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    for (size_t i = 0; i < 8; ++i) {
+        for (size_t j = 0; j < 8; ++j) {
+            if(m_chessBoard[i][j] == "")
+                continue;
+            m_chessBoardLabels[i][j]->setPixmap(m_imagesOfPieces[m_chessBoard[i][j]]
+                                                        .scaled(m_chessBoardLabels[i][j]->size(),
+                                                                Qt::KeepAspectRatio,
+                                                                Qt::SmoothTransformation));
+        }
+    }
 }

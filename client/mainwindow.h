@@ -1,9 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <iostream>
-
 #include <QMainWindow>
+#include <QShowEvent>
+#include <QLabel>
 #include <QPixmap>
 #include <QString>
 
@@ -27,6 +27,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+
+    void showEvent(QShowEvent *event) override;
+
 private:
 
     // --- Helper methods ---
@@ -43,5 +47,6 @@ private:
 
     std::unordered_map<QString, QPixmap> m_imagesOfPieces;
     std::vector<std::vector<QString>> m_chessBoard;
+    std::vector<std::vector<QLabel*>> m_chessBoardLabels;
 };
 #endif // MAINWINDOW_H
