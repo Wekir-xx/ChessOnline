@@ -50,7 +50,10 @@ private:
     std::vector<std::vector<QString>> m_chessBoard;
     std::vector<std::vector<QPushButton *>> m_chessBoardLabels;
 
-    std::pair<std::pair<size_t, size_t>, QString> m_takenPiece;
+    std::pair<std::pair<int, int>, QString> m_takenPiece;
+    std::pair<std::pair<int, int>, std::pair<int, int>> m_lastBeat;
+
+    bool m_whiteMove{true};
 };
 
 #endif // MAINWINDOW_H
