@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <iostream>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -46,7 +46,10 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     if (event->type() == QEvent::MouseButtonPress) {
         QLabel *label = qobject_cast<QLabel *>(watched);
+
         if (label) {
+            qDebug() << label->objectName();
+
             size_t i = label->objectName()[1].digitValue() - 1;
             size_t j = label->objectName()[0].unicode() - 'a';
 
@@ -55,6 +58,10 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             if (m_takenPiece.second == "") {
                 if (m_chessBoard[i][j] != "") {
                     m_takenPiece = std::pair{std::pair{i, j}, m_chessBoard[i][j]};
+                    if ((i + j) % 2 == 0)
+                        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #B9CA43");
+                    else
+                        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #F5F682");
                 }
             } else if (cord.first != i || cord.second != j) {
                 m_chessBoard[i][j] = m_takenPiece.second;
@@ -67,14 +74,29 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
                 m_chessBoard[cord.first][cord.second] = "";
                 m_chessBoardLabels[cord.first][cord.second]->setPixmap(QPixmap());
 
+                if ((cord.first + cord.second) % 2 == 0)
+                    m_chessBoardLabels[cord.first][cord.second]->setStyleSheet(
+                        "background-color: #739552");
+                else
+                    m_chessBoardLabels[cord.first][cord.second]->setStyleSheet(
+                        "background-color: #EBECD0");
+
                 m_takenPiece.second = "";
                 m_takenPiece.first = std::pair{8, 8};
             } else {
+                if ((cord.first + cord.second) % 2 == 0)
+                    m_chessBoardLabels[cord.first][cord.second]->setStyleSheet(
+                        "background-color: #739552");
+                else
+                    m_chessBoardLabels[cord.first][cord.second]->setStyleSheet(
+                        "background-color: #EBECD0");
+
                 m_takenPiece.second = "";
                 m_takenPiece.first = std::pair{8, 8};
             }
         }
     }
+
     return QMainWindow::eventFilter(watched, event);
 }
 
