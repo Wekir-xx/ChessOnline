@@ -1,10 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QShowEvent>
+#include <QEvent>
 #include <QLabel>
+#include <QMainWindow>
+#include <QMouseEvent>
 #include <QPixmap>
+#include <QShowEvent>
 #include <QString>
 
 #include <unordered_map>
@@ -28,8 +30,8 @@ public:
     ~MainWindow();
 
 protected:
-
     void showEvent(QShowEvent *event) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
 
@@ -47,6 +49,8 @@ private:
 
     std::unordered_map<QString, QPixmap> m_imagesOfPieces;
     std::vector<std::vector<QString>> m_chessBoard;
-    std::vector<std::vector<QLabel*>> m_chessBoardLabels;
+    std::vector<std::vector<QLabel *>> m_chessBoardLabels;
+
+    std::pair<std::pair<size_t, size_t>, QString> m_takenPiece;
 };
 #endif // MAINWINDOW_H
