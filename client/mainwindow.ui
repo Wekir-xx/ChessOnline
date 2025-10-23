@@ -31,7 +31,7 @@
       <number>0</number>
      </property>
      <property name="sizeConstraint">
-      <enum>QLayout::SetNoConstraint</enum>
+      <enum>QLayout::SetDefaultConstraint</enum>
      </property>
      <item>
       <layout class="QVBoxLayout" name="row_layout" stretch="10,10,10,10,10,10,10,10,5">
@@ -165,6 +165,12 @@
            </property>
            <item>
             <widget class="QLabel" name="a8">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -181,6 +187,12 @@
            </item>
            <item>
             <widget class="QLabel" name="a7">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -197,6 +209,12 @@
            </item>
            <item>
             <widget class="QLabel" name="a6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -213,6 +231,12 @@
            </item>
            <item>
             <widget class="QLabel" name="a5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -229,6 +253,12 @@
            </item>
            <item>
             <widget class="QLabel" name="a4">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -245,6 +275,12 @@
            </item>
            <item>
             <widget class="QLabel" name="a3">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -261,6 +297,12 @@
            </item>
            <item>
             <widget class="QLabel" name="a2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -277,6 +319,12 @@
            </item>
            <item>
             <widget class="QLabel" name="a1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="palette">
               <palette>
                <active>
@@ -775,6 +823,12 @@
            </property>
            <item>
             <widget class="QLabel" name="b8">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -791,6 +845,12 @@
            </item>
            <item>
             <widget class="QLabel" name="b7">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -807,6 +867,12 @@
            </item>
            <item>
             <widget class="QLabel" name="b6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -823,6 +889,12 @@
            </item>
            <item>
             <widget class="QLabel" name="b5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -839,6 +911,12 @@
            </item>
            <item>
             <widget class="QLabel" name="b4">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -855,6 +933,12 @@
            </item>
            <item>
             <widget class="QLabel" name="b3">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -871,6 +955,12 @@
            </item>
            <item>
             <widget class="QLabel" name="b2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -887,6 +977,12 @@
            </item>
            <item>
             <widget class="QLabel" name="b1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -910,6 +1006,12 @@
            </property>
            <item>
             <widget class="QLabel" name="c8">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -926,6 +1028,12 @@
            </item>
            <item>
             <widget class="QLabel" name="c7">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -942,6 +1050,12 @@
            </item>
            <item>
             <widget class="QLabel" name="c6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -958,6 +1072,12 @@
            </item>
            <item>
             <widget class="QLabel" name="c5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -974,6 +1094,12 @@
            </item>
            <item>
             <widget class="QLabel" name="c4">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -990,6 +1116,12 @@
            </item>
            <item>
             <widget class="QLabel" name="c3">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1006,6 +1138,12 @@
            </item>
            <item>
             <widget class="QLabel" name="c2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1022,6 +1160,12 @@
            </item>
            <item>
             <widget class="QLabel" name="c1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1045,6 +1189,12 @@
            </property>
            <item>
             <widget class="QLabel" name="d8">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1061,6 +1211,12 @@
            </item>
            <item>
             <widget class="QLabel" name="d7">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1077,6 +1233,12 @@
            </item>
            <item>
             <widget class="QLabel" name="d6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1093,6 +1255,12 @@
            </item>
            <item>
             <widget class="QLabel" name="d5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1109,6 +1277,12 @@
            </item>
            <item>
             <widget class="QLabel" name="d4">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1125,6 +1299,12 @@
            </item>
            <item>
             <widget class="QLabel" name="d3">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1141,6 +1321,12 @@
            </item>
            <item>
             <widget class="QLabel" name="d2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1157,6 +1343,12 @@
            </item>
            <item>
             <widget class="QLabel" name="d1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1180,6 +1372,12 @@
            </property>
            <item>
             <widget class="QLabel" name="e8">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1196,6 +1394,12 @@
            </item>
            <item>
             <widget class="QLabel" name="e7">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1212,6 +1416,12 @@
            </item>
            <item>
             <widget class="QLabel" name="e6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1228,6 +1438,12 @@
            </item>
            <item>
             <widget class="QLabel" name="e5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1244,6 +1460,12 @@
            </item>
            <item>
             <widget class="QLabel" name="e4">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1260,6 +1482,12 @@
            </item>
            <item>
             <widget class="QLabel" name="e3">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1276,6 +1504,12 @@
            </item>
            <item>
             <widget class="QLabel" name="e2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1292,6 +1526,12 @@
            </item>
            <item>
             <widget class="QLabel" name="e1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1315,6 +1555,12 @@
            </property>
            <item>
             <widget class="QLabel" name="f8">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1331,6 +1577,12 @@
            </item>
            <item>
             <widget class="QLabel" name="f7">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1347,6 +1599,12 @@
            </item>
            <item>
             <widget class="QLabel" name="f6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1363,6 +1621,12 @@
            </item>
            <item>
             <widget class="QLabel" name="f5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1379,6 +1643,12 @@
            </item>
            <item>
             <widget class="QLabel" name="f4">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1395,6 +1665,12 @@
            </item>
            <item>
             <widget class="QLabel" name="f3">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1411,6 +1687,12 @@
            </item>
            <item>
             <widget class="QLabel" name="f2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1427,6 +1709,12 @@
            </item>
            <item>
             <widget class="QLabel" name="f1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1450,6 +1738,12 @@
            </property>
            <item>
             <widget class="QLabel" name="g8">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1466,6 +1760,12 @@
            </item>
            <item>
             <widget class="QLabel" name="g7">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1482,6 +1782,12 @@
            </item>
            <item>
             <widget class="QLabel" name="g6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1498,6 +1804,12 @@
            </item>
            <item>
             <widget class="QLabel" name="g5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1514,6 +1826,12 @@
            </item>
            <item>
             <widget class="QLabel" name="g4">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1530,6 +1848,12 @@
            </item>
            <item>
             <widget class="QLabel" name="g3">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1546,6 +1870,12 @@
            </item>
            <item>
             <widget class="QLabel" name="g2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1562,6 +1892,12 @@
            </item>
            <item>
             <widget class="QLabel" name="g1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1585,6 +1921,12 @@
            </property>
            <item>
             <widget class="QLabel" name="h8">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1601,6 +1943,12 @@
            </item>
            <item>
             <widget class="QLabel" name="h7">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1617,6 +1965,12 @@
            </item>
            <item>
             <widget class="QLabel" name="h6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1633,6 +1987,12 @@
            </item>
            <item>
             <widget class="QLabel" name="h5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1649,6 +2009,12 @@
            </item>
            <item>
             <widget class="QLabel" name="h4">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1665,6 +2031,12 @@
            </item>
            <item>
             <widget class="QLabel" name="h3">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
@@ -1681,6 +2053,12 @@
            </item>
            <item>
             <widget class="QLabel" name="h2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #779556</string>
              </property>
@@ -1697,6 +2075,12 @@
            </item>
            <item>
             <widget class="QLabel" name="h1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="styleSheet">
               <string notr="true">background-color: #EBECD0</string>
              </property>
