@@ -1,39 +1,101 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-
+    this->resize(727, 717);
+    this->setMinimumSize(QSize(405, 400));
     this->setWindowTitle("Chess Online");
     this->setWindowIcon(QIcon(":/images/src/avatar.png"));
-
-    m_chessBoardLabels = {{ui->a1, ui->b1, ui->c1, ui->d1, ui->e1, ui->f1, ui->g1, ui->h1},
-                          {ui->a2, ui->b2, ui->c2, ui->d2, ui->e2, ui->f2, ui->g2, ui->h2},
-                          {ui->a3, ui->b3, ui->c3, ui->d3, ui->e3, ui->f3, ui->g3, ui->h3},
-                          {ui->a4, ui->b4, ui->c4, ui->d4, ui->e4, ui->f4, ui->g4, ui->h4},
-                          {ui->a5, ui->b5, ui->c5, ui->d5, ui->e5, ui->f5, ui->g5, ui->h5},
-                          {ui->a6, ui->b6, ui->c6, ui->d6, ui->e6, ui->f6, ui->g6, ui->h6},
-                          {ui->a7, ui->b7, ui->c7, ui->d7, ui->e7, ui->f7, ui->g7, ui->h7},
-                          {ui->a8, ui->b8, ui->c8, ui->d8, ui->e8, ui->f8, ui->g8, ui->h8}};
-
-    for (size_t i = 0; i < 8; ++i)
-        for (size_t j = 0; j < 8; ++j)
-            m_chessBoardLabels[i][j]->installEventFilter(this);
 
     m_imagesOfPieces.reserve(20);
 
     fillMap();
     fillStandartChessBoard();
-}
 
-MainWindow::~MainWindow()
-{
-    delete ui;
+    m_chessBoardLabels.resize(8, std::vector<QPushButton *>(8, nullptr));
+
+    QSizePolicy sizePolicy1(QSizePolicy::Policy::Ignored, QSizePolicy::Policy::Ignored);
+
+    QWidget *widget = new QWidget(this);
+
+    QHBoxLayout *chess_board_layout = new QHBoxLayout(widget);
+    chess_board_layout->setSpacing(0);
+
+    QVBoxLayout *chess_field_name_layout = new QVBoxLayout();
+    chess_field_name_layout->setSpacing(0);
+
+    QHBoxLayout *chess_field_layout = new QHBoxLayout();
+    chess_field_layout->setSpacing(0);
+
+    QVBoxLayout *row_layout = new QVBoxLayout();
+    row_layout->setSpacing(0);
+
+    QHBoxLayout *name_fields = new QHBoxLayout();
+    name_fields->setSpacing(0);
+
+    for (int i = 0; i < 8; ++i) {
+        QLabel *label = new QLabel(widget);
+        label->setSizePolicy(sizePolicy1);
+        label->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        label->setText(QString::number(8 - i));
+        row_layout->addWidget(label);
+        row_layout->setStretch(i, 10);
+    }
+
+    QLabel *empty = new QLabel(widget);
+    sizePolicy1.setHeightForWidth(empty->sizePolicy().hasHeightForWidth());
+    empty->setSizePolicy(sizePolicy1);
+    row_layout->addWidget(empty);
+    row_layout->setStretch(8, 5);
+
+    for (int i = 0; i < 8; ++i) {
+        QLabel *label = new QLabel(widget);
+        sizePolicy1.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
+        label->setSizePolicy(sizePolicy1);
+        label->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        label->setText(QString(QChar('a' + i)));
+        name_fields->addWidget(label);
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        QVBoxLayout *layout = new QVBoxLayout();
+        layout->setSpacing(0);
+
+        for (int j = 0; j < 8; ++j) {
+            QPushButton *button = new QPushButton(widget);
+            button->setObjectName(QString(QChar('a' + i)) + QString::number(8 - j));
+            sizePolicy1.setHeightForWidth(button->sizePolicy().hasHeightForWidth());
+            button->setSizePolicy(sizePolicy1);
+
+            layout->addWidget(button);
+            m_chessBoardLabels[7 - j][i] = button;
+
+            uncheckField(7 - j, i);
+
+            connect(button, &QPushButton::clicked, this, [this, button]() {
+                clickPiece(button->objectName());
+            });
+        }
+
+        chess_field_layout->addLayout(layout);
+    }
+
+    chess_field_name_layout->addLayout(chess_field_layout);
+    chess_field_name_layout->addLayout(name_fields);
+
+    chess_field_name_layout->setStretch(0, 16);
+    chess_field_name_layout->setStretch(1, 1);
+
+    chess_board_layout->addLayout(row_layout);
+    chess_board_layout->addLayout(chess_field_name_layout);
+
+    chess_board_layout->setStretch(0, 1);
+    chess_board_layout->setStretch(1, 19);
+
+    this->setCentralWidget(widget);
 }
 
 void MainWindow::showEvent(QShowEvent *event)
@@ -42,78 +104,75 @@ void MainWindow::showEvent(QShowEvent *event)
     fillChessScene();
 }
 
-bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    if (event->type() == QEvent::MouseButtonPress) {
-        QLabel *label = qobject_cast<QLabel *>(watched);
+    QMainWindow::resizeEvent(event);
 
-        if (label) {
-            qDebug() << label->objectName();
+    for (size_t i = 0; i < 8; ++i)
+        for (size_t j = 0; j < 8; ++j)
+            m_chessBoardLabels[i][j]->setIconSize(m_chessBoardLabels[i][j]->size());
+}
 
-            size_t i = label->objectName()[1].digitValue() - 1;
-            size_t j = label->objectName()[0].unicode() - 'a';
+void MainWindow::clickPiece(const QString &nameField)
+{
+    size_t i = nameField[1].digitValue() - 1;
+    size_t j = nameField[0].unicode() - 'a';
 
-            const auto &cord = m_takenPiece.first;
+    const auto &cord = m_takenPiece.first;
 
-            if (m_takenPiece.second == "") {
-                if (m_chessBoard[i][j] != "") {
-                    m_takenPiece = std::pair{std::pair{i, j}, m_chessBoard[i][j]};
-                    if ((i + j) % 2 == 0)
-                        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #B9CA43");
-                    else
-                        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #F5F682");
-                }
-            } else if (cord.first != i || cord.second != j) {
-                m_chessBoard[i][j] = m_takenPiece.second;
-                m_chessBoardLabels[i][j]->setPixmap(
-                    m_imagesOfPieces[m_chessBoard[i][j]].scaled(m_chessBoardLabels[i][j]->size(),
-                                                                Qt::KeepAspectRatio,
-                                                                Qt::SmoothTransformation));
-
-                const auto &cord = m_takenPiece.first;
-                m_chessBoard[cord.first][cord.second] = "";
-                m_chessBoardLabels[cord.first][cord.second]->setPixmap(QPixmap());
-
-                if ((cord.first + cord.second) % 2 == 0)
-                    m_chessBoardLabels[cord.first][cord.second]->setStyleSheet(
-                        "background-color: #739552");
-                else
-                    m_chessBoardLabels[cord.first][cord.second]->setStyleSheet(
-                        "background-color: #EBECD0");
-
-                m_takenPiece.second = "";
-                m_takenPiece.first = std::pair{8, 8};
-            } else {
-                if ((cord.first + cord.second) % 2 == 0)
-                    m_chessBoardLabels[cord.first][cord.second]->setStyleSheet(
-                        "background-color: #739552");
-                else
-                    m_chessBoardLabels[cord.first][cord.second]->setStyleSheet(
-                        "background-color: #EBECD0");
-
-                m_takenPiece.second = "";
-                m_takenPiece.first = std::pair{8, 8};
-            }
+    if (m_takenPiece.second == "") {
+        if (m_chessBoard[i][j] != "") {
+            m_takenPiece = std::pair{std::pair{i, j}, m_chessBoard[i][j]};
+            checkField(i, j);
         }
-    }
+    } else if (cord.first != i || cord.second != j) {
+        m_chessBoard[i][j] = m_takenPiece.second;
+        m_chessBoardLabels[i][j]->setIcon(m_imagesOfPieces[m_chessBoard[i][j]]);
 
-    return QMainWindow::eventFilter(watched, event);
+        const auto &cord = m_takenPiece.first;
+        m_chessBoard[cord.first][cord.second] = "";
+        m_chessBoardLabels[cord.first][cord.second]->setIcon(QIcon());
+
+        uncheckField(cord.first, cord.second);
+        m_takenPiece.second = "";
+        m_takenPiece.first = std::pair{8, 8};
+    } else {
+        uncheckField(cord.first, cord.second);
+        m_takenPiece.second = "";
+        m_takenPiece.first = std::pair{8, 8};
+    }
+}
+
+void MainWindow::checkField(int i, int j)
+{
+    if ((i + j) % 2 == 0)
+        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #B9CA43; border: none;");
+    else
+        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #F5F682; border: none;");
+}
+
+void MainWindow::uncheckField(int i, int j)
+{
+    if ((i + j) % 2 == 0)
+        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #739552; border: none;");
+    else
+        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #EBECD0; border: none;");
 }
 
 void MainWindow::fillMap()
 {
-    m_imagesOfPieces["wK"] = QPixmap(":/images/src/wKing.png");
-    m_imagesOfPieces["wQ"] = QPixmap(":/images/src/wQueen.png");
-    m_imagesOfPieces["wR"] = QPixmap(":/images/src/wRook.png");
-    m_imagesOfPieces["wB"] = QPixmap(":/images/src/wBishop.png");
-    m_imagesOfPieces["wN"] = QPixmap(":/images/src/wKnight.png");
-    m_imagesOfPieces["wP"] = QPixmap(":/images/src/wPawn.png");
-    m_imagesOfPieces["bK"] = QPixmap(":/images/src/bKing.png");
-    m_imagesOfPieces["bQ"] = QPixmap(":/images/src/bQueen.png");
-    m_imagesOfPieces["bR"] = QPixmap(":/images/src/bRook.png");
-    m_imagesOfPieces["bB"] = QPixmap(":/images/src/bBishop.png");
-    m_imagesOfPieces["bN"] = QPixmap(":/images/src/bKnight.png");
-    m_imagesOfPieces["bP"] = QPixmap(":/images/src/bPawn.png");
+    m_imagesOfPieces["wK"] = QIcon(":/images/src/wKing.png");
+    m_imagesOfPieces["wQ"] = QIcon(":/images/src/wQueen.png");
+    m_imagesOfPieces["wR"] = QIcon(":/images/src/wRook.png");
+    m_imagesOfPieces["wB"] = QIcon(":/images/src/wBishop.png");
+    m_imagesOfPieces["wN"] = QIcon(":/images/src/wKnight.png");
+    m_imagesOfPieces["wP"] = QIcon(":/images/src/wPawn.png");
+    m_imagesOfPieces["bK"] = QIcon(":/images/src/bKing.png");
+    m_imagesOfPieces["bQ"] = QIcon(":/images/src/bQueen.png");
+    m_imagesOfPieces["bR"] = QIcon(":/images/src/bRook.png");
+    m_imagesOfPieces["bB"] = QIcon(":/images/src/bBishop.png");
+    m_imagesOfPieces["bN"] = QIcon(":/images/src/bKnight.png");
+    m_imagesOfPieces["bP"] = QIcon(":/images/src/bPawn.png");
 }
 
 void MainWindow::fillStandartChessBoard()
@@ -148,12 +207,10 @@ void MainWindow::fillChessScene()
 {
     for (size_t i = 0; i < 8; ++i) {
         for (size_t j = 0; j < 8; ++j) {
+            m_chessBoardLabels[i][j]->setIconSize(m_chessBoardLabels[i][j]->size());
             if (m_chessBoard[i][j] == "")
                 continue;
-            m_chessBoardLabels[i][j]->setPixmap(
-                m_imagesOfPieces[m_chessBoard[i][j]].scaled(m_chessBoardLabels[i][j]->size(),
-                                                            Qt::KeepAspectRatio,
-                                                            Qt::SmoothTransformation));
+            m_chessBoardLabels[i][j]->setIcon(m_imagesOfPieces[m_chessBoard[i][j]]);
         }
     }
 }

@@ -1,22 +1,20 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QEvent>
+#include <QChar>
+#include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QMainWindow>
-#include <QMouseEvent>
-#include <QPixmap>
+#include <QPushButton>
+#include <QResizeEvent>
 #include <QShowEvent>
 #include <QString>
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include <unordered_map>
 #include <vector>
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
@@ -27,16 +25,19 @@ public:
     // --- Constructors/destructors ---
 
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow() = default;
 
 protected:
     void showEvent(QShowEvent *event) override;
-    bool eventFilter(QObject *watched, QEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
 
     // --- Helper methods ---
 
+    void clickPiece(const QString &nameField);
+    void checkField(int i, int j);
+    void uncheckField(int i, int j);
     void fillMap();
     void fillStandartChessBoard();
     void fillChessScene();
@@ -45,12 +46,11 @@ private:
 
     // --- Fields ---
 
-    Ui::MainWindow *ui;
-
-    std::unordered_map<QString, QPixmap> m_imagesOfPieces;
+    std::unordered_map<QString, QIcon> m_imagesOfPieces;
     std::vector<std::vector<QString>> m_chessBoard;
-    std::vector<std::vector<QLabel *>> m_chessBoardLabels;
+    std::vector<std::vector<QPushButton *>> m_chessBoardLabels;
 
     std::pair<std::pair<size_t, size_t>, QString> m_takenPiece;
 };
+
 #endif // MAINWINDOW_H
