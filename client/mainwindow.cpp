@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     fillMap();
     fillStandartChessBoard();
 
-    QSizePolicy sizePolicy1(QSizePolicy::Policy::Ignored, QSizePolicy::Policy::Ignored);
+    QSizePolicy sizePolicy(QSizePolicy::Policy::Ignored, QSizePolicy::Policy::Ignored);
 
     QWidget *widget = new QWidget(this);
 
@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     for (int i = 0; i < 8; ++i) {
         QLabel *label = new QLabel(widget);
-        label->setSizePolicy(sizePolicy1);
+        label->setSizePolicy(sizePolicy);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
         label->setText(QString::number(8 - i));
         row_layout->addWidget(label);
@@ -46,15 +46,13 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     QLabel *empty = new QLabel(widget);
-    sizePolicy1.setHeightForWidth(empty->sizePolicy().hasHeightForWidth());
-    empty->setSizePolicy(sizePolicy1);
+    empty->setSizePolicy(sizePolicy);
     row_layout->addWidget(empty);
     row_layout->setStretch(8, 5);
 
     for (int i = 0; i < 8; ++i) {
         QLabel *label = new QLabel(widget);
-        sizePolicy1.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
-        label->setSizePolicy(sizePolicy1);
+        label->setSizePolicy(sizePolicy);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
         label->setText(QString(QChar('a' + i)));
         name_fields->addWidget(label);
@@ -67,8 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
         for (int j = 0; j < 8; ++j) {
             QPushButton *button = new QPushButton(widget);
             button->setObjectName(QString(QChar('a' + i)) + QString::number(8 - j));
-            sizePolicy1.setHeightForWidth(button->sizePolicy().hasHeightForWidth());
-            button->setSizePolicy(sizePolicy1);
+            button->setSizePolicy(sizePolicy);
 
             layout->addWidget(button);
             m_chessBoardLabels[7 - j][i] = button;
@@ -123,7 +120,7 @@ void MainWindow::clickPiece(const QString &nameField)
     if (m_takenPiece.second.isEmpty()) {
         if (!m_chessBoard[i][j].isEmpty()) {
             if ((m_whiteMove && m_chessBoard[i][j][0] == 'w')
-                || (!m_whiteMove && m_chessBoard[i][j][0] == 'b')) {
+                    || (!m_whiteMove && m_chessBoard[i][j][0] == 'b')) {
                 m_takenPiece = std::pair{std::pair{i, j}, m_chessBoard[i][j]};
                 checkField(i, j);
             }
