@@ -35,7 +35,10 @@ private:
 
     // --- Helper methods ---
 
-    void clickPiece(const QString &nameField);
+    void clickField(const QString &nameField);
+    void takePiece(int i, int j);
+    void untakePiece(int i, int j);
+    bool checkBeat(int i, int j);
     void checkField(int i, int j);
     void uncheckField(int i, int j);
     void fillMap();
@@ -50,7 +53,8 @@ private:
     std::vector<std::vector<QString>> m_chessBoard;
     std::vector<std::vector<QPushButton *>> m_chessBoardLabels;
 
-    std::pair<std::pair<int, int>, QString> m_takenPiece;
+    std::pair<int, int> m_takenPiece;
+    std::vector<std::pair<int, int>> m_beatField;
     std::pair<std::pair<int, int>, std::pair<int, int>> m_lastBeat;
 
     bool m_whiteMove{true};
