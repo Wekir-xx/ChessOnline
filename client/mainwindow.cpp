@@ -119,11 +119,9 @@ void MainWindow::clickField(const QString &nameField)
     int i = nameField[1].digitValue() - 1;
     int j = nameField[0].unicode() - 'a';
 
-    untakePiece(m_takenPiece.first, m_takenPiece.second);
-
     if (m_takenPiece.first != EMPTY) {
         if (std::any_of(m_beatField.begin(), m_beatField.end(), [=](const auto &p) {
-                return p.first == i && p.second = j;
+                return p.first == i && p.second == j;
             })) {
             if (m_lastBeat.first.first != EMPTY) {
                 uncheckField(m_lastBeat.first.first, m_lastBeat.first.second);
@@ -139,6 +137,7 @@ void MainWindow::clickField(const QString &nameField)
 
             m_chessBoard[m_takenPiece.first][m_takenPiece.second].clear();
             m_chessBoardLabels[m_takenPiece.first][m_takenPiece.second]->setIcon(QIcon());
+            untakePiece();
             m_takenPiece.first = EMPTY;
         } else if ((m_takenPiece.first != i && m_takenPiece.second != j)
                    && !m_chessBoard[i][j].isEmpty()
@@ -160,6 +159,7 @@ void MainWindow::clickField(const QString &nameField)
 
 void MainWindow::takePiece(int i, int j)
 {
+    untakePiece();
     m_takenPiece = {i, j};
     checkField(i, j);
 
@@ -174,35 +174,205 @@ void MainWindow::takePiece(int i, int j)
         break;
 
     case 'Q':
+        for (int j2 = j + 1; j2 < 8; ++j2) {
+            if (checkBeat(i, j2)) {
+                m_beatField.push_back({i, j2});
+                if (!m_chessBoard[i][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int j2 = j - 1; j2 >= 0; --j2) {
+            if (checkBeat(i, j2)) {
+                m_beatField.push_back({i, j2});
+                if (!m_chessBoard[i][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int i2 = i + 1; i2 < 8; ++i2) {
+            if (checkBeat(i2, j)) {
+                m_beatField.push_back({i2, j});
+                if (!m_chessBoard[i2][j].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int i2 = i - 1; i2 >= 0; --i2) {
+            if (checkBeat(i2, j)) {
+                m_beatField.push_back({i2, j});
+                if (!m_chessBoard[i2][j].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int i2 = i + 1, j2 = j + 1; i2 < 8 && j2 < 8; ++i2, ++j2) {
+            if (checkBeat(i2, j2)) {
+                m_beatField.push_back({i2, j2});
+                if (!m_chessBoard[i2][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int i2 = i - 1, j2 = j - 1; i2 >= 0 && j2 >= 0; --i2, --j2) {
+            if (checkBeat(i2, j2)) {
+                m_beatField.push_back({i2, j2});
+                if (!m_chessBoard[i2][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int i2 = i - 1, j2 = j + 1; i2 >= 0 && j2 < 8; --i2, ++j2) {
+            if (checkBeat(i2, j2)) {
+                m_beatField.push_back({i2, j2});
+                if (!m_chessBoard[i2][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int i2 = i + 1, j2 = j - 1; i2 < 8 && j2 >= 0; ++i2, --j2) {
+            if (checkBeat(i2, j2)) {
+                m_beatField.push_back({i2, j2});
+                if (!m_chessBoard[i2][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
         break;
 
     case 'R':
+        for (int j2 = j + 1; j2 < 8; ++j2) {
+            if (checkBeat(i, j2)) {
+                m_beatField.push_back({i, j2});
+                if (!m_chessBoard[i][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int j2 = j - 1; j2 >= 0; --j2) {
+            if (checkBeat(i, j2)) {
+                m_beatField.push_back({i, j2});
+                if (!m_chessBoard[i][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int i2 = i + 1; i2 < 8; ++i2) {
+            if (checkBeat(i2, j)) {
+                m_beatField.push_back({i2, j});
+                if (!m_chessBoard[i2][j].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int i2 = i - 1; i2 >= 0; --i2) {
+            if (checkBeat(i2, j)) {
+                m_beatField.push_back({i2, j});
+                if (!m_chessBoard[i2][j].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
         break;
 
     case 'B':
+        for (int i2 = i + 1, j2 = j + 1; i2 < 8 && j2 < 8; ++i2, ++j2) {
+            if (checkBeat(i2, j2)) {
+                m_beatField.push_back({i2, j2});
+                if (!m_chessBoard[i2][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int i2 = i - 1, j2 = j - 1; i2 >= 0 && j2 >= 0; --i2, --j2) {
+            if (checkBeat(i2, j2)) {
+                m_beatField.push_back({i2, j2});
+                if (!m_chessBoard[i2][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int i2 = i - 1, j2 = j + 1; i2 >= 0 && j2 < 8; --i2, ++j2) {
+            if (checkBeat(i2, j2)) {
+                m_beatField.push_back({i2, j2});
+                if (!m_chessBoard[i2][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        for (int i2 = i + 1, j2 = j - 1; i2 < 8 && j2 >= 0; ++i2, --j2) {
+            if (checkBeat(i2, j2)) {
+                m_beatField.push_back({i2, j2});
+                if (!m_chessBoard[i2][j2].isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
         break;
 
     case 'N':
+        if (checkBeat(i + 2, j + 1))
+            m_beatField.push_back({i + 2, j + 1});
+        if (checkBeat(i + 2, j - 1))
+            m_beatField.push_back({i + 2, j - 1});
+        if (checkBeat(i - 2, j + 1))
+            m_beatField.push_back({i - 2, j + 1});
+        if (checkBeat(i - 2, j - 1))
+            m_beatField.push_back({i - 2, j - 1});
+        if (checkBeat(i + 1, j + 2))
+            m_beatField.push_back({i + 1, j + 2});
+        if (checkBeat(i - 1, j + 2))
+            m_beatField.push_back({i - 1, j + 2});
+        if (checkBeat(i + 1, j - 2))
+            m_beatField.push_back({i + 1, j - 2});
+        if (checkBeat(i - 1, j - 2))
+            m_beatField.push_back({i - 1, j - 2});
+        break;
+
+    default:
         if (nameFigure[0] == 'w') {
             if (checkBeat(i + 1, j))
                 m_beatField.push_back({i + 1, j});
             if (i == 1 && checkBeat(i + 2, j))
                 m_beatField.push_back({i + 2, j});
+            if (checkBeat(i + 1, j + 1) && !m_chessBoard[i + 1][j + 1].isEmpty())
+                m_beatField.push_back({i + 1, j + 1});
+            if (checkBeat(i + 1, j - 1) && !m_chessBoard[i + 1][j - 1].isEmpty())
+                m_beatField.push_back({i + 1, j - 1});
         } else {
             if (checkBeat(i - 1, j))
                 m_beatField.push_back({i - 1, j});
             if (i == 6 && checkBeat(i - 2, j))
                 m_beatField.push_back({i - 2, j});
+            if (checkBeat(i - 1, j + 1) && !m_chessBoard[i - 1][j + 1].isEmpty())
+                m_beatField.push_back({i - 1, j + 1});
+            if (checkBeat(i - 1, j - 1) && !m_chessBoard[i - 1][j - 1].isEmpty())
+                m_beatField.push_back({i - 1, j - 1});
         }
-        break;
-
-    default:
         break;
     }
 }
 
-void MainWindow::untakePiece(int i, int j)
+void MainWindow::untakePiece()
 {
+    for (const auto &field : m_beatField) {
+    }
     m_beatField.clear();
 }
 
@@ -253,19 +423,19 @@ void MainWindow::fillStandartChessBoard()
     m_chessBoard[0][3] = "wQ";
     m_chessBoard[0][0] = "wR";
     m_chessBoard[0][7] = "wR";
-    m_chessBoard[0][1] = "wB";
-    m_chessBoard[0][6] = "wB";
-    m_chessBoard[0][2] = "wN";
-    m_chessBoard[0][5] = "wN";
+    m_chessBoard[0][2] = "wB";
+    m_chessBoard[0][5] = "wB";
+    m_chessBoard[0][1] = "wN";
+    m_chessBoard[0][6] = "wN";
 
     m_chessBoard[7][3] = "bQ";
     m_chessBoard[7][4] = "bK";
     m_chessBoard[7][0] = "bR";
     m_chessBoard[7][7] = "bR";
-    m_chessBoard[7][1] = "bB";
-    m_chessBoard[7][6] = "bB";
-    m_chessBoard[7][2] = "bN";
-    m_chessBoard[7][5] = "bN";
+    m_chessBoard[7][2] = "bB";
+    m_chessBoard[7][5] = "bB";
+    m_chessBoard[7][1] = "bN";
+    m_chessBoard[7][6] = "bN";
 
     for (int i = 0; i < 8; ++i) {
         m_chessBoard[1][i] = "wP";
