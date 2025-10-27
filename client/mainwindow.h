@@ -12,6 +12,7 @@
 #include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QPainter>
 
 #include <unordered_map>
 #include <vector>

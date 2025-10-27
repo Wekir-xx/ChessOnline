@@ -13,5 +13,6 @@
         <file>src/wPawn.png</file>
         <file>src/wQueen.png</file>
         <file>src/wRook.png</file>
+        <file>src/beatField.png</file>
     </qresource>
 </RCC>
