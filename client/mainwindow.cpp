@@ -177,13 +177,13 @@ void MainWindow::takePiece(int i, int j)
     case 'K':
         for (int row = i - 1; row < i + 2; ++row)
             for (int col = j - 1; col < j + 2; ++col)
-                if (checkBeat(row, col))
+                if (checkMove(row, col) && !isCheck(row, col, m_whiteMove))
                     m_beatField.push_back({row, col});
         break;
 
     case 'Q':
         for (int j2 = j + 1; j2 < 8; ++j2) {
-            if (checkBeat(i, j2)) {
+            if (checkMove(i, j2)) {
                 m_beatField.push_back({i, j2});
                 if (!m_chessBoard[i][j2].isEmpty())
                     break;
@@ -192,7 +192,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int j2 = j - 1; j2 >= 0; --j2) {
-            if (checkBeat(i, j2)) {
+            if (checkMove(i, j2)) {
                 m_beatField.push_back({i, j2});
                 if (!m_chessBoard[i][j2].isEmpty())
                     break;
@@ -201,7 +201,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int i2 = i + 1; i2 < 8; ++i2) {
-            if (checkBeat(i2, j)) {
+            if (checkMove(i2, j)) {
                 m_beatField.push_back({i2, j});
                 if (!m_chessBoard[i2][j].isEmpty())
                     break;
@@ -210,7 +210,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int i2 = i - 1; i2 >= 0; --i2) {
-            if (checkBeat(i2, j)) {
+            if (checkMove(i2, j)) {
                 m_beatField.push_back({i2, j});
                 if (!m_chessBoard[i2][j].isEmpty())
                     break;
@@ -219,7 +219,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int i2 = i + 1, j2 = j + 1; i2 < 8 && j2 < 8; ++i2, ++j2) {
-            if (checkBeat(i2, j2)) {
+            if (checkMove(i2, j2)) {
                 m_beatField.push_back({i2, j2});
                 if (!m_chessBoard[i2][j2].isEmpty())
                     break;
@@ -228,7 +228,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int i2 = i - 1, j2 = j - 1; i2 >= 0 && j2 >= 0; --i2, --j2) {
-            if (checkBeat(i2, j2)) {
+            if (checkMove(i2, j2)) {
                 m_beatField.push_back({i2, j2});
                 if (!m_chessBoard[i2][j2].isEmpty())
                     break;
@@ -237,7 +237,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int i2 = i - 1, j2 = j + 1; i2 >= 0 && j2 < 8; --i2, ++j2) {
-            if (checkBeat(i2, j2)) {
+            if (checkMove(i2, j2)) {
                 m_beatField.push_back({i2, j2});
                 if (!m_chessBoard[i2][j2].isEmpty())
                     break;
@@ -246,7 +246,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int i2 = i + 1, j2 = j - 1; i2 < 8 && j2 >= 0; ++i2, --j2) {
-            if (checkBeat(i2, j2)) {
+            if (checkMove(i2, j2)) {
                 m_beatField.push_back({i2, j2});
                 if (!m_chessBoard[i2][j2].isEmpty())
                     break;
@@ -258,7 +258,7 @@ void MainWindow::takePiece(int i, int j)
 
     case 'R':
         for (int j2 = j + 1; j2 < 8; ++j2) {
-            if (checkBeat(i, j2)) {
+            if (checkMove(i, j2)) {
                 m_beatField.push_back({i, j2});
                 if (!m_chessBoard[i][j2].isEmpty())
                     break;
@@ -267,7 +267,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int j2 = j - 1; j2 >= 0; --j2) {
-            if (checkBeat(i, j2)) {
+            if (checkMove(i, j2)) {
                 m_beatField.push_back({i, j2});
                 if (!m_chessBoard[i][j2].isEmpty())
                     break;
@@ -276,7 +276,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int i2 = i + 1; i2 < 8; ++i2) {
-            if (checkBeat(i2, j)) {
+            if (checkMove(i2, j)) {
                 m_beatField.push_back({i2, j});
                 if (!m_chessBoard[i2][j].isEmpty())
                     break;
@@ -285,7 +285,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int i2 = i - 1; i2 >= 0; --i2) {
-            if (checkBeat(i2, j)) {
+            if (checkMove(i2, j)) {
                 m_beatField.push_back({i2, j});
                 if (!m_chessBoard[i2][j].isEmpty())
                     break;
@@ -297,7 +297,7 @@ void MainWindow::takePiece(int i, int j)
 
     case 'B':
         for (int i2 = i + 1, j2 = j + 1; i2 < 8 && j2 < 8; ++i2, ++j2) {
-            if (checkBeat(i2, j2)) {
+            if (checkMove(i2, j2)) {
                 m_beatField.push_back({i2, j2});
                 if (!m_chessBoard[i2][j2].isEmpty())
                     break;
@@ -306,7 +306,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int i2 = i - 1, j2 = j - 1; i2 >= 0 && j2 >= 0; --i2, --j2) {
-            if (checkBeat(i2, j2)) {
+            if (checkMove(i2, j2)) {
                 m_beatField.push_back({i2, j2});
                 if (!m_chessBoard[i2][j2].isEmpty())
                     break;
@@ -315,7 +315,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int i2 = i - 1, j2 = j + 1; i2 >= 0 && j2 < 8; --i2, ++j2) {
-            if (checkBeat(i2, j2)) {
+            if (checkMove(i2, j2)) {
                 m_beatField.push_back({i2, j2});
                 if (!m_chessBoard[i2][j2].isEmpty())
                     break;
@@ -324,7 +324,7 @@ void MainWindow::takePiece(int i, int j)
             }
         }
         for (int i2 = i + 1, j2 = j - 1; i2 < 8 && j2 >= 0; ++i2, --j2) {
-            if (checkBeat(i2, j2)) {
+            if (checkMove(i2, j2)) {
                 m_beatField.push_back({i2, j2});
                 if (!m_chessBoard[i2][j2].isEmpty())
                     break;
@@ -335,57 +335,61 @@ void MainWindow::takePiece(int i, int j)
         break;
 
     case 'N':
-        if (checkBeat(i + 2, j + 1))
+        if (checkMove(i + 2, j + 1))
             m_beatField.push_back({i + 2, j + 1});
-        if (checkBeat(i + 2, j - 1))
+        if (checkMove(i + 2, j - 1))
             m_beatField.push_back({i + 2, j - 1});
-        if (checkBeat(i - 2, j + 1))
+        if (checkMove(i - 2, j + 1))
             m_beatField.push_back({i - 2, j + 1});
-        if (checkBeat(i - 2, j - 1))
+        if (checkMove(i - 2, j - 1))
             m_beatField.push_back({i - 2, j - 1});
-        if (checkBeat(i + 1, j + 2))
+        if (checkMove(i + 1, j + 2))
             m_beatField.push_back({i + 1, j + 2});
-        if (checkBeat(i - 1, j + 2))
+        if (checkMove(i - 1, j + 2))
             m_beatField.push_back({i - 1, j + 2});
-        if (checkBeat(i + 1, j - 2))
+        if (checkMove(i + 1, j - 2))
             m_beatField.push_back({i + 1, j - 2});
-        if (checkBeat(i - 1, j - 2))
+        if (checkMove(i - 1, j - 2))
             m_beatField.push_back({i - 1, j - 2});
         break;
 
     default:
         if (namePiece[0] == 'w') {
-            if (checkBeat(i + 1, j))
+            if (checkMove(i + 1, j))
                 m_beatField.push_back({i + 1, j});
-            if (i == 1 && checkBeat(i + 2, j))
+            if (i == 1 && checkMove(i + 2, j))
                 m_beatField.push_back({i + 2, j});
-            if (checkBeat(i + 1, j + 1) && !m_chessBoard[i + 1][j + 1].isEmpty())
+            if (checkMove(i + 1, j + 1) && !m_chessBoard[i + 1][j + 1].isEmpty())
                 m_beatField.push_back({i + 1, j + 1});
-            if (checkBeat(i + 1, j - 1) && !m_chessBoard[i + 1][j - 1].isEmpty())
+            if (checkMove(i + 1, j - 1) && !m_chessBoard[i + 1][j - 1].isEmpty())
                 m_beatField.push_back({i + 1, j - 1});
             if (i == 4) {
-                if (checkBeat(i, j + 1) && m_chessBoard[i][j + 1] == "bP"
-                        && m_lastMove.first == std::pair{i, j + 1} && m_lastMove.second == std::pair{i + 2, j + 1})
+                if (checkMove(i, j + 1) && m_chessBoard[i][j + 1] == "bP"
+                    && m_lastMove.first == std::pair{i, j + 1}
+                    && m_lastMove.second == std::pair{i + 2, j + 1})
                     m_beatField.push_back({i + 1, j + 1});
-                if (checkBeat(i, j - 1) && m_chessBoard[i][j - 1] == "bP"
-                        && m_lastMove.first == std::pair{i, j - 1} && m_lastMove.second == std::pair{i + 2, j - 1})
+                if (checkMove(i, j - 1) && m_chessBoard[i][j - 1] == "bP"
+                    && m_lastMove.first == std::pair{i, j - 1}
+                    && m_lastMove.second == std::pair{i + 2, j - 1})
                     m_beatField.push_back({i + 1, j - 1});
             }
         } else {
-            if (checkBeat(i - 1, j))
+            if (checkMove(i - 1, j))
                 m_beatField.push_back({i - 1, j});
-            if (i == 6 && checkBeat(i - 2, j))
+            if (i == 6 && checkMove(i - 2, j))
                 m_beatField.push_back({i - 2, j});
-            if (checkBeat(i - 1, j + 1) && !m_chessBoard[i - 1][j + 1].isEmpty())
+            if (checkMove(i - 1, j + 1) && !m_chessBoard[i - 1][j + 1].isEmpty())
                 m_beatField.push_back({i - 1, j + 1});
-            if (checkBeat(i - 1, j - 1) && !m_chessBoard[i - 1][j - 1].isEmpty())
+            if (checkMove(i - 1, j - 1) && !m_chessBoard[i - 1][j - 1].isEmpty())
                 m_beatField.push_back({i - 1, j - 1});
             if (i == 3) {
-                if (checkBeat(i, j + 1) && m_chessBoard[i][j + 1] == "wP"
-                        && m_lastMove.first == std::pair{i, j + 1} && m_lastMove.second == std::pair{i - 2, j + 1})
+                if (checkMove(i, j + 1) && m_chessBoard[i][j + 1] == "wP"
+                    && m_lastMove.first == std::pair{i, j + 1}
+                    && m_lastMove.second == std::pair{i - 2, j + 1})
                     m_beatField.push_back({i - 1, j + 1});
-                if (checkBeat(i, j - 1) && m_chessBoard[i][j - 1] == "wP"
-                        && m_lastMove.first == std::pair{i, j - 1} && m_lastMove.second == std::pair{i - 2, j - 1})
+                if (checkMove(i, j - 1) && m_chessBoard[i][j - 1] == "wP"
+                    && m_lastMove.first == std::pair{i, j - 1}
+                    && m_lastMove.second == std::pair{i - 2, j - 1})
                     m_beatField.push_back({i - 1, j - 1});
             }
         }
@@ -412,7 +416,7 @@ void MainWindow::untakePiece()
     m_beatField.clear();
 }
 
-bool MainWindow::checkBeat(int i, int j)
+bool MainWindow::checkMove(int i, int j)
 {
     return i >= 0 && i < 8 && j >= 0 && j < 8
            && (m_chessBoard[i][j].isEmpty() || (m_whiteMove && m_chessBoard[i][j][0] == 'b')
@@ -433,6 +437,136 @@ void MainWindow::uncheckField(int i, int j)
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #739552; border: none;");
     else
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #EBECD0; border: none;");
+}
+
+bool MainWindow::isCheck(int i, int j, bool white)
+{
+    for (int j2 = j + 1; j2 < 8; ++j2) {
+        if (!m_chessBoard[i][j2].isEmpty()) {
+            if ((white && m_chessBoard[i][j2][0] == 'b')
+                || (!white && m_chessBoard[i][j2][0] == 'w')) {
+                if (m_chessBoard[i][j2][1] == 'R' || m_chessBoard[i][j2][1] == 'Q'
+                    || (m_chessBoard[i][j2][1] == 'K' && j2 == (j + 1)))
+                    return true;
+            }
+            break;
+        }
+    }
+    for (int j2 = j - 1; j2 >= 0; --j2) {
+        if (!m_chessBoard[i][j2].isEmpty()) {
+            if ((white && m_chessBoard[i][j2][0] == 'b')
+                || (!white && m_chessBoard[i][j2][0] == 'w')) {
+                if (m_chessBoard[i][j2][1] == 'R' || m_chessBoard[i][j2][1] == 'Q'
+                    || (m_chessBoard[i][j2][1] == 'K' && j2 == (j - 1)))
+                    return true;
+            }
+            break;
+        }
+    }
+    for (int i2 = i + 1; i2 < 8; ++i2) {
+        if (!m_chessBoard[i2][j].isEmpty()) {
+            if ((white && m_chessBoard[i2][j][0] == 'b')
+                || (!white && m_chessBoard[i2][j][0] == 'w')) {
+                if (m_chessBoard[i2][j][1] == 'R' || m_chessBoard[i2][j][1] == 'Q'
+                    || (m_chessBoard[i2][j][1] == 'K' && i2 == (i + 1)))
+                    return true;
+            }
+            break;
+        }
+    }
+    for (int i2 = i - 1; i2 >= 0; --i2) {
+        if (!m_chessBoard[i2][j].isEmpty()) {
+            if ((white && m_chessBoard[i2][j][0] == 'b')
+                || (!white && m_chessBoard[i2][j][0] == 'w')) {
+                if (m_chessBoard[i2][j][1] == 'R' || m_chessBoard[i2][j][1] == 'Q'
+                    || (m_chessBoard[i2][j][1] == 'K' && i2 == (i + 1)))
+                    return true;
+            }
+            break;
+        }
+    }
+    for (int i2 = i + 1, j2 = j + 1; i2 < 8 && j2 < 8; ++i2, ++j2) {
+        if (!m_chessBoard[i2][j2].isEmpty()) {
+            if ((white && m_chessBoard[i2][j2][0] == 'b')
+                || (!white && m_chessBoard[i2][j2][0] == 'w')) {
+                if (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q'
+                    || ((m_chessBoard[i2][j2][1] == 'K' || m_chessBoard[i2][j2][1] == 'P')
+                        && i2 == (i + 1) && j2 == (j + 1)))
+                    return true;
+            }
+            break;
+        }
+    }
+    for (int i2 = i - 1, j2 = j - 1; i2 >= 0 && j2 >= 0; --i2, --j2) {
+        if (!m_chessBoard[i2][j2].isEmpty()) {
+            if ((white && m_chessBoard[i2][j2][0] == 'b')
+                || (!white && m_chessBoard[i2][j2][0] == 'w')) {
+                if (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q'
+                    || ((m_chessBoard[i2][j2][1] == 'K' || m_chessBoard[i2][j2][1] == 'P')
+                        && i2 == (i - 1) && j2 == (j - 1)))
+                    return true;
+            }
+            break;
+        }
+    }
+    for (int i2 = i - 1, j2 = j + 1; i2 >= 0 && j2 < 8; --i2, ++j2) {
+        if (!m_chessBoard[i2][j2].isEmpty()) {
+            if ((white && m_chessBoard[i2][j2][0] == 'b')
+                || (!white && m_chessBoard[i2][j2][0] == 'w')) {
+                if (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q'
+                    || ((m_chessBoard[i2][j2][1] == 'K' || m_chessBoard[i2][j2][1] == 'P')
+                        && i2 == (i - 1) && j2 == (j + 1)))
+                    return true;
+            }
+            break;
+        }
+    }
+    for (int i2 = i + 1, j2 = j - 1; i2 < 8 && j2 >= 0; ++i2, --j2) {
+        if (!m_chessBoard[i2][j2].isEmpty()) {
+            if ((white && m_chessBoard[i2][j2][0] == 'b')
+                || (!white && m_chessBoard[i2][j2][0] == 'w')) {
+                if (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q'
+                    || ((m_chessBoard[i2][j2][1] == 'K' || m_chessBoard[i2][j2][1] == 'P')
+                        && i2 == (i + 1) && j2 == (j - 1)))
+                    return true;
+            }
+            break;
+        }
+    }
+    if ((i + 2) < 8 && (j + 1) < 8
+        && ((white && m_chessBoard[i + 2][j + 1] == "bN")
+            || (!white && m_chessBoard[i + 2][j + 1] == "wN")))
+        return true;
+    if ((i + 2) < 8 && (j - 1) >= 0
+        && ((white && m_chessBoard[i + 2][j - 1] == "bN")
+            || (!white && m_chessBoard[i + 2][j - 1] == "wN")))
+        return true;
+    if ((i - 2) >= 0 && (j + 1) < 8
+        && ((white && m_chessBoard[i - 2][j + 1] == "bN")
+            || (!white && m_chessBoard[i - 2][j + 1] == "wN")))
+        return true;
+    if ((i - 2) >= 0 && (j - 1) >= 0
+        && ((white && m_chessBoard[i - 2][j - 1] == "bN")
+            || (!white && m_chessBoard[i - 2][j - 1] == "wN")))
+        return true;
+    if ((i + 1) < 8 && (j + 2) < 8
+        && ((white && m_chessBoard[i + 1][j + 2] == "bN")
+            || (!white && m_chessBoard[i + 1][j + 2] == "wN")))
+        return true;
+    if ((i - 1) >= 0 && (j + 2) < 8
+        && ((white && m_chessBoard[i - 1][j + 2] == "bN")
+            || (!white && m_chessBoard[i - 1][j + 2] == "wN")))
+        return true;
+    if ((i + 1) < 8 && (j - 2) >= 0
+        && ((white && m_chessBoard[i + 1][j + 2] == "bN")
+            || (!white && m_chessBoard[i + 1][j + 2] == "wN")))
+        return true;
+    if ((i - 1) >= 0 && (j - 2) >= 0
+        && ((white && m_chessBoard[i - 1][j + 2] == "bN")
+            || (!white && m_chessBoard[i - 1][j + 2] == "wN")))
+        return true;
+
+    return false;
 }
 
 void MainWindow::fillMap()

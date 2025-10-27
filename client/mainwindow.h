@@ -39,9 +39,10 @@ private:
     void clickField(const QString &nameField);
     void takePiece(int i, int j);
     void untakePiece();
-    bool checkBeat(int i, int j);
+    bool checkMove(int i, int j);
     void checkField(int i, int j);
     void uncheckField(int i, int j);
+    bool isCheck(int i, int j, bool white);
     void fillMap();
     void fillStandartChessBoard();
     void fillChessScene();
