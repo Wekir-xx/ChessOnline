@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_beatField.reserve(27);
     m_imagesOfPieces.reserve(20);
     m_chessBoardLabels.resize(8, std::vector<QPushButton *>(8, nullptr));
-    m_lastBeat = {{EMPTY, 0}, {0, 0}};
+    m_lastMove = {{EMPTY, 0}, {0, 0}};
     m_takenPiece = {EMPTY, 0};
 
     fillMap();
@@ -124,18 +124,24 @@ void MainWindow::clickField(const QString &nameField)
         if (std::any_of(m_beatField.begin(), m_beatField.end(), [ = ](const auto & p) {
         return p.first == i && p.second == j;
     })) {
-            if (m_lastBeat.first.first != EMPTY) {
-                uncheckField(m_lastBeat.first.first, m_lastBeat.first.second);
-                uncheckField(m_lastBeat.second.first, m_lastBeat.second.second);
+            if (m_lastMove.first.first != EMPTY) {
+                uncheckField(m_lastMove.first.first, m_lastMove.first.second);
+                uncheckField(m_lastMove.second.first, m_lastMove.second.second);
             }
             untakePiece();
+
+            if (m_chessBoard[m_takenPiece.first][m_takenPiece.second][1] == 'P' && m_chessBoard[i][j].isEmpty()
+                    && m_takenPiece.second != j) {
+                m_chessBoard[m_takenPiece.first][j].clear();
+                m_chessBoardLabels[m_takenPiece.first][j]->setIcon(QIcon());
+            }
 
             m_chessBoard[i][j] = m_chessBoard[m_takenPiece.first][m_takenPiece.second];
             m_chessBoardLabels[i][j]->setIcon(m_imagesOfPieces[m_chessBoard[i][j]]);
             checkField(i, j);
             m_whiteMove ^= true;
 
-            m_lastBeat = {{i, j}, {m_takenPiece.first, m_takenPiece.second}};
+            m_lastMove = {{i, j}, {m_takenPiece.first, m_takenPiece.second}};
 
             m_chessBoard[m_takenPiece.first][m_takenPiece.second].clear();
             m_chessBoardLabels[m_takenPiece.first][m_takenPiece.second]->setIcon(QIcon());
@@ -357,6 +363,14 @@ void MainWindow::takePiece(int i, int j)
                 m_beatField.push_back({i + 1, j + 1});
             if (checkBeat(i + 1, j - 1) && !m_chessBoard[i + 1][j - 1].isEmpty())
                 m_beatField.push_back({i + 1, j - 1});
+            if (i == 4) {
+                if (checkBeat(i, j + 1) && m_chessBoard[i][j + 1] == "bP"
+                        && m_lastMove.first == std::pair{i, j + 1} && m_lastMove.second == std::pair{i + 2, j + 1})
+                    m_beatField.push_back({i + 1, j + 1});
+                if (checkBeat(i, j - 1) && m_chessBoard[i][j - 1] == "bP"
+                        && m_lastMove.first == std::pair{i, j - 1} && m_lastMove.second == std::pair{i + 2, j - 1})
+                    m_beatField.push_back({i + 1, j - 1});
+            }
         } else {
             if (checkBeat(i - 1, j))
                 m_beatField.push_back({i - 1, j});
@@ -366,6 +380,14 @@ void MainWindow::takePiece(int i, int j)
                 m_beatField.push_back({i - 1, j + 1});
             if (checkBeat(i - 1, j - 1) && !m_chessBoard[i - 1][j - 1].isEmpty())
                 m_beatField.push_back({i - 1, j - 1});
+            if (i == 3) {
+                if (checkBeat(i, j + 1) && m_chessBoard[i][j + 1] == "wP"
+                        && m_lastMove.first == std::pair{i, j + 1} && m_lastMove.second == std::pair{i - 2, j + 1})
+                    m_beatField.push_back({i - 1, j + 1});
+                if (checkBeat(i, j - 1) && m_chessBoard[i][j - 1] == "wP"
+                        && m_lastMove.first == std::pair{i, j - 1} && m_lastMove.second == std::pair{i - 2, j - 1})
+                    m_beatField.push_back({i - 1, j - 1});
+            }
         }
         break;
     }
