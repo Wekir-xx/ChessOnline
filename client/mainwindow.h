@@ -58,6 +58,7 @@ private:
     std::pair<int, int> m_takenPiece;
     std::vector<std::pair<int, int>> m_beatField;
     std::pair<std::pair<int, int>, std::pair<int, int>> m_lastMove;
+    std::pair<std::pair<int, int>, std::pair<int, int>> m_posKings;
 
     bool m_whiteMove{true};
 };
