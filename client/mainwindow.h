@@ -43,6 +43,7 @@ private:
     void checkField(int i, int j);
     void uncheckField(int i, int j);
     bool isCheck(int i, int j, bool white);
+    bool isMate(int i, int j, bool white);
     void fillMap();
     void fillStandartChessBoard();
     void fillChessScene();

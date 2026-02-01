@@ -138,9 +138,9 @@ void MainWindow::clickField(const QString &nameField)
             }
 
             if (m_chessBoard[m_takenPiece.first][m_takenPiece.second] == "wK")
-                m_posKings.first = {m_takenPiece.first, m_takenPiece.second};
+                m_posKings.first = {i, j};
             else if (m_chessBoard[m_takenPiece.first][m_takenPiece.second] == "bK")
-                m_posKings.second = {m_takenPiece.first, m_takenPiece.second};
+                m_posKings.second = {i, j};
 
             m_chessBoard[i][j] = m_chessBoard[m_takenPiece.first][m_takenPiece.second];
             m_chessBoardLabels[i][j]->setIcon(m_imagesOfPieces[m_chessBoard[i][j]]);
@@ -601,6 +601,8 @@ bool MainWindow::isCheck(int i, int j, bool white)
 
     return false;
 }
+
+bool MainWindow::isMate(int i, int j, bool white) {}
 
 void MainWindow::fillMap()
 {
