@@ -117,7 +117,6 @@ bool ChessGame::isCheck()
     } else {
         i = m_posKings.second.first;
         j = m_posKings.second.second;
-        qDebug() << m_posKings.second;
     }
 
     if (((i + 1) < 8 && !m_chessBoard[i + 1][j].isEmpty() && m_chessBoard[i + 1][j][1] == 'K')
