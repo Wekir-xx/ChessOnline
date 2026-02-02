@@ -163,12 +163,22 @@ void MainWindow::clickField(const QString &nameField)
                 if (m_game.isCheck()) {
                     m_chessBoardLabels[m_posKings.first.first][m_posKings.first.second]
                         ->setStyleSheet("background-color: #ff3838; border: none;");
+
+                    if (!m_game.isPossibleMove(m_lastMove))
+                        this->setEnabled(false);
+                } else if (!m_game.isPossibleMove(m_lastMove)) {
+                    this->setEnabled(false);
                 }
             } else {
                 uncheckField(m_posKings.first.first, m_posKings.first.second);
                 if (m_game.isCheck()) {
                     m_chessBoardLabels[m_posKings.second.first][m_posKings.second.second]
                         ->setStyleSheet("background-color: #ff3838; border: none;");
+
+                    if (!m_game.isPossibleMove(m_lastMove))
+                        this->setEnabled(false);
+                } else if (!m_game.isPossibleMove(m_lastMove)) {
+                    this->setEnabled(false);
                 }
             }
         } else if ((m_takenPiece.first != i || m_takenPiece.second != j)

@@ -2,7 +2,7 @@
 
 ChessGame::ChessGame()
 {
-    m_beatField.reserve(100);
+    m_beatField.reserve(30);
 }
 
 void ChessGame::movePiece(std::pair<int, int> oldPos, std::pair<int, int> newPos)
@@ -138,80 +138,80 @@ bool ChessGame::isCheck()
             || ((i + 1) < 8 && (j - 1) >= 0 && m_chessBoard[i + 1][j - 1] == "bP"))
             return true;
 
-        for (int j2 = j + 1; j2 < 8; ++j2) {
-            if (!m_chessBoard[i][j2].isEmpty()) {
-                if (m_chessBoard[i][j2][0] == 'b'
-                    && (m_chessBoard[i][j2][1] == 'R' || m_chessBoard[i][j2][1] == 'Q')) {
+        for (int col = j + 1; col < 8; ++col) {
+            if (!m_chessBoard[i][col].isEmpty()) {
+                if (m_chessBoard[i][col][0] == 'b'
+                    && (m_chessBoard[i][col][1] == 'R' || m_chessBoard[i][col][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int j2 = j - 1; j2 >= 0; --j2) {
-            if (!m_chessBoard[i][j2].isEmpty()) {
-                if (m_chessBoard[i][j2][0] == 'b'
-                    && (m_chessBoard[i][j2][1] == 'R' || m_chessBoard[i][j2][1] == 'Q')) {
+        for (int col = j - 1; col >= 0; --col) {
+            if (!m_chessBoard[i][col].isEmpty()) {
+                if (m_chessBoard[i][col][0] == 'b'
+                    && (m_chessBoard[i][col][1] == 'R' || m_chessBoard[i][col][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i + 1; i2 < 8; ++i2) {
-            if (!m_chessBoard[i2][j].isEmpty()) {
-                if (m_chessBoard[i2][j][0] == 'b'
-                    && (m_chessBoard[i2][j][1] == 'R' || m_chessBoard[i2][j][1] == 'Q')) {
+        for (int row = i + 1; row < 8; ++row) {
+            if (!m_chessBoard[row][j].isEmpty()) {
+                if (m_chessBoard[row][j][0] == 'b'
+                    && (m_chessBoard[row][j][1] == 'R' || m_chessBoard[row][j][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i - 1; i2 >= 0; --i2) {
-            if (!m_chessBoard[i2][j].isEmpty()) {
-                if (m_chessBoard[i2][j][0] == 'b'
-                    && (m_chessBoard[i2][j][1] == 'R' || m_chessBoard[i2][j][1] == 'Q')) {
+        for (int row = i - 1; row >= 0; --row) {
+            if (!m_chessBoard[row][j].isEmpty()) {
+                if (m_chessBoard[row][j][0] == 'b'
+                    && (m_chessBoard[row][j][1] == 'R' || m_chessBoard[row][j][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i + 1, j2 = j + 1; i2 < 8 && j2 < 8; ++i2, ++j2) {
-            if (!m_chessBoard[i2][j2].isEmpty()) {
-                if (m_chessBoard[i2][j2][0] == 'b'
-                    && (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q')) {
+        for (int row = i + 1, col = j + 1; row < 8 && col < 8; ++row, ++col) {
+            if (!m_chessBoard[row][col].isEmpty()) {
+                if (m_chessBoard[row][col][0] == 'b'
+                    && (m_chessBoard[row][col][1] == 'B' || m_chessBoard[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i - 1, j2 = j - 1; i2 >= 0 && j2 >= 0; --i2, --j2) {
-            if (!m_chessBoard[i2][j2].isEmpty()) {
-                if (m_chessBoard[i2][j2][0] == 'b'
-                    && (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q')) {
+        for (int row = i - 1, col = j - 1; row >= 0 && col >= 0; --row, --col) {
+            if (!m_chessBoard[row][col].isEmpty()) {
+                if (m_chessBoard[row][col][0] == 'b'
+                    && (m_chessBoard[row][col][1] == 'B' || m_chessBoard[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i - 1, j2 = j + 1; i2 >= 0 && j2 < 8; --i2, ++j2) {
-            if (!m_chessBoard[i2][j2].isEmpty()) {
-                if (m_chessBoard[i2][j2][0] == 'b'
-                    && (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q')) {
+        for (int row = i - 1, col = j + 1; row >= 0 && col < 8; --row, ++col) {
+            if (!m_chessBoard[row][col].isEmpty()) {
+                if (m_chessBoard[row][col][0] == 'b'
+                    && (m_chessBoard[row][col][1] == 'B' || m_chessBoard[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i + 1, j2 = j - 1; i2 < 8 && j2 >= 0; ++i2, --j2) {
-            if (!m_chessBoard[i2][j2].isEmpty()) {
-                if (m_chessBoard[i2][j2][0] == 'b'
-                    && (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q')) {
+        for (int row = i + 1, col = j - 1; row < 8 && col >= 0; ++row, --col) {
+            if (!m_chessBoard[row][col].isEmpty()) {
+                if (m_chessBoard[row][col][0] == 'b'
+                    && (m_chessBoard[row][col][1] == 'B' || m_chessBoard[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -233,80 +233,80 @@ bool ChessGame::isCheck()
             || ((i - 1) >= 0 && (j - 1) >= 0 && m_chessBoard[i - 1][j - 1] == "wP"))
             return true;
 
-        for (int j2 = j + 1; j2 < 8; ++j2) {
-            if (!m_chessBoard[i][j2].isEmpty()) {
-                if (m_chessBoard[i][j2][0] == 'w'
-                    && (m_chessBoard[i][j2][1] == 'R' || m_chessBoard[i][j2][1] == 'Q')) {
+        for (int col = j + 1; col < 8; ++col) {
+            if (!m_chessBoard[i][col].isEmpty()) {
+                if (m_chessBoard[i][col][0] == 'w'
+                    && (m_chessBoard[i][col][1] == 'R' || m_chessBoard[i][col][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int j2 = j - 1; j2 >= 0; --j2) {
-            if (!m_chessBoard[i][j2].isEmpty()) {
-                if (m_chessBoard[i][j2][0] == 'w'
-                    && (m_chessBoard[i][j2][1] == 'R' || m_chessBoard[i][j2][1] == 'Q')) {
+        for (int col = j - 1; col >= 0; --col) {
+            if (!m_chessBoard[i][col].isEmpty()) {
+                if (m_chessBoard[i][col][0] == 'w'
+                    && (m_chessBoard[i][col][1] == 'R' || m_chessBoard[i][col][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i + 1; i2 < 8; ++i2) {
-            if (!m_chessBoard[i2][j].isEmpty()) {
-                if (m_chessBoard[i2][j][0] == 'w'
-                    && (m_chessBoard[i2][j][1] == 'R' || m_chessBoard[i2][j][1] == 'Q')) {
+        for (int row = i + 1; row < 8; ++row) {
+            if (!m_chessBoard[row][j].isEmpty()) {
+                if (m_chessBoard[row][j][0] == 'w'
+                    && (m_chessBoard[row][j][1] == 'R' || m_chessBoard[row][j][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i - 1; i2 >= 0; --i2) {
-            if (!m_chessBoard[i2][j].isEmpty()) {
-                if (m_chessBoard[i2][j][0] == 'w'
-                    && (m_chessBoard[i2][j][1] == 'R' || m_chessBoard[i2][j][1] == 'Q')) {
+        for (int row = i - 1; row >= 0; --row) {
+            if (!m_chessBoard[row][j].isEmpty()) {
+                if (m_chessBoard[row][j][0] == 'w'
+                    && (m_chessBoard[row][j][1] == 'R' || m_chessBoard[row][j][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i + 1, j2 = j + 1; i2 < 8 && j2 < 8; ++i2, ++j2) {
-            if (!m_chessBoard[i2][j2].isEmpty()) {
-                if (m_chessBoard[i2][j2][0] == 'w'
-                    && (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q')) {
+        for (int row = i + 1, col = j + 1; row < 8 && col < 8; ++row, ++col) {
+            if (!m_chessBoard[row][col].isEmpty()) {
+                if (m_chessBoard[row][col][0] == 'w'
+                    && (m_chessBoard[row][col][1] == 'B' || m_chessBoard[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i - 1, j2 = j - 1; i2 >= 0 && j2 >= 0; --i2, --j2) {
-            if (!m_chessBoard[i2][j2].isEmpty()) {
-                if (m_chessBoard[i2][j2][0] == 'w'
-                    && (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q')) {
+        for (int row = i - 1, col = j - 1; row >= 0 && col >= 0; --row, --col) {
+            if (!m_chessBoard[row][col].isEmpty()) {
+                if (m_chessBoard[row][col][0] == 'w'
+                    && (m_chessBoard[row][col][1] == 'B' || m_chessBoard[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i - 1, j2 = j + 1; i2 >= 0 && j2 < 8; --i2, ++j2) {
-            if (!m_chessBoard[i2][j2].isEmpty()) {
-                if (m_chessBoard[i2][j2][0] == 'w'
-                    && (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q')) {
+        for (int row = i - 1, col = j + 1; row >= 0 && col < 8; --row, ++col) {
+            if (!m_chessBoard[row][col].isEmpty()) {
+                if (m_chessBoard[row][col][0] == 'w'
+                    && (m_chessBoard[row][col][1] == 'B' || m_chessBoard[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
             }
         }
 
-        for (int i2 = i + 1, j2 = j - 1; i2 < 8 && j2 >= 0; ++i2, --j2) {
-            if (!m_chessBoard[i2][j2].isEmpty()) {
-                if (m_chessBoard[i2][j2][0] == 'w'
-                    && (m_chessBoard[i2][j2][1] == 'B' || m_chessBoard[i2][j2][1] == 'Q')) {
+        for (int row = i + 1, col = j - 1; row < 8 && col >= 0; ++row, --col) {
+            if (!m_chessBoard[row][col].isEmpty()) {
+                if (m_chessBoard[row][col][0] == 'w'
+                    && (m_chessBoard[row][col][1] == 'B' || m_chessBoard[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -327,8 +327,21 @@ bool ChessGame::isCheck()
     return false;
 }
 
-bool ChessGame::isMate()
+bool ChessGame::isPossibleMove(std::pair<std::pair<int, int>, std::pair<int, int>> m_lastMove)
 {
+    QChar color;
+
+    if (m_whiteMove)
+        color = 'w';
+    else
+        color = 'b';
+
+    for (int row = 0; row < 8; ++row)
+        for (int col = 0; col < 8; ++col)
+            if (!m_chessBoard[row][col].isEmpty() && m_chessBoard[row][col][0] == color)
+                if (!takePiece(row, col, m_lastMove).empty())
+                    return true;
+
     return false;
 }
 

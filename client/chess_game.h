@@ -1,6 +1,7 @@
 #ifndef CHESS_GAME_H
 #define CHESS_GAME_H
 
+#include <QChar>
 #include <QDebug>
 #include <QString>
 
@@ -15,7 +16,7 @@ public:
     std::vector<std::pair<int, int>>& takePiece(
         int i, int j, std::pair<std::pair<int, int>, std::pair<int, int>> m_lastMove);
     bool isCheck();
-    bool isMate();
+    bool isPossibleMove(std::pair<std::pair<int, int>, std::pair<int, int>> m_lastMove);
 
     void setChessBoard(std::vector<std::vector<QString>> chessBoard);
     void setPosKings(std::pair<std::pair<int, int>, std::pair<int, int>> posKings);

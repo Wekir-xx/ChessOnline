@@ -3,17 +3,16 @@
 
 #include "chess_game.h"
 
-#include <QChar>
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QLabel>
 #include <QMainWindow>
+#include <QPainter>
 #include <QPushButton>
 #include <QResizeEvent>
 #include <QShowEvent>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <QPainter>
 
 #include <unordered_map>
 
