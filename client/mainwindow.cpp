@@ -1,7 +1,7 @@
+#include "mainwindow.h"
+
 #define EMPTY 8
 #define BEAT_FIELD_SIZE 0.3
-
-#include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -140,7 +140,7 @@ void MainWindow::clickField(const QString &nameField)
             if (chessBoard[m_takenPiece.first][m_takenPiece.second][1] == 'K') {
                 if (m_whiteMove)
                     m_posKings.first = {i, j};
-                else if (m_whiteMove)
+                else
                     m_posKings.second = {i, j};
 
                 m_game.setPosKings(m_posKings);

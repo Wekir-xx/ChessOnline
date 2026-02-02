@@ -23,11 +23,14 @@ public:
     std::vector<std::vector<QString>>& getChessBoard();
 
 private:
-    bool checkMove(int i, int j);
+    bool checkMove(int i, int j, bool isKing = false);
+    void addMovesRook();
+    void addMovesBishop();
 
 private:
     std::vector<std::vector<QString>> m_chessBoard;
     std::vector<std::pair<int, int>> m_beatField;
+    std::pair<int, int> m_takenPiece;
     std::pair<std::pair<int, int>, std::pair<int, int>> m_posKings;
 
     bool m_whiteMove{true};

@@ -15,6 +15,7 @@ void ChessGame::movePiece(std::pair<int, int> oldPos, std::pair<int, int> newPos
 std::vector<std::pair<int, int>> &ChessGame::takePiece(
     int i, int j, std::pair<std::pair<int, int>, std::pair<int, int>> m_lastMove)
 {
+    m_takenPiece = {i, j};
     m_beatField.clear();
     const auto namePiece = m_chessBoard[i][j].toStdString();
 
@@ -22,161 +23,21 @@ std::vector<std::pair<int, int>> &ChessGame::takePiece(
     case 'K':
         for (int row = i - 1; row < i + 2; ++row)
             for (int col = j - 1; col < j + 2; ++col)
-                if (checkMove(row, col) && !isCheck())
+                if ((row != i || col != j) && checkMove(row, col, true))
                     m_beatField.push_back({row, col});
         break;
 
     case 'Q':
-        for (int j2 = j + 1; j2 < 8; ++j2) {
-            if (checkMove(i, j2)) {
-                m_beatField.push_back({i, j2});
-                if (!m_chessBoard[i][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int j2 = j - 1; j2 >= 0; --j2) {
-            if (checkMove(i, j2)) {
-                m_beatField.push_back({i, j2});
-                if (!m_chessBoard[i][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int i2 = i + 1; i2 < 8; ++i2) {
-            if (checkMove(i2, j)) {
-                m_beatField.push_back({i2, j});
-                if (!m_chessBoard[i2][j].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int i2 = i - 1; i2 >= 0; --i2) {
-            if (checkMove(i2, j)) {
-                m_beatField.push_back({i2, j});
-                if (!m_chessBoard[i2][j].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int i2 = i + 1, j2 = j + 1; i2 < 8 && j2 < 8; ++i2, ++j2) {
-            if (checkMove(i2, j2)) {
-                m_beatField.push_back({i2, j2});
-                if (!m_chessBoard[i2][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int i2 = i - 1, j2 = j - 1; i2 >= 0 && j2 >= 0; --i2, --j2) {
-            if (checkMove(i2, j2)) {
-                m_beatField.push_back({i2, j2});
-                if (!m_chessBoard[i2][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int i2 = i - 1, j2 = j + 1; i2 >= 0 && j2 < 8; --i2, ++j2) {
-            if (checkMove(i2, j2)) {
-                m_beatField.push_back({i2, j2});
-                if (!m_chessBoard[i2][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int i2 = i + 1, j2 = j - 1; i2 < 8 && j2 >= 0; ++i2, --j2) {
-            if (checkMove(i2, j2)) {
-                m_beatField.push_back({i2, j2});
-                if (!m_chessBoard[i2][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
+        addMovesRook();
+        addMovesBishop();
         break;
 
     case 'R':
-        for (int j2 = j + 1; j2 < 8; ++j2) {
-            if (checkMove(i, j2)) {
-                m_beatField.push_back({i, j2});
-                if (!m_chessBoard[i][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int j2 = j - 1; j2 >= 0; --j2) {
-            if (checkMove(i, j2)) {
-                m_beatField.push_back({i, j2});
-                if (!m_chessBoard[i][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int i2 = i + 1; i2 < 8; ++i2) {
-            if (checkMove(i2, j)) {
-                m_beatField.push_back({i2, j});
-                if (!m_chessBoard[i2][j].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int i2 = i - 1; i2 >= 0; --i2) {
-            if (checkMove(i2, j)) {
-                m_beatField.push_back({i2, j});
-                if (!m_chessBoard[i2][j].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
+        addMovesRook();
         break;
 
     case 'B':
-        for (int i2 = i + 1, j2 = j + 1; i2 < 8 && j2 < 8; ++i2, ++j2) {
-            if (checkMove(i2, j2)) {
-                m_beatField.push_back({i2, j2});
-                if (!m_chessBoard[i2][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int i2 = i - 1, j2 = j - 1; i2 >= 0 && j2 >= 0; --i2, --j2) {
-            if (checkMove(i2, j2)) {
-                m_beatField.push_back({i2, j2});
-                if (!m_chessBoard[i2][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int i2 = i - 1, j2 = j + 1; i2 >= 0 && j2 < 8; --i2, ++j2) {
-            if (checkMove(i2, j2)) {
-                m_beatField.push_back({i2, j2});
-                if (!m_chessBoard[i2][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
-        for (int i2 = i + 1, j2 = j - 1; i2 < 8 && j2 >= 0; ++i2, --j2) {
-            if (checkMove(i2, j2)) {
-                m_beatField.push_back({i2, j2});
-                if (!m_chessBoard[i2][j2].isEmpty())
-                    break;
-            } else {
-                break;
-            }
-        }
+        addMovesBishop();
         break;
 
     case 'N':
@@ -200,9 +61,10 @@ std::vector<std::pair<int, int>> &ChessGame::takePiece(
 
     case 'P':
         if (namePiece[0] == 'w') {
-            if (m_chessBoard[i + 1][j].isEmpty())
+            if (m_chessBoard[i + 1][j].isEmpty() && checkMove(i + 1, j))
                 m_beatField.push_back({i + 1, j});
-            if (i == 1 && m_chessBoard[2][j].isEmpty() && m_chessBoard[3][j].isEmpty())
+            if (i == 1 && m_chessBoard[2][j].isEmpty() && m_chessBoard[3][j].isEmpty()
+                && checkMove(3, j))
                 m_beatField.push_back({3, j});
             if (checkMove(i + 1, j + 1) && !m_chessBoard[i + 1][j + 1].isEmpty())
                 m_beatField.push_back({i + 1, j + 1});
@@ -219,9 +81,10 @@ std::vector<std::pair<int, int>> &ChessGame::takePiece(
                     m_beatField.push_back({5, j - 1});
             }
         } else {
-            if (m_chessBoard[i - 1][j].isEmpty())
+            if (m_chessBoard[i - 1][j].isEmpty() && checkMove(i - 1, j))
                 m_beatField.push_back({i - 1, j});
-            if (i == 6 && m_chessBoard[4][j].isEmpty() && m_chessBoard[5][j].isEmpty())
+            if (i == 6 && m_chessBoard[4][j].isEmpty() && m_chessBoard[5][j].isEmpty()
+                && checkMove(4, j))
                 m_beatField.push_back({4, j});
             if (checkMove(i - 1, j + 1) && !m_chessBoard[i - 1][j + 1].isEmpty())
                 m_beatField.push_back({i - 1, j + 1});
@@ -254,21 +117,26 @@ bool ChessGame::isCheck()
     } else {
         i = m_posKings.second.first;
         j = m_posKings.second.second;
+        qDebug() << m_posKings.second;
     }
 
-    if (((i + 1) < 8 && m_chessBoard[i + 1][j][1] == "K")
-        || ((i - 1) >= 0 && m_chessBoard[i - 1][j][1] == "K")
-        || ((j + 1) < 8 && m_chessBoard[i][j + 1][1] == "K")
-        || ((j - 1) >= 0 && m_chessBoard[i][j - 1][1] == "K")
-        || ((i + 1) < 8 && (j + 1) < 8 && m_chessBoard[i + 1][j + 1][1] == "K")
-        || ((i + 1) < 8 && (j - 1) >= 0 && m_chessBoard[i + 1][j - 1][1] == "K")
-        || ((i - 1) >= 0 && (j + 1) < 8 && m_chessBoard[i - 1][j + 1][1] == "K")
-        || ((i - 1) >= 0 && (j - 1) >= 0 && m_chessBoard[i - 1][j - 1][1] == "K"))
+    if (((i + 1) < 8 && !m_chessBoard[i + 1][j].isEmpty() && m_chessBoard[i + 1][j][1] == 'K')
+        || ((i - 1) >= 0 && !m_chessBoard[i - 1][j].isEmpty() && m_chessBoard[i - 1][j][1] == 'K')
+        || ((j + 1) < 8 && !m_chessBoard[i][j + 1].isEmpty() && m_chessBoard[i][j + 1][1] == 'K')
+        || ((j - 1) >= 0 && !m_chessBoard[i][j - 1].isEmpty() && m_chessBoard[i][j - 1][1] == 'K')
+        || ((i + 1) < 8 && !m_chessBoard[i + 1][j + 1].isEmpty() && (j + 1) < 8
+            && m_chessBoard[i + 1][j + 1][1] == 'K')
+        || ((i + 1) < 8 && !m_chessBoard[i + 1][j - 1].isEmpty() && (j - 1) >= 0
+            && m_chessBoard[i + 1][j - 1][1] == 'K')
+        || ((i - 1) >= 0 && !m_chessBoard[i - 1][j + 1].isEmpty() && (j + 1) < 8
+            && m_chessBoard[i - 1][j + 1][1] == 'K')
+        || ((i - 1) >= 0 && !m_chessBoard[i - 1][j - 1].isEmpty() && (j - 1) >= 0
+            && m_chessBoard[i - 1][j - 1][1] == 'K'))
         return true;
 
     if (m_whiteMove) {
-        if (((i + 1) < 8 && (j + 1) < 8 && m_chessBoard[i + 1][j + 1][1] == "bP")
-            || ((i + 1) < 8 && (j - 1) >= 0 && m_chessBoard[i + 1][j - 1][1] == "bP"))
+        if (((i + 1) < 8 && (j + 1) < 8 && m_chessBoard[i + 1][j + 1] == "bP")
+            || ((i + 1) < 8 && (j - 1) >= 0 && m_chessBoard[i + 1][j - 1] == "bP"))
             return true;
 
         for (int j2 = j + 1; j2 < 8; ++j2) {
@@ -480,9 +348,119 @@ std::vector<std::vector<QString>> &ChessGame::getChessBoard()
     return m_chessBoard;
 }
 
-bool ChessGame::checkMove(int i, int j)
+bool ChessGame::checkMove(int i, int j, bool isKing)
 {
-    return i >= 0 && i < 8 && j >= 0 && j < 8
-           && (m_chessBoard[i][j].isEmpty() || (m_whiteMove && m_chessBoard[i][j][0] == 'b')
-               || (!m_whiteMove && m_chessBoard[i][j][0] == 'w'));
+    if (i >= 0 && i < 8 && j >= 0 && j < 8
+        && (m_chessBoard[i][j].isEmpty() || (m_whiteMove && m_chessBoard[i][j][0] == 'b')
+            || (!m_whiteMove && m_chessBoard[i][j][0] == 'w'))) {
+        QString deletePiece = m_chessBoard[i][j];
+        m_chessBoard[i][j] = m_chessBoard[m_takenPiece.first][m_takenPiece.second];
+        m_chessBoard[m_takenPiece.first][m_takenPiece.second].clear();
+
+        if (isKing) {
+            if (m_whiteMove)
+                m_posKings.first = {i, j};
+            else
+                m_posKings.second = {i, j};
+        }
+
+        bool possibleMove = !isCheck();
+
+        m_chessBoard[m_takenPiece.first][m_takenPiece.second] = m_chessBoard[i][j];
+        m_chessBoard[i][j] = deletePiece;
+
+        if (isKing) {
+            if (m_whiteMove)
+                m_posKings.first = {m_takenPiece.first, m_takenPiece.second};
+            else
+                m_posKings.second = {m_takenPiece.first, m_takenPiece.second};
+        }
+
+        return possibleMove;
+    }
+    return false;
+}
+
+void ChessGame::addMovesRook()
+{
+    for (int col = m_takenPiece.second + 1; col < 8; ++col) {
+        if (checkMove(m_takenPiece.first, col)) {
+            m_beatField.push_back({m_takenPiece.first, col});
+            if (!m_chessBoard[m_takenPiece.first][col].isEmpty())
+                break;
+        } else {
+            break;
+        }
+    }
+    for (int col = m_takenPiece.second - 1; col >= 0; --col) {
+        if (checkMove(m_takenPiece.first, col)) {
+            m_beatField.push_back({m_takenPiece.first, col});
+            if (!m_chessBoard[m_takenPiece.first][col].isEmpty())
+                break;
+        } else {
+            break;
+        }
+    }
+    for (int row = m_takenPiece.first + 1; row < 8; ++row) {
+        if (checkMove(row, m_takenPiece.second)) {
+            m_beatField.push_back({row, m_takenPiece.second});
+            if (!m_chessBoard[row][m_takenPiece.second].isEmpty())
+                break;
+        } else {
+            break;
+        }
+    }
+    for (int row = m_takenPiece.first - 1; row >= 0; --row) {
+        if (checkMove(row, m_takenPiece.second)) {
+            m_beatField.push_back({row, m_takenPiece.second});
+            if (!m_chessBoard[row][m_takenPiece.second].isEmpty())
+                break;
+        } else {
+            break;
+        }
+    }
+}
+
+void ChessGame::addMovesBishop()
+{
+    for (int row = m_takenPiece.first + 1, col = m_takenPiece.second + 1; row < 8 && col < 8;
+         ++row, ++col) {
+        if (checkMove(row, col)) {
+            m_beatField.push_back({row, col});
+            if (!m_chessBoard[row][col].isEmpty())
+                break;
+        } else {
+            break;
+        }
+    }
+    for (int row = m_takenPiece.first - 1, col = m_takenPiece.second - 1; row >= 0 && col >= 0;
+         --row, --col) {
+        if (checkMove(row, col)) {
+            m_beatField.push_back({row, col});
+            if (!m_chessBoard[row][col].isEmpty())
+                break;
+        } else {
+            break;
+        }
+    }
+    for (int row = m_takenPiece.first - 1, col = m_takenPiece.second + 1; row >= 0 && col < 8;
+         --row, ++col) {
+        if (checkMove(row, col)) {
+            m_beatField.push_back({row, col});
+            if (!m_chessBoard[row][col].isEmpty())
+                break;
+        } else {
+            break;
+        }
+    }
+    for (int row = m_takenPiece.first + 1, col = m_takenPiece.second - 1; row < 8 && col >= 0;
+         ++row, --col) {
+        if (checkMove(row, col)) {
+            m_beatField.push_back({row, col});
+            if (!m_chessBoard[row][col].isEmpty())
+                break;
+        } else {
+            break;
+        }
+    }
 }
