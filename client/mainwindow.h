@@ -36,13 +36,13 @@ private:
     // --- Helper methods ---
 
     void clickField(const QString &nameField);
-    void takePiece(int i, int j);
+    void takePiece(qint8 i, qint8 j);
     void untakePiece();
-    void checkField(int i, int j);
-    void uncheckField(int i, int j);
-    void fillMap();
+    void checkField(qint8 i, qint8 j);
+    void uncheckField(qint8 i, qint8 j);
+    void fillIcan();
     void fillChessScene();
-    std::vector<std::vector<QString>> fillStandartChessBoard();
+    ChessParams fillStandartChessBoard();
 
 private:
     // --- Fields ---
@@ -52,10 +52,9 @@ private:
     std::unordered_map<QString, QIcon> m_imagesOfPieces;
     std::vector<std::vector<QPushButton *>> m_chessBoardLabels;
 
-    std::pair<int, int> m_takenPiece;
-    std::vector<std::pair<int, int>> m_beatField;
-    std::pair<std::pair<int, int>, std::pair<int, int>> m_posKings;
-    std::pair<std::pair<int, int>, std::pair<int, int>> m_lastMove;
+    std::pair<qint8, qint8> m_takenPiece;
+    std::vector<std::pair<qint8, qint8>> m_beatField;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> m_lastMove;
 
     bool m_whiteMove{true};
 };

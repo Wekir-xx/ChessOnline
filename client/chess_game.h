@@ -7,32 +7,40 @@
 
 #include <vector>
 
+struct ChessParams
+{
+    std::vector<std::vector<QString>> chessBoard;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
+};
+
 class ChessGame
 {
 public:
     ChessGame();
 
-    void movePiece(std::pair<int, int> oldPos, std::pair<int, int> newPos);
-    std::vector<std::pair<int, int>>& takePiece(
-        int i, int j, std::pair<std::pair<int, int>, std::pair<int, int>> m_lastMove);
+    void movePiece(std::pair<qint8, qint8> oldPos, std::pair<qint8, qint8> newPos);
+    std::vector<std::pair<qint8, qint8>>& takePiece(
+        qint8 i, qint8 j, std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> m_lastMove);
     bool isCheck();
-    bool isPossibleMove(std::pair<std::pair<int, int>, std::pair<int, int>> m_lastMove);
+    bool isPossibleMove(std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> m_lastMove);
 
-    void setChessBoard(std::vector<std::vector<QString>> chessBoard);
-    void setPosKings(std::pair<std::pair<int, int>, std::pair<int, int>> posKings);
+    void setChessParams(ChessParams chess);
 
     std::vector<std::vector<QString>>& getChessBoard();
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>>& getPosKings();
 
 private:
-    bool checkMove(int i, int j, bool isKing = false);
+    bool checkMove(qint8 i, qint8 j, bool isKing = false);
     void addMovesRook();
     void addMovesBishop();
 
 private:
-    std::vector<std::vector<QString>> m_chessBoard;
-    std::vector<std::pair<int, int>> m_beatField;
-    std::pair<int, int> m_takenPiece;
-    std::pair<std::pair<int, int>, std::pair<int, int>> m_posKings;
+    ChessParams m_chess;
+    std::pair<qint8, qint8> m_takenPiece;
+    std::vector<std::pair<qint8, qint8>> m_beatField;
+    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> m_castling;
 
     bool m_whiteMove{true};
 };
