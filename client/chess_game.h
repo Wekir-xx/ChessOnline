@@ -3,6 +3,7 @@
 
 #include <QChar>
 #include <QDebug>
+#include <QObject>
 #include <QString>
 
 #include <vector>
@@ -15,8 +16,9 @@ struct ChessParams
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
 };
 
-class ChessGame
+class ChessGame : public QObject
 {
+    Q_OBJECT
 public:
     ChessGame();
 
@@ -31,8 +33,12 @@ public:
     std::vector<std::vector<QString>>& getChessBoard();
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>>& getPosKings();
 
+signals:
+    void updateIconCastling(short row, short col1, short col2);
+
 private:
     bool checkMove(qint8 i, qint8 j, bool isKing = false);
+    void addCastling();
     void addMovesRook();
     void addMovesBishop();
 

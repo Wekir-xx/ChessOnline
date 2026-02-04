@@ -39,7 +39,8 @@ private:
     void takePiece(qint8 i, qint8 j);
     void untakePiece();
     void checkField(qint8 i, qint8 j);
-    void uncheckField(qint8 i, qint8 j);
+    void moveField(qint8 i, qint8 j);
+    void baseField(qint8 i, qint8 j);
     void fillIcan();
     void fillChessScene();
     ChessParams fillStandartChessBoard();

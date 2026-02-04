@@ -73,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent)
             layout->addWidget(button);
             m_chessBoardLabels[7 - j][i] = button;
 
-            uncheckField(7 - j, i);
+            baseField(7 - j, i);
 
             connect(button, &QPushButton::clicked, this, [this, button]() {
                 clickField(button->objectName());
@@ -94,6 +94,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     chess_board_layout->setStretch(0, 1);
     chess_board_layout->setStretch(1, 19);
+
+    connect(&m_game, ChessGame::updateIconCastling, this, [&](short row, short col1, short col2) {
+        if (row == 0)
+            m_chessBoardLabels[row][col2]->setIcon(m_imagesOfPieces["wR"]);
+        else
+            m_chessBoardLabels[row][col2]->setIcon(m_imagesOfPieces["bR"]);
+
+        m_chessBoardLabels[row][col1]->setIcon(QIcon());
+    });
 
     this->setCentralWidget(widget);
 }
@@ -125,8 +134,8 @@ void MainWindow::clickField(const QString &nameField)
         return p.first == i && p.second == j;
     })) {
             if (m_lastMove.first.first != EMPTY) {
-                uncheckField(m_lastMove.first.first, m_lastMove.first.second);
-                uncheckField(m_lastMove.second.first, m_lastMove.second.second);
+                baseField(m_lastMove.first.first, m_lastMove.first.second);
+                baseField(m_lastMove.second.first, m_lastMove.second.second);
             }
             untakePiece();
 
@@ -146,24 +155,26 @@ void MainWindow::clickField(const QString &nameField)
             m_takenPiece.first = EMPTY;
             m_whiteMove ^= true;
 
-            checkField(i, j);
+            moveField(i, j);
 
             const auto &posKings = m_game.getPosKings();
             if (m_whiteMove) {
-                uncheckField(posKings.second.first, posKings.second.second);
+                baseField(posKings.second.first, posKings.second.second);
+
                 if (m_game.isCheck()) {
-                    m_chessBoardLabels[posKings.first.first][posKings.first.second]->setStyleSheet(
-                        "background-color: #ff3838; border: none;");
+                    checkField(posKings.first.first, posKings.first.second);
+
                     if (!m_game.isPossibleMove(m_lastMove))
                         this->setEnabled(false);
                 } else if (!m_game.isPossibleMove(m_lastMove)) {
                     this->setEnabled(false);
                 }
             } else {
-                uncheckField(posKings.first.first, posKings.first.second);
+                baseField(posKings.first.first, posKings.first.second);
+
                 if (m_game.isCheck()) {
-                    m_chessBoardLabels[posKings.second.first][posKings.second.second]->setStyleSheet(
-                        "background-color: #ff3838; border: none;");
+                    checkField(posKings.second.first, posKings.second.second);
+
                     if (!m_game.isPossibleMove(m_lastMove))
                         this->setEnabled(false);
                 } else if (!m_game.isPossibleMove(m_lastMove)) {
@@ -174,14 +185,13 @@ void MainWindow::clickField(const QString &nameField)
                    && !chessBoard[i][j].isEmpty()
                    && ((m_whiteMove && chessBoard[i][j][0] == 'w')
                        || (!m_whiteMove && chessBoard[i][j][0] == 'b'))) {
-            uncheckField(m_takenPiece.first, m_takenPiece.second);
+            baseField(m_takenPiece.first, m_takenPiece.second);
             takePiece(i, j);
         } else {
             if (chessBoard[m_takenPiece.first][m_takenPiece.second][1] == 'K' && m_game.isCheck())
-                m_chessBoardLabels[m_takenPiece.first][m_takenPiece.second]
-                ->setStyleSheet("background-color: #ff3838; border: none;");
+                checkField(m_takenPiece.first, m_takenPiece.second);
             else
-                uncheckField(m_takenPiece.first, m_takenPiece.second);
+                baseField(m_takenPiece.first, m_takenPiece.second);
 
             untakePiece();
             m_takenPiece.first = EMPTY;
@@ -198,7 +208,7 @@ void MainWindow::takePiece(qint8 i, qint8 j)
 {
     untakePiece();
     m_takenPiece = {i, j};
-    checkField(i, j);
+    moveField(i, j);
 
     m_beatField = m_game.takePiece(i, j, m_lastMove);
 
@@ -229,13 +239,18 @@ void MainWindow::untakePiece()
 
 void MainWindow::checkField(qint8 i, qint8 j)
 {
+    m_chessBoardLabels[i][j]->setStyleSheet("background-color: #ff3838; border: none;");
+}
+
+void MainWindow::moveField(qint8 i, qint8 j)
+{
     if ((i + j) % 2 == 0)
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #B9CA43; border: none;");
     else
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #F5F682; border: none;");
 }
 
-void MainWindow::uncheckField(qint8 i, qint8 j)
+void MainWindow::baseField(qint8 i, qint8 j)
 {
     if ((i + j) % 2 == 0)
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #739552; border: none;");
