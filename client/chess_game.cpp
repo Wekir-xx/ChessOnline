@@ -70,6 +70,10 @@ std::vector<std::pair<qint8, qint8>> &ChessGame::takePiece(
                 if ((row != i || col != j) && checkMove(row, col, true))
                     m_beatField.push_back({row, col});
 
+        if (!(m_whiteMove && (m_castling.first.first || m_castling.first.second)
+              || !m_whiteMove && (m_castling.second.first || m_castling.second.second)))
+            break;
+
         if (isCheck())
             break;
 
@@ -109,7 +113,7 @@ std::vector<std::pair<qint8, qint8>> &ChessGame::takePiece(
         break;
 
     case 'P':
-        if (namePiece[0] == 'w') {
+        if (m_whiteMove) {
             if (m_chess.chessBoard[i + 1][j].isEmpty() && checkMove(i + 1, j))
                 m_beatField.push_back({i + 1, j});
             if (i == 1 && m_chess.chessBoard[2][j].isEmpty() && m_chess.chessBoard[3][j].isEmpty()
@@ -176,13 +180,13 @@ bool ChessGame::isCheck()
             && m_chess.chessBoard[i][j + 1][1] == 'K')
         || ((j - 1) >= 0 && !m_chess.chessBoard[i][j - 1].isEmpty()
             && m_chess.chessBoard[i][j - 1][1] == 'K')
-        || ((i + 1) < 8 && !m_chess.chessBoard[i + 1][j + 1].isEmpty() && (j + 1) < 8
+        || ((i + 1) < 8 && (j + 1) < 8 && !m_chess.chessBoard[i + 1][j + 1].isEmpty()
             && m_chess.chessBoard[i + 1][j + 1][1] == 'K')
-        || ((i + 1) < 8 && !m_chess.chessBoard[i + 1][j - 1].isEmpty() && (j - 1) >= 0
+        || ((i + 1) < 8 && (j - 1) >= 0 && !m_chess.chessBoard[i + 1][j - 1].isEmpty()
             && m_chess.chessBoard[i + 1][j - 1][1] == 'K')
-        || ((i - 1) >= 0 && !m_chess.chessBoard[i - 1][j + 1].isEmpty() && (j + 1) < 8
+        || ((i - 1) >= 0 && (j + 1) < 8 && !m_chess.chessBoard[i - 1][j + 1].isEmpty()
             && m_chess.chessBoard[i - 1][j + 1][1] == 'K')
-        || ((i - 1) >= 0 && !m_chess.chessBoard[i - 1][j - 1].isEmpty() && (j - 1) >= 0
+        || ((i - 1) >= 0 && (j - 1) >= 0 && !m_chess.chessBoard[i - 1][j - 1].isEmpty()
             && m_chess.chessBoard[i - 1][j - 1][1] == 'K'))
         return true;
 
