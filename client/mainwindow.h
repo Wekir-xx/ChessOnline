@@ -42,7 +42,7 @@ private:
     void moveField(qint8 i, qint8 j);
     void baseField(qint8 i, qint8 j);
     void fillIcan();
-    void fillChessScene();
+    void updateChessScene();
     ChessParams fillStandartChessBoard();
 
 private:
@@ -55,7 +55,6 @@ private:
 
     std::pair<qint8, qint8> m_takenPiece;
     std::vector<std::pair<qint8, qint8>> m_beatField;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> m_lastMove;
 
     bool m_whiteMove{true};
 };
