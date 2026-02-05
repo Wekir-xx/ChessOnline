@@ -1,8 +1,7 @@
 #include "mainwindow.h"
 
-#include <chrono>
-
-#define BEAT_FIELD_SIZE 0.3
+#define BEAT_FIELD_SIZE 0.35
+#define BEAT_FIELD_OPACITY 0.27
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -75,9 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
 
             baseField(7 - j, i);
 
-            connect(button, &QPushButton::clicked, this, [this, button]() {
-                clickField(button->objectName());
-            });
+            connect(button, &QPushButton::clicked, this, [this, button]() { clickField(button->objectName()); });
         }
 
         chess_field_layout->addLayout(layout);
@@ -125,9 +122,7 @@ void MainWindow::clickField(const QString &nameField)
     auto chessBoard = m_game.getChessBoard();
 
     if (m_takenPiece.first != EMPTY) {
-        if (std::any_of(m_beatField.begin(), m_beatField.end(), [ = ](const auto & p) {
-        return p.first == i && p.second == j;
-    })) {
+        if (std::any_of(m_beatField.begin(), m_beatField.end(), [=](const auto &p) { return p.first == i && p.second == j; })) {
             const auto &lastMove = m_game.getLastMove();
             if (lastMove.first.first != EMPTY) {
                 baseField(lastMove.first.first, lastMove.first.second);
@@ -176,8 +171,7 @@ void MainWindow::clickField(const QString &nameField)
             else
                 baseField(m_takenPiece.first, m_takenPiece.second);
 
-            if ((m_takenPiece.first != i || m_takenPiece.second != j) && !chessBoard[i][j].isEmpty()
-                && chessBoard[i][j][0] == color) {
+            if ((m_takenPiece.first != i || m_takenPiece.second != j) && !chessBoard[i][j].isEmpty() && chessBoard[i][j][0] == color) {
                 takePiece(i, j);
             } else {
                 untakePiece();
@@ -201,9 +195,11 @@ void MainWindow::takePiece(qint8 i, qint8 j)
 
     for (const auto &field : m_beatField) {
         if (chessBoard[field.first][field.second].isEmpty()) {
-            m_chessBoardLabels[field.first][field.second]->setIconSize(
-                m_chessBoardLabels[field.first][field.second]->size() * BEAT_FIELD_SIZE);
+            m_chessBoardLabels[field.first][field.second]->setIconSize(m_chessBoardLabels[field.first][field.second]->size()
+                                                                       * BEAT_FIELD_SIZE);
             m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces["beatField"]);
+        } else {
+            m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces[chessBoard[field.first][field.second] + "beatPiece"]);
         }
     }
 }
@@ -216,6 +212,8 @@ void MainWindow::untakePiece()
         if (chessBoard[field.first][field.second].isEmpty()) {
             m_chessBoardLabels[field.first][field.second]->setIconSize(m_chessBoardLabels[field.first][field.second]->size());
             m_chessBoardLabels[field.first][field.second]->setIcon(QIcon());
+        } else {
+            m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces[chessBoard[field.first][field.second]]);
         }
     }
 
@@ -245,19 +243,40 @@ void MainWindow::baseField(qint8 i, qint8 j)
 
 void MainWindow::fillIcan()
 {
-    m_imagesOfPieces["wK"] = QIcon(":/images/src/wKing.png");
-    m_imagesOfPieces["wQ"] = QIcon(":/images/src/wQueen.png");
-    m_imagesOfPieces["wR"] = QIcon(":/images/src/wRook.png");
-    m_imagesOfPieces["wB"] = QIcon(":/images/src/wBishop.png");
-    m_imagesOfPieces["wN"] = QIcon(":/images/src/wKnight.png");
-    m_imagesOfPieces["wP"] = QIcon(":/images/src/wPawn.png");
-    m_imagesOfPieces["bK"] = QIcon(":/images/src/bKing.png");
-    m_imagesOfPieces["bQ"] = QIcon(":/images/src/bQueen.png");
-    m_imagesOfPieces["bR"] = QIcon(":/images/src/bRook.png");
-    m_imagesOfPieces["bB"] = QIcon(":/images/src/bBishop.png");
-    m_imagesOfPieces["bN"] = QIcon(":/images/src/bKnight.png");
-    m_imagesOfPieces["bP"] = QIcon(":/images/src/bPawn.png");
-    m_imagesOfPieces["beatField"] = QIcon(":/images/src/beatField.png");
+    QStringList pieceKeys = {"wK", "wQ", "wR", "wB", "wN", "wP", "bK", "bQ", "bR", "bB", "bN", "bP"};
+    std::unordered_map<QString, QPixmap> pixmapOfPieces;
+
+    for (const QString &key : pieceKeys)
+        pixmapOfPieces[key] = QPixmap(QString(":/images/src/%1.png").arg(key));
+
+    QSize baseSize = pixmapOfPieces.begin()->second.size();
+    QPixmap overlay(":/images/src/beatPiece.png");
+    overlay = overlay.scaled(baseSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    int xPos = (baseSize.width() - overlay.width()) / 2;
+    int yPos = (baseSize.height() - overlay.height()) / 2;
+
+    for (const QString &key : pieceKeys) {
+        QPixmap background = pixmapOfPieces[key];
+
+        QPainter painter(&background);
+        painter.setOpacity(BEAT_FIELD_OPACITY);
+        painter.drawPixmap(xPos, yPos, overlay);
+
+        m_imagesOfPieces[key] = QIcon(pixmapOfPieces[key]);
+        m_imagesOfPieces[key + "beatPiece"] = QIcon(background);
+    }
+
+    QPixmap beatFieldPixmap(":/images/src/beatField.png");
+    QPixmap transparentPixmap(beatFieldPixmap.size());
+    transparentPixmap.fill(Qt::transparent);
+
+    QPainter painter(&transparentPixmap);
+    painter.setOpacity(BEAT_FIELD_OPACITY);
+    painter.drawPixmap(0, 0, beatFieldPixmap);
+    painter.end();
+
+    m_imagesOfPieces["beatField"] = QIcon(transparentPixmap);
 }
 
 void MainWindow::updateChessScene()

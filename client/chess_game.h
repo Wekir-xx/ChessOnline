@@ -2,7 +2,6 @@
 #define CHESS_GAME_H
 
 #include <QChar>
-#include <QDebug>
 #include <QString>
 
 #include <vector>

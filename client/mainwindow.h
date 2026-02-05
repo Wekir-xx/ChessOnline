@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QPainter>
+#include <QPixmap>
 #include <QPushButton>
 #include <QResizeEvent>
 #include <QShowEvent>

@@ -1,18 +1,19 @@
 <RCC>
     <qresource prefix="/images">
         <file>src/avatar.png</file>
-        <file>src/bBishop.png</file>
-        <file>src/bKing.png</file>
-        <file>src/bKnight.png</file>
-        <file>src/bPawn.png</file>
-        <file>src/bQueen.png</file>
-        <file>src/bRook.png</file>
-        <file>src/wBishop.png</file>
-        <file>src/wKing.png</file>
-        <file>src/wKnight.png</file>
-        <file>src/wPawn.png</file>
-        <file>src/wQueen.png</file>
-        <file>src/wRook.png</file>
+        <file>src/bB.png</file>
         <file>src/beatField.png</file>
+        <file>src/beatPiece.png</file>
+        <file>src/bK.png</file>
+        <file>src/bN.png</file>
+        <file>src/bP.png</file>
+        <file>src/bQ.png</file>
+        <file>src/bR.png</file>
+        <file>src/wB.png</file>
+        <file>src/wK.png</file>
+        <file>src/wN.png</file>
+        <file>src/wP.png</file>
+        <file>src/wQ.png</file>
+        <file>src/wR.png</file>
     </qresource>
 </RCC>
