@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_imagesOfPieces.reserve(20);
     m_chessBoardLabels.resize(8, std::vector<QPushButton *>(8, nullptr));
-    m_takenPiece = {EMPTY, 0};
 
     fillIcan();
 
@@ -121,28 +120,28 @@ void MainWindow::clickField(const QString &nameField)
     if (!whiteMove)
         color = 'b';
 
-    auto chessBoard = m_game.getChessBoard();
+    const auto &chessBoard = m_game.getChessBoard();
+    const auto &beatFields = m_game.getBeatFields();
+    const auto &takenPiece = m_game.getTakenPiece();
 
-    if (m_takenPiece.first != EMPTY) {
-        if (std::any_of(m_beatField.begin(), m_beatField.end(), [=](const auto &p) { return p.first == i && p.second == j; })) {
-            if (!m_transformPawn && chessBoard[m_takenPiece.first][m_takenPiece.second][1] == 'P' && (i == 0 || i == 7)) {
-                untakePiece();
-                m_beatField = m_game.chooseTransformPawn(j);
-                transformField();
+    if (takenPiece.first != EMPTY) {
+        if (std::any_of(beatFields.begin(), beatFields.end(), [=](const auto &p) { return p.first == i && p.second == j; })) {
+            untakePiece();
+
+            if (!m_transformPawn && chessBoard[takenPiece.first][takenPiece.second][1] == 'P' && (i == 0 || i == 7)) {
                 m_transformPawn = true;
-                updateChessScene();
+                m_game.chooseTransformPawn(j);
+                transformPawnField(beatFields);
             } else {
                 if (m_transformPawn) {
                     m_transformPawn = false;
                     m_game.transformPawn(i, j);
+                    untransformPawnField(beatFields);
 
                     if (whiteMove)
                         i = 7;
                     else
                         i = 0;
-
-                    for (const auto &field : m_beatField)
-                        baseField(field.first, field.second);
                 }
 
                 const auto &lastMove = m_game.getLastMove();
@@ -151,21 +150,16 @@ void MainWindow::clickField(const QString &nameField)
                     baseField(lastMove.second.first, lastMove.second.second);
                 }
 
-                untakePiece();
-
                 const auto &posKings = m_game.getPosKings();
-                if (m_game.getCheck() && chessBoard[m_takenPiece.first][m_takenPiece.second][1] != 'K') {
+                if (m_game.getCheck() && chessBoard[takenPiece.first][takenPiece.second][1] != 'K') {
                     if (whiteMove)
                         baseField(posKings.first.first, posKings.first.second);
                     else
                         baseField(posKings.second.first, posKings.second.second);
                 }
 
-                m_game.movePiece(std::pair{m_takenPiece.first, m_takenPiece.second}, std::pair{i, j});
+                m_game.movePiece(std::pair{i, j});
                 moveField(lastMove.second.first, lastMove.second.second);
-                updateChessScene();
-
-                m_takenPiece.first = EMPTY;
 
                 if (!whiteMove) {
                     if (m_game.getCheck()) {
@@ -187,17 +181,25 @@ void MainWindow::clickField(const QString &nameField)
                     }
                 }
             }
-        } else {
-            if (chessBoard[m_takenPiece.first][m_takenPiece.second][1] == 'K' && m_game.getCheck())
-                checkField(m_takenPiece.first, m_takenPiece.second);
-            else
-                baseField(m_takenPiece.first, m_takenPiece.second);
 
-            if ((m_takenPiece.first != i || m_takenPiece.second != j) && !chessBoard[i][j].isEmpty() && chessBoard[i][j][0] == color) {
+            updateChessScene();
+        } else {
+            if (m_transformPawn) {
+                m_transformPawn = false;
+                m_game.untransformPawn();
+                untransformPawnField(beatFields);
+            }
+
+            if (chessBoard[takenPiece.first][takenPiece.second][1] == 'K' && m_game.getCheck())
+                checkField(takenPiece.first, takenPiece.second);
+            else
+                baseField(takenPiece.first, takenPiece.second);
+
+            if ((takenPiece.first != i || takenPiece.second != j) && !chessBoard[i][j].isEmpty() && chessBoard[i][j][0] == color) {
                 takePiece(i, j);
             } else {
                 untakePiece();
-                m_takenPiece.first = EMPTY;
+                m_game.untakePiece();
             }
         }
     } else if (!chessBoard[i][j].isEmpty() && chessBoard[i][j][0] == color) {
@@ -208,14 +210,12 @@ void MainWindow::clickField(const QString &nameField)
 void MainWindow::takePiece(qint8 i, qint8 j)
 {
     untakePiece();
-    m_takenPiece = {i, j};
     moveField(i, j);
 
-    m_beatField = m_game.takePiece(i, j);
+    const auto &beatField = m_game.takePiece(i, j);
+    const auto &chessBoard = m_game.getChessBoard();
 
-    auto chessBoard = m_game.getChessBoard();
-
-    for (const auto &field : m_beatField) {
+    for (const auto &field : beatField) {
         if (chessBoard[field.first][field.second].isEmpty()) {
             m_chessBoardLabels[field.first][field.second]->setIconSize(m_chessBoardLabels[field.first][field.second]->size()
                                                                        * BEAT_FIELD_SIZE);
@@ -228,16 +228,15 @@ void MainWindow::takePiece(qint8 i, qint8 j)
 
 void MainWindow::untakePiece()
 {
-    auto chessBoard = m_game.getChessBoard();
+    const auto &beatFields = m_game.getBeatFields();
+    const auto &chessBoard = m_game.getChessBoard();
 
-    for (const auto &field : m_beatField) {
+    for (const auto &field : beatFields) {
         if (chessBoard[field.first][field.second].isEmpty())
             m_chessBoardLabels[field.first][field.second]->setIcon(QIcon());
         else
             m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces[chessBoard[field.first][field.second]]);
     }
-
-    m_beatField.clear();
 }
 
 void MainWindow::checkField(qint8 i, qint8 j)
@@ -261,10 +260,16 @@ void MainWindow::baseField(qint8 i, qint8 j)
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #EBECD0; border: none;");
 }
 
-void MainWindow::transformField()
+void MainWindow::transformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields)
 {
-    for (const auto &field : m_beatField)
+    for (const auto &field : beatFields)
         m_chessBoardLabels[field.first][field.second]->setStyleSheet("background-color: #FFFFFF; border: none;");
+}
+
+void MainWindow::untransformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields)
+{
+    for (const auto &field : beatFields)
+        baseField(field.first, field.second);
 }
 
 void MainWindow::fillIcan()
@@ -307,7 +312,7 @@ void MainWindow::fillIcan()
 
 void MainWindow::updateChessScene()
 {
-    auto chessBoard = m_game.getChessBoard();
+    const auto &chessBoard = m_game.getChessBoard();
     for (qint8 i = 0; i < 8; ++i) {
         for (qint8 j = 0; j < 8; ++j) {
             m_chessBoardLabels[i][j]->setIconSize(m_chessBoardLabels[i][j]->size());

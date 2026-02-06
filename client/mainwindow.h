@@ -42,7 +42,8 @@ private:
     void checkField(qint8 i, qint8 j);
     void moveField(qint8 i, qint8 j);
     void baseField(qint8 i, qint8 j);
-    void transformField();
+    void transformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields);
+    void untransformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields);
     void fillIcan();
     void updateChessScene();
     ChessParams fillStandartChessBoard();
@@ -54,9 +55,6 @@ private:
 
     std::unordered_map<QString, QIcon> m_imagesOfPieces;
     std::vector<std::vector<QPushButton *>> m_chessBoardLabels;
-
-    std::pair<qint8, qint8> m_takenPiece;
-    std::vector<std::pair<qint8, qint8>> m_beatField;
 
     bool m_transformPawn{false};
 };

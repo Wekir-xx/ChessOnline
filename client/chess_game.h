@@ -22,23 +22,28 @@ class ChessGame
 public:
     ChessGame();
 
-    void movePiece(std::pair<qint8, qint8> oldPos, std::pair<qint8, qint8> newPos);
-    std::vector<std::pair<qint8, qint8>>& takePiece(qint8 i, qint8 j);
-    std::vector<std::pair<qint8, qint8>>& chooseTransformPawn(qint8 j);
+    void movePiece(std::pair<qint8, qint8> newPos);
+    const std::vector<std::pair<qint8, qint8>>& takePiece(qint8 i, qint8 j);
+    void chooseTransformPawn(qint8 j);
     void transformPawn(qint8 i, qint8 j);
+    void untransformPawn();
     bool isPossibleMove();
 
     void setChessParams(ChessParams chess);
+    void untakePiece();
 
     bool getColorMove();
     bool getCheck();
-    std::vector<std::vector<QString>>& getChessBoard();
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>>& getLastMove();
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>>& getPosKings();
+    const std::vector<std::vector<QString>>& getChessBoard();
+    const std::pair<qint8, qint8>& getTakenPiece();
+    const std::vector<std::pair<qint8, qint8>>& getBeatFields();
+    const std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>>& getLastMove();
+    const std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>>& getPosKings();
 
 private:
     bool isCheck();
     bool checkMove(qint8 i, qint8 j, bool isKing = false);
+    bool isPossibleMoveInner();
     void addCastling();
     void addMovesRook();
     void addMovesBishop();
