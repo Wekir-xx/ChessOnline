@@ -2,7 +2,8 @@
 
 ChessGame::ChessGame()
 {
-    m_beatField.reserve(30);
+    m_beatFields.reserve(30);
+    m_savePiece.reserve(4);
 }
 
 void ChessGame::movePiece(std::pair<qint8, qint8> oldPos, std::pair<qint8, qint8> newPos)
@@ -91,7 +92,7 @@ void ChessGame::movePiece(std::pair<qint8, qint8> oldPos, std::pair<qint8, qint8
 std::vector<std::pair<qint8, qint8>> &ChessGame::takePiece(qint8 i, qint8 j)
 {
     m_takenPiece = {i, j};
-    m_beatField.clear();
+    m_beatFields.clear();
     const auto namePiece = m_chess.chessBoard[i][j].toStdString();
 
     switch (namePiece[1]) {
@@ -99,7 +100,7 @@ std::vector<std::pair<qint8, qint8>> &ChessGame::takePiece(qint8 i, qint8 j)
         for (qint8 row = i - 1; row < i + 2; ++row)
             for (qint8 col = j - 1; col < j + 2; ++col)
                 if ((row != i || col != j) && checkMove(row, col, true))
-                    m_beatField.push_back({row, col});
+                    m_beatFields.push_back({row, col});
 
         if ((!(m_whiteMove && (m_castling.first.first || m_castling.first.second))
              && !(!m_whiteMove && (m_castling.second.first || m_castling.second.second)))
@@ -124,69 +125,109 @@ std::vector<std::pair<qint8, qint8>> &ChessGame::takePiece(qint8 i, qint8 j)
 
     case 'N':
         if (checkMove(i + 2, j + 1))
-            m_beatField.push_back({i + 2, j + 1});
+            m_beatFields.push_back({i + 2, j + 1});
         if (checkMove(i + 2, j - 1))
-            m_beatField.push_back({i + 2, j - 1});
+            m_beatFields.push_back({i + 2, j - 1});
         if (checkMove(i - 2, j + 1))
-            m_beatField.push_back({i - 2, j + 1});
+            m_beatFields.push_back({i - 2, j + 1});
         if (checkMove(i - 2, j - 1))
-            m_beatField.push_back({i - 2, j - 1});
+            m_beatFields.push_back({i - 2, j - 1});
         if (checkMove(i + 1, j + 2))
-            m_beatField.push_back({i + 1, j + 2});
+            m_beatFields.push_back({i + 1, j + 2});
         if (checkMove(i - 1, j + 2))
-            m_beatField.push_back({i - 1, j + 2});
+            m_beatFields.push_back({i - 1, j + 2});
         if (checkMove(i + 1, j - 2))
-            m_beatField.push_back({i + 1, j - 2});
+            m_beatFields.push_back({i + 1, j - 2});
         if (checkMove(i - 1, j - 2))
-            m_beatField.push_back({i - 1, j - 2});
+            m_beatFields.push_back({i - 1, j - 2});
         break;
 
     case 'P':
         if (m_whiteMove) {
             if (m_chess.chessBoard[i + 1][j].isEmpty() && checkMove(i + 1, j))
-                m_beatField.push_back({i + 1, j});
+                m_beatFields.push_back({i + 1, j});
             if (i == 1 && m_chess.chessBoard[2][j].isEmpty() && m_chess.chessBoard[3][j].isEmpty()
                 && checkMove(3, j))
-                m_beatField.push_back({3, j});
+                m_beatFields.push_back({3, j});
             if (checkMove(i + 1, j + 1) && !m_chess.chessBoard[i + 1][j + 1].isEmpty())
-                m_beatField.push_back({i + 1, j + 1});
+                m_beatFields.push_back({i + 1, j + 1});
             if (checkMove(i + 1, j - 1) && !m_chess.chessBoard[i + 1][j - 1].isEmpty())
-                m_beatField.push_back({i + 1, j - 1});
+                m_beatFields.push_back({i + 1, j - 1});
             if (i == 4) {
                 if (checkMove(4, j + 1) && m_chess.chessBoard[4][j + 1] == "bP"
                     && m_lastMove.first == std::pair<qint8, qint8>{6, j + 1}
                     && m_lastMove.second == std::pair<qint8, qint8>{4, j + 1})
-                    m_beatField.push_back({5, j + 1});
+                    m_beatFields.push_back({5, j + 1});
                 if (checkMove(4, j - 1) && m_chess.chessBoard[4][j - 1] == "bP"
                     && m_lastMove.first == std::pair<qint8, qint8>{6, j - 1}
                     && m_lastMove.second == std::pair<qint8, qint8>{4, j - 1})
-                    m_beatField.push_back({5, j - 1});
+                    m_beatFields.push_back({5, j - 1});
             }
         } else {
             if (m_chess.chessBoard[i - 1][j].isEmpty() && checkMove(i - 1, j))
-                m_beatField.push_back({i - 1, j});
+                m_beatFields.push_back({i - 1, j});
             if (i == 6 && m_chess.chessBoard[4][j].isEmpty() && m_chess.chessBoard[5][j].isEmpty()
                 && checkMove(4, j))
-                m_beatField.push_back({4, j});
+                m_beatFields.push_back({4, j});
             if (checkMove(i - 1, j + 1) && !m_chess.chessBoard[i - 1][j + 1].isEmpty())
-                m_beatField.push_back({i - 1, j + 1});
+                m_beatFields.push_back({i - 1, j + 1});
             if (checkMove(i - 1, j - 1) && !m_chess.chessBoard[i - 1][j - 1].isEmpty())
-                m_beatField.push_back({i - 1, j - 1});
+                m_beatFields.push_back({i - 1, j - 1});
             if (i == 3) {
                 if (checkMove(3, j + 1) && m_chess.chessBoard[3][j + 1] == "wP"
                     && m_lastMove.first == std::pair<qint8, qint8>{1, j + 1}
                     && m_lastMove.second == std::pair<qint8, qint8>{3, j + 1})
-                    m_beatField.push_back({2, j + 1});
+                    m_beatFields.push_back({2, j + 1});
                 if (checkMove(3, j - 1) && m_chess.chessBoard[3][j - 1] == "wP"
                     && m_lastMove.first == std::pair<qint8, qint8>{1, j - 1}
                     && m_lastMove.second == std::pair<qint8, qint8>{3, j - 1})
-                    m_beatField.push_back({2, j - 1});
+                    m_beatFields.push_back({2, j - 1});
             }
         }
         break;
     }
 
-    return m_beatField;
+    return m_beatFields;
+}
+
+std::vector<std::pair<qint8, qint8>> &ChessGame::chooseTransformPawn(qint8 j)
+{
+    m_beatFields.clear();
+
+    if (m_whiteMove) {
+        for (qint8 row = 4; row < 8; ++row) {
+            m_savePiece.push_back(m_chess.chessBoard[row][j]);
+            m_beatFields.push_back({row, j});
+        }
+
+        m_chess.chessBoard[7][j] = "wQ";
+        m_chess.chessBoard[6][j] = "wR";
+        m_chess.chessBoard[5][j] = "wB";
+        m_chess.chessBoard[4][j] = "wN";
+    } else {
+        for (qint8 row = 0; row < 4; ++row) {
+            m_savePiece.push_back(m_chess.chessBoard[row][j]);
+            m_beatFields.push_back({row, j});
+        }
+
+        m_chess.chessBoard[0][j] = "bQ";
+        m_chess.chessBoard[1][j] = "bR";
+        m_chess.chessBoard[2][j] = "bB";
+        m_chess.chessBoard[3][j] = "bN";
+    }
+
+    return m_beatFields;
+}
+
+void ChessGame::transformPawn(qint8 i, qint8 j)
+{
+    QString choosePiece = m_chess.chessBoard[i][j];
+
+    for (qint8 num = 0; num < 4; ++num)
+        m_chess.chessBoard[m_beatFields[num].first][m_beatFields[num].second] = m_savePiece[num];
+
+    m_savePiece.clear();
+    m_chess.chessBoard[m_takenPiece.first][m_takenPiece.second] = choosePiece;
 }
 
 bool ChessGame::isPossibleMove()
@@ -520,10 +561,10 @@ void ChessGame::addCastling()
             }
 
             if (possibleCastling) {
-                m_beatField.push_back({row, posRookCol});
+                m_beatFields.push_back({row, posRookCol});
 
                 if (posRookCol != 2 && posKingCol > 3)
-                    m_beatField.push_back({row, 2});
+                    m_beatFields.push_back({row, 2});
             } else {
                 possibleCastling = true;
             }
@@ -544,10 +585,10 @@ void ChessGame::addCastling()
             }
 
             if (possibleCastling) {
-                m_beatField.push_back({row, posRookCol});
+                m_beatFields.push_back({row, posRookCol});
 
                 if (posRookCol != 6 && posKingCol < 5)
-                    m_beatField.push_back({row, 6});
+                    m_beatFields.push_back({row, 6});
             }
 
             m_chess.chessBoard[row][posRookCol] = rook;
@@ -555,11 +596,11 @@ void ChessGame::addCastling()
     } else {
         if (castling.first && m_chess.chessBoard[row][2].isEmpty() && checkMove(row, 2, true)
             && m_chess.chessBoard[row][3].isEmpty() && checkMove(row, 3, true))
-            m_beatField.push_back({row, 2});
+            m_beatFields.push_back({row, 2});
 
         if (castling.second && m_chess.chessBoard[row][5].isEmpty() && checkMove(row, 5, true)
             && m_chess.chessBoard[row][6].isEmpty() && checkMove(row, 6, true))
-            m_beatField.push_back({row, 6});
+            m_beatFields.push_back({row, 6});
     }
 }
 
@@ -567,28 +608,28 @@ void ChessGame::addMovesRook()
 {
     for (qint8 col = m_takenPiece.second + 1; col < 8; ++col) {
         if (checkMove(m_takenPiece.first, col))
-            m_beatField.push_back({m_takenPiece.first, col});
+            m_beatFields.push_back({m_takenPiece.first, col});
 
         if (!m_chess.chessBoard[m_takenPiece.first][col].isEmpty())
             break;
     }
     for (qint8 col = m_takenPiece.second - 1; col >= 0; --col) {
         if (checkMove(m_takenPiece.first, col))
-            m_beatField.push_back({m_takenPiece.first, col});
+            m_beatFields.push_back({m_takenPiece.first, col});
 
         if (!m_chess.chessBoard[m_takenPiece.first][col].isEmpty())
             break;
     }
     for (qint8 row = m_takenPiece.first + 1; row < 8; ++row) {
         if (checkMove(row, m_takenPiece.second))
-            m_beatField.push_back({row, m_takenPiece.second});
+            m_beatFields.push_back({row, m_takenPiece.second});
 
         if (!m_chess.chessBoard[row][m_takenPiece.second].isEmpty())
             break;
     }
     for (qint8 row = m_takenPiece.first - 1; row >= 0; --row) {
         if (checkMove(row, m_takenPiece.second))
-            m_beatField.push_back({row, m_takenPiece.second});
+            m_beatFields.push_back({row, m_takenPiece.second});
 
         if (!m_chess.chessBoard[row][m_takenPiece.second].isEmpty())
             break;
@@ -600,7 +641,7 @@ void ChessGame::addMovesBishop()
     for (qint8 row = m_takenPiece.first + 1, col = m_takenPiece.second + 1; row < 8 && col < 8;
          ++row, ++col) {
         if (checkMove(row, col))
-            m_beatField.push_back({row, col});
+            m_beatFields.push_back({row, col});
 
         if (!m_chess.chessBoard[row][col].isEmpty())
             break;
@@ -608,7 +649,7 @@ void ChessGame::addMovesBishop()
     for (qint8 row = m_takenPiece.first - 1, col = m_takenPiece.second - 1; row >= 0 && col >= 0;
          --row, --col) {
         if (checkMove(row, col))
-            m_beatField.push_back({row, col});
+            m_beatFields.push_back({row, col});
 
         if (!m_chess.chessBoard[row][col].isEmpty())
             break;
@@ -616,7 +657,7 @@ void ChessGame::addMovesBishop()
     for (qint8 row = m_takenPiece.first - 1, col = m_takenPiece.second + 1; row >= 0 && col < 8;
          --row, ++col) {
         if (checkMove(row, col))
-            m_beatField.push_back({row, col});
+            m_beatFields.push_back({row, col});
 
         if (!m_chess.chessBoard[row][col].isEmpty())
             break;
@@ -624,7 +665,7 @@ void ChessGame::addMovesBishop()
     for (qint8 row = m_takenPiece.first + 1, col = m_takenPiece.second - 1; row < 8 && col >= 0;
          ++row, --col) {
         if (checkMove(row, col))
-            m_beatField.push_back({row, col});
+            m_beatFields.push_back({row, col});
 
         if (!m_chess.chessBoard[row][col].isEmpty())
             break;

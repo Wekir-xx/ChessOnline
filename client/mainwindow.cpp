@@ -125,50 +125,68 @@ void MainWindow::clickField(const QString &nameField)
 
     if (m_takenPiece.first != EMPTY) {
         if (std::any_of(m_beatField.begin(), m_beatField.end(), [=](const auto &p) { return p.first == i && p.second == j; })) {
-            // if (!m_transformPawn && chessBoard[m_takenPiece.first][m_takenPiece.second][1] == 'P' && (i == 0 || i == 7)) {
-            // } else {
-            const auto &lastMove = m_game.getLastMove();
-            if (lastMove.first.first != EMPTY) {
-                baseField(lastMove.first.first, lastMove.first.second);
-                baseField(lastMove.second.first, lastMove.second.second);
-            }
-
-            untakePiece();
-
-            const auto &posKings = m_game.getPosKings();
-            if (m_game.getCheck() && chessBoard[m_takenPiece.first][m_takenPiece.second][1] != 'K') {
-                if (whiteMove)
-                    baseField(posKings.first.first, posKings.first.second);
-                else
-                    baseField(posKings.second.first, posKings.second.second);
-            }
-
-            m_game.movePiece(std::pair{m_takenPiece.first, m_takenPiece.second}, std::pair{i, j});
-            moveField(lastMove.second.first, lastMove.second.second);
-            updateChessScene();
-
-            m_takenPiece.first = EMPTY;
-
-            if (!whiteMove) {
-                if (m_game.getCheck()) {
-                    checkField(posKings.first.first, posKings.first.second);
-
-                    if (!m_game.isPossibleMove())
-                        this->setEnabled(false);
-                } else if (!m_game.isPossibleMove()) {
-                    this->setEnabled(false);
-                }
+            if (!m_transformPawn && chessBoard[m_takenPiece.first][m_takenPiece.second][1] == 'P' && (i == 0 || i == 7)) {
+                untakePiece();
+                m_beatField = m_game.chooseTransformPawn(j);
+                transformField();
+                m_transformPawn = true;
+                updateChessScene();
             } else {
-                if (m_game.getCheck()) {
-                    checkField(posKings.second.first, posKings.second.second);
+                if (m_transformPawn) {
+                    m_transformPawn = false;
+                    m_game.transformPawn(i, j);
 
-                    if (!m_game.isPossibleMove())
+                    if (whiteMove)
+                        i = 7;
+                    else
+                        i = 0;
+
+                    for (const auto &field : m_beatField)
+                        baseField(field.first, field.second);
+                }
+
+                const auto &lastMove = m_game.getLastMove();
+                if (lastMove.first.first != EMPTY) {
+                    baseField(lastMove.first.first, lastMove.first.second);
+                    baseField(lastMove.second.first, lastMove.second.second);
+                }
+
+                untakePiece();
+
+                const auto &posKings = m_game.getPosKings();
+                if (m_game.getCheck() && chessBoard[m_takenPiece.first][m_takenPiece.second][1] != 'K') {
+                    if (whiteMove)
+                        baseField(posKings.first.first, posKings.first.second);
+                    else
+                        baseField(posKings.second.first, posKings.second.second);
+                }
+
+                m_game.movePiece(std::pair{m_takenPiece.first, m_takenPiece.second}, std::pair{i, j});
+                moveField(lastMove.second.first, lastMove.second.second);
+                updateChessScene();
+
+                m_takenPiece.first = EMPTY;
+
+                if (!whiteMove) {
+                    if (m_game.getCheck()) {
+                        checkField(posKings.first.first, posKings.first.second);
+
+                        if (!m_game.isPossibleMove())
+                            this->setEnabled(false);
+                    } else if (!m_game.isPossibleMove()) {
                         this->setEnabled(false);
-                } else if (!m_game.isPossibleMove()) {
-                    this->setEnabled(false);
+                    }
+                } else {
+                    if (m_game.getCheck()) {
+                        checkField(posKings.second.first, posKings.second.second);
+
+                        if (!m_game.isPossibleMove())
+                            this->setEnabled(false);
+                    } else if (!m_game.isPossibleMove()) {
+                        this->setEnabled(false);
+                    }
                 }
             }
-            //}
         } else {
             if (chessBoard[m_takenPiece.first][m_takenPiece.second][1] == 'K' && m_game.getCheck())
                 checkField(m_takenPiece.first, m_takenPiece.second);
@@ -241,6 +259,12 @@ void MainWindow::baseField(qint8 i, qint8 j)
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #739552; border: none;");
     else
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #EBECD0; border: none;");
+}
+
+void MainWindow::transformField()
+{
+    for (const auto &field : m_beatField)
+        m_chessBoardLabels[field.first][field.second]->setStyleSheet("background-color: #FFFFFF; border: none;");
 }
 
 void MainWindow::fillIcan()

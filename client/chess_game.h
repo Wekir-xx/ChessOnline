@@ -24,6 +24,8 @@ public:
 
     void movePiece(std::pair<qint8, qint8> oldPos, std::pair<qint8, qint8> newPos);
     std::vector<std::pair<qint8, qint8>>& takePiece(qint8 i, qint8 j);
+    std::vector<std::pair<qint8, qint8>>& chooseTransformPawn(qint8 j);
+    void transformPawn(qint8 i, qint8 j);
     bool isPossibleMove();
 
     void setChessParams(ChessParams chess);
@@ -43,8 +45,9 @@ private:
 
 private:
     ChessParams m_chess;
+    std::vector<QString> m_savePiece;
     std::pair<qint8, qint8> m_takenPiece;
-    std::vector<std::pair<qint8, qint8>> m_beatField;
+    std::vector<std::pair<qint8, qint8>> m_beatFields;
     std::pair<std::pair<bool, bool>, std::pair<bool, bool>> m_castling;
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> m_lastMove;
 

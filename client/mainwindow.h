@@ -42,6 +42,7 @@ private:
     void checkField(qint8 i, qint8 j);
     void moveField(qint8 i, qint8 j);
     void baseField(qint8 i, qint8 j);
+    void transformField();
     void fillIcan();
     void updateChessScene();
     ChessParams fillStandartChessBoard();
