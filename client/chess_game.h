@@ -10,7 +10,7 @@
 
 struct ChessParams
 {
-    std::vector<std::vector<QString>> chessBoard;
+    std::vector<std::vector<QString>> chessFields;
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
@@ -24,17 +24,18 @@ public:
 
     void movePiece(std::pair<qint8, qint8> newPos);
     const std::vector<std::pair<qint8, qint8>>& takePiece(qint8 i, qint8 j);
+    bool isPossibleMove();
+
     void chooseTransformPawn(qint8 j);
     void transformPawn(qint8 i, qint8 j);
     void untransformPawn();
-    bool isPossibleMove();
 
     void setChessParams(ChessParams chess);
     void untakePiece();
 
     bool getColorMove();
     bool getCheck();
-    const std::vector<std::vector<QString>>& getChessBoard();
+    const std::vector<std::vector<QString>>& getChessFields();
     const std::pair<qint8, qint8>& getTakenPiece();
     const std::vector<std::pair<qint8, qint8>>& getBeatFields();
     const std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>>& getLastMove();

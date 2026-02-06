@@ -5,13 +5,15 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++17
 
 SOURCES += \
+    chess_board.cpp \
     chess_game.cpp \
-    main.cpp \
-    mainwindow.cpp
+    game_window.cpp \
+    main.cpp
 
 HEADERS += \
+    chess_board.h \
     chess_game.h \
-    mainwindow.h
+    game_window.h
 
 RESOURCES += \
     resources.qrc

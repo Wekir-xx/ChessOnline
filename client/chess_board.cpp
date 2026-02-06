@@ -1,16 +1,11 @@
-#include "mainwindow.h"
+#include "chess_board.h"
 
 #define BEAT_FIELD_SIZE 0.35
 #define BEAT_FIELD_OPACITY 0.27
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+ChessBoard::ChessBoard(QWidget *parent)
+    : QWidget(parent)
 {
-    this->resize(727, 717);
-    this->setMinimumSize(QSize(405, 400));
-    this->setWindowTitle("Chess Online");
-    this->setWindowIcon(QIcon(":/images/src/avatar.png"));
-
     m_imagesOfPieces.reserve(20);
     m_chessBoardLabels.resize(8, std::vector<QPushButton *>(8, nullptr));
 
@@ -20,9 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QSizePolicy sizePolicy(QSizePolicy::Policy::Ignored, QSizePolicy::Policy::Ignored);
 
-    QWidget *widget = new QWidget(this);
-
-    QHBoxLayout *chess_board_layout = new QHBoxLayout(widget);
+    QHBoxLayout *chess_board_layout = new QHBoxLayout(this);
     chess_board_layout->setSpacing(0);
 
     QVBoxLayout *chess_field_name_layout = new QVBoxLayout();
@@ -38,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     name_fields->setSpacing(0);
 
     for (qint8 i = 0; i < 8; ++i) {
-        QLabel *label = new QLabel(widget);
+        QLabel *label = new QLabel(this);
         label->setSizePolicy(sizePolicy);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
         label->setText(QString::number(8 - i));
@@ -46,13 +39,13 @@ MainWindow::MainWindow(QWidget *parent)
         row_layout->setStretch(i, 10);
     }
 
-    QLabel *empty = new QLabel(widget);
+    QLabel *empty = new QLabel(this);
     empty->setSizePolicy(sizePolicy);
     row_layout->addWidget(empty);
     row_layout->setStretch(8, 5);
 
     for (qint8 i = 0; i < 8; ++i) {
-        QLabel *label = new QLabel(widget);
+        QLabel *label = new QLabel(this);
         label->setSizePolicy(sizePolicy);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
         label->setText(QString(QChar('a' + i)));
@@ -64,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
         layout->setSpacing(0);
 
         for (qint8 j = 0; j < 8; ++j) {
-            QPushButton *button = new QPushButton(widget);
+            QPushButton *button = new QPushButton(this);
             button->setObjectName(QString(QChar('a' + i)) + QString::number(8 - j));
             button->setSizePolicy(sizePolicy);
 
@@ -90,26 +83,24 @@ MainWindow::MainWindow(QWidget *parent)
 
     chess_board_layout->setStretch(0, 1);
     chess_board_layout->setStretch(1, 19);
-
-    this->setCentralWidget(widget);
 }
 
-void MainWindow::showEvent(QShowEvent *event)
+void ChessBoard::showEvent(QShowEvent *event)
 {
-    QMainWindow::showEvent(event);
+    QWidget::showEvent(event);
     updateChessScene();
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event)
+void ChessBoard::resizeEvent(QResizeEvent *event)
 {
-    QMainWindow::resizeEvent(event);
+    QWidget::resizeEvent(event);
 
     for (qint8 i = 0; i < 8; ++i)
         for (qint8 j = 0; j < 8; ++j)
             m_chessBoardLabels[i][j]->setIconSize(m_chessBoardLabels[i][j]->size());
 }
 
-void MainWindow::clickField(const QString &nameField)
+void ChessBoard::clickField(const QString &nameField)
 {
     qint8 i = nameField[1].digitValue() - 1;
     qint8 j = nameField[0].unicode() - 'a';
@@ -120,7 +111,7 @@ void MainWindow::clickField(const QString &nameField)
     if (!whiteMove)
         color = 'b';
 
-    const auto &chessBoard = m_game.getChessBoard();
+    const auto &chessFields = m_game.getChessFields();
     const auto &beatFields = m_game.getBeatFields();
     const auto &takenPiece = m_game.getTakenPiece();
 
@@ -128,7 +119,7 @@ void MainWindow::clickField(const QString &nameField)
         if (std::any_of(beatFields.begin(), beatFields.end(), [=](const auto &p) { return p.first == i && p.second == j; })) {
             untakePiece();
 
-            if (!m_transformPawn && chessBoard[takenPiece.first][takenPiece.second][1] == 'P' && (i == 0 || i == 7)) {
+            if (!m_transformPawn && chessFields[takenPiece.first][takenPiece.second][1] == 'P' && (i == 0 || i == 7)) {
                 m_transformPawn = true;
                 m_game.chooseTransformPawn(j);
                 transformPawnField(beatFields);
@@ -151,7 +142,7 @@ void MainWindow::clickField(const QString &nameField)
                 }
 
                 const auto &posKings = m_game.getPosKings();
-                if (m_game.getCheck() && chessBoard[takenPiece.first][takenPiece.second][1] != 'K') {
+                if (m_game.getCheck() && chessFields[takenPiece.first][takenPiece.second][1] != 'K') {
                     if (whiteMove)
                         baseField(posKings.first.first, posKings.first.second);
                     else
@@ -190,61 +181,29 @@ void MainWindow::clickField(const QString &nameField)
                 untransformPawnField(beatFields);
             }
 
-            if (chessBoard[takenPiece.first][takenPiece.second][1] == 'K' && m_game.getCheck())
+            if (chessFields[takenPiece.first][takenPiece.second][1] == 'K' && m_game.getCheck())
                 checkField(takenPiece.first, takenPiece.second);
             else
                 baseField(takenPiece.first, takenPiece.second);
 
-            if ((takenPiece.first != i || takenPiece.second != j) && !chessBoard[i][j].isEmpty() && chessBoard[i][j][0] == color) {
+            if ((takenPiece.first != i || takenPiece.second != j) && !chessFields[i][j].isEmpty() && chessFields[i][j][0] == color) {
                 takePiece(i, j);
             } else {
                 untakePiece();
                 m_game.untakePiece();
             }
         }
-    } else if (!chessBoard[i][j].isEmpty() && chessBoard[i][j][0] == color) {
+    } else if (!chessFields[i][j].isEmpty() && chessFields[i][j][0] == color) {
         takePiece(i, j);
     }
 }
 
-void MainWindow::takePiece(qint8 i, qint8 j)
-{
-    untakePiece();
-    moveField(i, j);
-
-    const auto &beatField = m_game.takePiece(i, j);
-    const auto &chessBoard = m_game.getChessBoard();
-
-    for (const auto &field : beatField) {
-        if (chessBoard[field.first][field.second].isEmpty()) {
-            m_chessBoardLabels[field.first][field.second]->setIconSize(m_chessBoardLabels[field.first][field.second]->size()
-                                                                       * BEAT_FIELD_SIZE);
-            m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces["beatField"]);
-        } else {
-            m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces[chessBoard[field.first][field.second] + "beatPiece"]);
-        }
-    }
-}
-
-void MainWindow::untakePiece()
-{
-    const auto &beatFields = m_game.getBeatFields();
-    const auto &chessBoard = m_game.getChessBoard();
-
-    for (const auto &field : beatFields) {
-        if (chessBoard[field.first][field.second].isEmpty())
-            m_chessBoardLabels[field.first][field.second]->setIcon(QIcon());
-        else
-            m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces[chessBoard[field.first][field.second]]);
-    }
-}
-
-void MainWindow::checkField(qint8 i, qint8 j)
+void ChessBoard::checkField(qint8 i, qint8 j)
 {
     m_chessBoardLabels[i][j]->setStyleSheet("background-color: #ff3838; border: none;");
 }
 
-void MainWindow::moveField(qint8 i, qint8 j)
+void ChessBoard::moveField(qint8 i, qint8 j)
 {
     if ((i + j) % 2 == 0)
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #B9CA43; border: none;");
@@ -252,7 +211,7 @@ void MainWindow::moveField(qint8 i, qint8 j)
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #F5F682; border: none;");
 }
 
-void MainWindow::baseField(qint8 i, qint8 j)
+void ChessBoard::baseField(qint8 i, qint8 j)
 {
     if ((i + j) % 2 == 0)
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #739552; border: none;");
@@ -260,19 +219,51 @@ void MainWindow::baseField(qint8 i, qint8 j)
         m_chessBoardLabels[i][j]->setStyleSheet("background-color: #EBECD0; border: none;");
 }
 
-void MainWindow::transformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields)
+void ChessBoard::takePiece(qint8 i, qint8 j)
+{
+    untakePiece();
+    moveField(i, j);
+
+    const auto &beatField = m_game.takePiece(i, j);
+    const auto &chessFields = m_game.getChessFields();
+
+    for (const auto &field : beatField) {
+        if (chessFields[field.first][field.second].isEmpty()) {
+            m_chessBoardLabels[field.first][field.second]->setIconSize(m_chessBoardLabels[field.first][field.second]->size()
+                                                                       * BEAT_FIELD_SIZE);
+            m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces["beatField"]);
+        } else {
+            m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces[chessFields[field.first][field.second] + "beatPiece"]);
+        }
+    }
+}
+
+void ChessBoard::untakePiece()
+{
+    const auto &beatFields = m_game.getBeatFields();
+    const auto &chessFields = m_game.getChessFields();
+
+    for (const auto &field : beatFields) {
+        if (chessFields[field.first][field.second].isEmpty())
+            m_chessBoardLabels[field.first][field.second]->setIcon(QIcon());
+        else
+            m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces[chessFields[field.first][field.second]]);
+    }
+}
+
+void ChessBoard::transformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields)
 {
     for (const auto &field : beatFields)
         m_chessBoardLabels[field.first][field.second]->setStyleSheet("background-color: #FFFFFF; border: none;");
 }
 
-void MainWindow::untransformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields)
+void ChessBoard::untransformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields)
 {
     for (const auto &field : beatFields)
         baseField(field.first, field.second);
 }
 
-void MainWindow::fillIcan()
+void ChessBoard::fillIcan()
 {
     QStringList pieceKeys = {"wK", "wQ", "wR", "wB", "wN", "wP", "bK", "bQ", "bR", "bB", "bN", "bP"};
     std::unordered_map<QString, QPixmap> pixmapOfPieces;
@@ -310,22 +301,22 @@ void MainWindow::fillIcan()
     m_imagesOfPieces["beatField"] = QIcon(transparentPixmap);
 }
 
-void MainWindow::updateChessScene()
+void ChessBoard::updateChessScene()
 {
-    const auto &chessBoard = m_game.getChessBoard();
+    const auto &chessFields = m_game.getChessFields();
     for (qint8 i = 0; i < 8; ++i) {
         for (qint8 j = 0; j < 8; ++j) {
             m_chessBoardLabels[i][j]->setIconSize(m_chessBoardLabels[i][j]->size());
 
-            if (chessBoard[i][j].isEmpty())
+            if (chessFields[i][j].isEmpty())
                 m_chessBoardLabels[i][j]->setIcon(QIcon());
             else
-                m_chessBoardLabels[i][j]->setIcon(m_imagesOfPieces[chessBoard[i][j]]);
+                m_chessBoardLabels[i][j]->setIcon(m_imagesOfPieces[chessFields[i][j]]);
         }
     }
 }
 
-ChessParams MainWindow::fillStandartChessBoard()
+ChessParams ChessBoard::fillStandartChessBoard()
 {
     ChessParams chess;
     chess.posKings = {{0, 4}, {7, 4}};
@@ -333,32 +324,32 @@ ChessParams MainWindow::fillStandartChessBoard()
     chess.posRooksBlack = {{7, 0}, {7, 7}};
     chess.chess960 = false;
 
-    std::vector<std::vector<QString>> chessBoard(8, std::vector<QString>(8));
+    std::vector<std::vector<QString>> chessFields(8, std::vector<QString>(8));
 
-    chessBoard[chess.posKings.first.first][chess.posKings.first.second] = "wK";
-    chessBoard[0][3] = "wQ";
-    chessBoard[chess.posRooksWhite.first.first][chess.posRooksWhite.first.second] = "wR";
-    chessBoard[chess.posRooksWhite.second.first][chess.posRooksWhite.second.second] = "wR";
-    chessBoard[0][2] = "wB";
-    chessBoard[0][5] = "wB";
-    chessBoard[0][6] = "wN";
-    chessBoard[0][1] = "wN";
+    chessFields[chess.posKings.first.first][chess.posKings.first.second] = "wK";
+    chessFields[0][3] = "wQ";
+    chessFields[chess.posRooksWhite.first.first][chess.posRooksWhite.first.second] = "wR";
+    chessFields[chess.posRooksWhite.second.first][chess.posRooksWhite.second.second] = "wR";
+    chessFields[0][2] = "wB";
+    chessFields[0][5] = "wB";
+    chessFields[0][6] = "wN";
+    chessFields[0][1] = "wN";
 
-    chessBoard[chess.posKings.second.first][chess.posKings.second.second] = "bK";
-    chessBoard[7][3] = "bQ";
-    chessBoard[chess.posRooksBlack.first.first][chess.posRooksBlack.first.second] = "bR";
-    chessBoard[chess.posRooksBlack.second.first][chess.posRooksBlack.second.second] = "bR";
-    chessBoard[7][2] = "bB";
-    chessBoard[7][5] = "bB";
-    chessBoard[7][6] = "bN";
-    chessBoard[7][1] = "bN";
+    chessFields[chess.posKings.second.first][chess.posKings.second.second] = "bK";
+    chessFields[7][3] = "bQ";
+    chessFields[chess.posRooksBlack.first.first][chess.posRooksBlack.first.second] = "bR";
+    chessFields[chess.posRooksBlack.second.first][chess.posRooksBlack.second.second] = "bR";
+    chessFields[7][2] = "bB";
+    chessFields[7][5] = "bB";
+    chessFields[7][6] = "bN";
+    chessFields[7][1] = "bN";
 
     for (qint8 i = 0; i < 8; ++i) {
-        chessBoard[1][i] = "wP";
-        chessBoard[6][i] = "bP";
+        chessFields[1][i] = "wP";
+        chessFields[6][i] = "bP";
     }
 
-    chess.chessBoard = chessBoard;
+    chess.chessFields = chessFields;
 
     return chess;
 }
