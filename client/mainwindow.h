@@ -57,7 +57,7 @@ private:
     std::pair<qint8, qint8> m_takenPiece;
     std::vector<std::pair<qint8, qint8>> m_beatField;
 
-    bool m_whiteMove{true};
+    bool m_transformPawn{false};
 };
 
 #endif // MAINWINDOW_H

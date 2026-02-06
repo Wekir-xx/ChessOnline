@@ -24,16 +24,18 @@ public:
 
     void movePiece(std::pair<qint8, qint8> oldPos, std::pair<qint8, qint8> newPos);
     std::vector<std::pair<qint8, qint8>>& takePiece(qint8 i, qint8 j);
-    bool isCheck();
     bool isPossibleMove();
 
     void setChessParams(ChessParams chess);
 
+    bool getColorMove();
+    bool getCheck();
     std::vector<std::vector<QString>>& getChessBoard();
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>>& getLastMove();
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>>& getPosKings();
 
 private:
+    bool isCheck();
     bool checkMove(qint8 i, qint8 j, bool isKing = false);
     void addCastling();
     void addMovesRook();
@@ -47,6 +49,7 @@ private:
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> m_lastMove;
 
     bool m_whiteMove{true};
+    bool m_check{false};
 };
 
 #endif // CHESS_GAME_H

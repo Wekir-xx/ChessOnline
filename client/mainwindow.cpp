@@ -115,14 +115,18 @@ void MainWindow::clickField(const QString &nameField)
     qint8 i = nameField[1].digitValue() - 1;
     qint8 j = nameField[0].unicode() - 'a';
 
+    bool whiteMove = m_game.getColorMove();
+
     QChar color = 'w';
-    if (!m_whiteMove)
+    if (!whiteMove)
         color = 'b';
 
     auto chessBoard = m_game.getChessBoard();
 
     if (m_takenPiece.first != EMPTY) {
         if (std::any_of(m_beatField.begin(), m_beatField.end(), [=](const auto &p) { return p.first == i && p.second == j; })) {
+            // if (!m_transformPawn && chessBoard[m_takenPiece.first][m_takenPiece.second][1] == 'P' && (i == 0 || i == 7)) {
+            // } else {
             const auto &lastMove = m_game.getLastMove();
             if (lastMove.first.first != EMPTY) {
                 baseField(lastMove.first.first, lastMove.first.second);
@@ -132,8 +136,8 @@ void MainWindow::clickField(const QString &nameField)
             untakePiece();
 
             const auto &posKings = m_game.getPosKings();
-            if (m_game.isCheck() && chessBoard[m_takenPiece.first][m_takenPiece.second][1] != 'K') {
-                if (m_whiteMove)
+            if (m_game.getCheck() && chessBoard[m_takenPiece.first][m_takenPiece.second][1] != 'K') {
+                if (whiteMove)
                     baseField(posKings.first.first, posKings.first.second);
                 else
                     baseField(posKings.second.first, posKings.second.second);
@@ -144,10 +148,9 @@ void MainWindow::clickField(const QString &nameField)
             updateChessScene();
 
             m_takenPiece.first = EMPTY;
-            m_whiteMove ^= true;
 
-            if (m_whiteMove) {
-                if (m_game.isCheck()) {
+            if (!whiteMove) {
+                if (m_game.getCheck()) {
                     checkField(posKings.first.first, posKings.first.second);
 
                     if (!m_game.isPossibleMove())
@@ -156,7 +159,7 @@ void MainWindow::clickField(const QString &nameField)
                     this->setEnabled(false);
                 }
             } else {
-                if (m_game.isCheck()) {
+                if (m_game.getCheck()) {
                     checkField(posKings.second.first, posKings.second.second);
 
                     if (!m_game.isPossibleMove())
@@ -165,8 +168,9 @@ void MainWindow::clickField(const QString &nameField)
                     this->setEnabled(false);
                 }
             }
+            //}
         } else {
-            if (chessBoard[m_takenPiece.first][m_takenPiece.second][1] == 'K' && m_game.isCheck())
+            if (chessBoard[m_takenPiece.first][m_takenPiece.second][1] == 'K' && m_game.getCheck())
                 checkField(m_takenPiece.first, m_takenPiece.second);
             else
                 baseField(m_takenPiece.first, m_takenPiece.second);
@@ -209,12 +213,10 @@ void MainWindow::untakePiece()
     auto chessBoard = m_game.getChessBoard();
 
     for (const auto &field : m_beatField) {
-        if (chessBoard[field.first][field.second].isEmpty()) {
-            m_chessBoardLabels[field.first][field.second]->setIconSize(m_chessBoardLabels[field.first][field.second]->size());
+        if (chessBoard[field.first][field.second].isEmpty())
             m_chessBoardLabels[field.first][field.second]->setIcon(QIcon());
-        } else {
+        else
             m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces[chessBoard[field.first][field.second]]);
-        }
     }
 
     m_beatField.clear();

@@ -85,6 +85,7 @@ void ChessGame::movePiece(std::pair<qint8, qint8> oldPos, std::pair<qint8, qint8
     }
 
     m_whiteMove ^= true;
+    m_check = isCheck();
 }
 
 std::vector<std::pair<qint8, qint8>> &ChessGame::takePiece(qint8 i, qint8 j)
@@ -188,246 +189,6 @@ std::vector<std::pair<qint8, qint8>> &ChessGame::takePiece(qint8 i, qint8 j)
     return m_beatField;
 }
 
-bool ChessGame::isCheck()
-{
-    qint8 i, j;
-
-    if (m_whiteMove) {
-        i = m_chess.posKings.first.first;
-        j = m_chess.posKings.first.second;
-    } else {
-        i = m_chess.posKings.second.first;
-        j = m_chess.posKings.second.second;
-    }
-
-    if (((i + 1) < 8 && !m_chess.chessBoard[i + 1][j].isEmpty()
-         && m_chess.chessBoard[i + 1][j][1] == 'K')
-        || ((i - 1) >= 0 && !m_chess.chessBoard[i - 1][j].isEmpty()
-            && m_chess.chessBoard[i - 1][j][1] == 'K')
-        || ((j + 1) < 8 && !m_chess.chessBoard[i][j + 1].isEmpty()
-            && m_chess.chessBoard[i][j + 1][1] == 'K')
-        || ((j - 1) >= 0 && !m_chess.chessBoard[i][j - 1].isEmpty()
-            && m_chess.chessBoard[i][j - 1][1] == 'K')
-        || ((i + 1) < 8 && (j + 1) < 8 && !m_chess.chessBoard[i + 1][j + 1].isEmpty()
-            && m_chess.chessBoard[i + 1][j + 1][1] == 'K')
-        || ((i + 1) < 8 && (j - 1) >= 0 && !m_chess.chessBoard[i + 1][j - 1].isEmpty()
-            && m_chess.chessBoard[i + 1][j - 1][1] == 'K')
-        || ((i - 1) >= 0 && (j + 1) < 8 && !m_chess.chessBoard[i - 1][j + 1].isEmpty()
-            && m_chess.chessBoard[i - 1][j + 1][1] == 'K')
-        || ((i - 1) >= 0 && (j - 1) >= 0 && !m_chess.chessBoard[i - 1][j - 1].isEmpty()
-            && m_chess.chessBoard[i - 1][j - 1][1] == 'K'))
-        return true;
-
-    if (m_whiteMove) {
-        if (((i + 1) < 8 && (j + 1) < 8 && m_chess.chessBoard[i + 1][j + 1] == "bP")
-            || ((i + 1) < 8 && (j - 1) >= 0 && m_chess.chessBoard[i + 1][j - 1] == "bP"))
-            return true;
-
-        for (qint8 col = j + 1; col < 8; ++col) {
-            if (!m_chess.chessBoard[i][col].isEmpty()) {
-                if (m_chess.chessBoard[i][col][0] == 'b'
-                    && (m_chess.chessBoard[i][col][1] == 'R'
-                        || m_chess.chessBoard[i][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 col = j - 1; col >= 0; --col) {
-            if (!m_chess.chessBoard[i][col].isEmpty()) {
-                if (m_chess.chessBoard[i][col][0] == 'b'
-                    && (m_chess.chessBoard[i][col][1] == 'R'
-                        || m_chess.chessBoard[i][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i + 1; row < 8; ++row) {
-            if (!m_chess.chessBoard[row][j].isEmpty()) {
-                if (m_chess.chessBoard[row][j][0] == 'b'
-                    && (m_chess.chessBoard[row][j][1] == 'R'
-                        || m_chess.chessBoard[row][j][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i - 1; row >= 0; --row) {
-            if (!m_chess.chessBoard[row][j].isEmpty()) {
-                if (m_chess.chessBoard[row][j][0] == 'b'
-                    && (m_chess.chessBoard[row][j][1] == 'R'
-                        || m_chess.chessBoard[row][j][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i + 1, col = j + 1; row < 8 && col < 8; ++row, ++col) {
-            if (!m_chess.chessBoard[row][col].isEmpty()) {
-                if (m_chess.chessBoard[row][col][0] == 'b'
-                    && (m_chess.chessBoard[row][col][1] == 'B'
-                        || m_chess.chessBoard[row][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i - 1, col = j - 1; row >= 0 && col >= 0; --row, --col) {
-            if (!m_chess.chessBoard[row][col].isEmpty()) {
-                if (m_chess.chessBoard[row][col][0] == 'b'
-                    && (m_chess.chessBoard[row][col][1] == 'B'
-                        || m_chess.chessBoard[row][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i - 1, col = j + 1; row >= 0 && col < 8; --row, ++col) {
-            if (!m_chess.chessBoard[row][col].isEmpty()) {
-                if (m_chess.chessBoard[row][col][0] == 'b'
-                    && (m_chess.chessBoard[row][col][1] == 'B'
-                        || m_chess.chessBoard[row][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i + 1, col = j - 1; row < 8 && col >= 0; ++row, --col) {
-            if (!m_chess.chessBoard[row][col].isEmpty()) {
-                if (m_chess.chessBoard[row][col][0] == 'b'
-                    && (m_chess.chessBoard[row][col][1] == 'B'
-                        || m_chess.chessBoard[row][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        if (((i + 2) < 8 && (j + 1) < 8 && m_chess.chessBoard[i + 2][j + 1] == "bN")
-            || ((i + 2) < 8 && (j - 1) >= 0 && m_chess.chessBoard[i + 2][j - 1] == "bN")
-            || ((i - 2) >= 0 && (j + 1) < 8 && m_chess.chessBoard[i - 2][j + 1] == "bN")
-            || ((i - 2) >= 0 && (j - 1) >= 0 && m_chess.chessBoard[i - 2][j - 1] == "bN")
-            || ((i + 1) < 8 && (j + 2) < 8 && m_chess.chessBoard[i + 1][j + 2] == "bN")
-            || ((i + 1) < 8 && (j - 2) >= 0 && m_chess.chessBoard[i + 1][j - 2] == "bN")
-            || ((i - 1) >= 0 && (j + 2) < 8 && m_chess.chessBoard[i - 1][j + 2] == "bN")
-            || ((i - 1) >= 0 && (j - 2) >= 0 && m_chess.chessBoard[i - 1][j - 2] == "bN"))
-            return true;
-
-    } else {
-        if (((i - 1) >= 0 && (j + 1) < 8 && m_chess.chessBoard[i - 1][j + 1] == "wP")
-            || ((i - 1) >= 0 && (j - 1) >= 0 && m_chess.chessBoard[i - 1][j - 1] == "wP"))
-            return true;
-
-        for (qint8 col = j + 1; col < 8; ++col) {
-            if (!m_chess.chessBoard[i][col].isEmpty()) {
-                if (m_chess.chessBoard[i][col][0] == 'w'
-                    && (m_chess.chessBoard[i][col][1] == 'R'
-                        || m_chess.chessBoard[i][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 col = j - 1; col >= 0; --col) {
-            if (!m_chess.chessBoard[i][col].isEmpty()) {
-                if (m_chess.chessBoard[i][col][0] == 'w'
-                    && (m_chess.chessBoard[i][col][1] == 'R'
-                        || m_chess.chessBoard[i][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i + 1; row < 8; ++row) {
-            if (!m_chess.chessBoard[row][j].isEmpty()) {
-                if (m_chess.chessBoard[row][j][0] == 'w'
-                    && (m_chess.chessBoard[row][j][1] == 'R'
-                        || m_chess.chessBoard[row][j][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i - 1; row >= 0; --row) {
-            if (!m_chess.chessBoard[row][j].isEmpty()) {
-                if (m_chess.chessBoard[row][j][0] == 'w'
-                    && (m_chess.chessBoard[row][j][1] == 'R'
-                        || m_chess.chessBoard[row][j][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i + 1, col = j + 1; row < 8 && col < 8; ++row, ++col) {
-            if (!m_chess.chessBoard[row][col].isEmpty()) {
-                if (m_chess.chessBoard[row][col][0] == 'w'
-                    && (m_chess.chessBoard[row][col][1] == 'B'
-                        || m_chess.chessBoard[row][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i - 1, col = j - 1; row >= 0 && col >= 0; --row, --col) {
-            if (!m_chess.chessBoard[row][col].isEmpty()) {
-                if (m_chess.chessBoard[row][col][0] == 'w'
-                    && (m_chess.chessBoard[row][col][1] == 'B'
-                        || m_chess.chessBoard[row][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i - 1, col = j + 1; row >= 0 && col < 8; --row, ++col) {
-            if (!m_chess.chessBoard[row][col].isEmpty()) {
-                if (m_chess.chessBoard[row][col][0] == 'w'
-                    && (m_chess.chessBoard[row][col][1] == 'B'
-                        || m_chess.chessBoard[row][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        for (qint8 row = i + 1, col = j - 1; row < 8 && col >= 0; ++row, --col) {
-            if (!m_chess.chessBoard[row][col].isEmpty()) {
-                if (m_chess.chessBoard[row][col][0] == 'w'
-                    && (m_chess.chessBoard[row][col][1] == 'B'
-                        || m_chess.chessBoard[row][col][1] == 'Q')) {
-                    return true;
-                }
-                break;
-            }
-        }
-
-        if (((i + 2) < 8 && (j + 1) < 8 && m_chess.chessBoard[i + 2][j + 1] == "wN")
-            || ((i + 2) < 8 && (j - 1) >= 0 && m_chess.chessBoard[i + 2][j - 1] == "wN")
-            || ((i - 2) >= 0 && (j + 1) < 8 && m_chess.chessBoard[i - 2][j + 1] == "wN")
-            || ((i - 2) >= 0 && (j - 1) >= 0 && m_chess.chessBoard[i - 2][j - 1] == "wN")
-            || ((i + 1) < 8 && (j + 2) < 8 && m_chess.chessBoard[i + 1][j + 2] == "wN")
-            || ((i + 1) < 8 && (j - 2) >= 0 && m_chess.chessBoard[i + 1][j - 2] == "wN")
-            || ((i - 1) >= 0 && (j + 2) < 8 && m_chess.chessBoard[i - 1][j + 2] == "wN")
-            || ((i - 1) >= 0 && (j - 2) >= 0 && m_chess.chessBoard[i - 1][j - 2] == "wN"))
-            return true;
-    }
-
-    return false;
-}
-
 bool ChessGame::isPossibleMove()
 {
     QChar color;
@@ -462,6 +223,16 @@ void ChessGame::setChessParams(ChessParams chess)
         m_castling.second.second = false;
 }
 
+bool ChessGame::getColorMove()
+{
+    return m_whiteMove;
+}
+
+bool ChessGame::getCheck()
+{
+    return m_check;
+}
+
 std::vector<std::vector<QString>> &ChessGame::getChessBoard()
 {
     return m_chess.chessBoard;
@@ -475,6 +246,214 @@ std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> &ChessGame::getLastM
 std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> &ChessGame::getPosKings()
 {
     return m_chess.posKings;
+}
+
+bool ChessGame::isCheck()
+{
+    qint8 i, j;
+
+    if (m_whiteMove) {
+        i = m_chess.posKings.first.first;
+        j = m_chess.posKings.first.second;
+    } else {
+        i = m_chess.posKings.second.first;
+        j = m_chess.posKings.second.second;
+    }
+
+    if (((i + 1) < 8 && !m_chess.chessBoard[i + 1][j].isEmpty() && m_chess.chessBoard[i + 1][j][1] == 'K')
+        || ((i - 1) >= 0 && !m_chess.chessBoard[i - 1][j].isEmpty() && m_chess.chessBoard[i - 1][j][1] == 'K')
+        || ((j + 1) < 8 && !m_chess.chessBoard[i][j + 1].isEmpty() && m_chess.chessBoard[i][j + 1][1] == 'K')
+        || ((j - 1) >= 0 && !m_chess.chessBoard[i][j - 1].isEmpty() && m_chess.chessBoard[i][j - 1][1] == 'K')
+        || ((i + 1) < 8 && (j + 1) < 8 && !m_chess.chessBoard[i + 1][j + 1].isEmpty() && m_chess.chessBoard[i + 1][j + 1][1] == 'K')
+        || ((i + 1) < 8 && (j - 1) >= 0 && !m_chess.chessBoard[i + 1][j - 1].isEmpty() && m_chess.chessBoard[i + 1][j - 1][1] == 'K')
+        || ((i - 1) >= 0 && (j + 1) < 8 && !m_chess.chessBoard[i - 1][j + 1].isEmpty() && m_chess.chessBoard[i - 1][j + 1][1] == 'K')
+        || ((i - 1) >= 0 && (j - 1) >= 0 && !m_chess.chessBoard[i - 1][j - 1].isEmpty() && m_chess.chessBoard[i - 1][j - 1][1] == 'K'))
+        return true;
+
+    if (m_whiteMove) {
+        if (((i + 1) < 8 && (j + 1) < 8 && m_chess.chessBoard[i + 1][j + 1] == "bP")
+            || ((i + 1) < 8 && (j - 1) >= 0 && m_chess.chessBoard[i + 1][j - 1] == "bP"))
+            return true;
+
+        for (qint8 col = j + 1; col < 8; ++col) {
+            if (!m_chess.chessBoard[i][col].isEmpty()) {
+                if (m_chess.chessBoard[i][col][0] == 'b' && (m_chess.chessBoard[i][col][1] == 'R' || m_chess.chessBoard[i][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 col = j - 1; col >= 0; --col) {
+            if (!m_chess.chessBoard[i][col].isEmpty()) {
+                if (m_chess.chessBoard[i][col][0] == 'b' && (m_chess.chessBoard[i][col][1] == 'R' || m_chess.chessBoard[i][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i + 1; row < 8; ++row) {
+            if (!m_chess.chessBoard[row][j].isEmpty()) {
+                if (m_chess.chessBoard[row][j][0] == 'b' && (m_chess.chessBoard[row][j][1] == 'R' || m_chess.chessBoard[row][j][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i - 1; row >= 0; --row) {
+            if (!m_chess.chessBoard[row][j].isEmpty()) {
+                if (m_chess.chessBoard[row][j][0] == 'b' && (m_chess.chessBoard[row][j][1] == 'R' || m_chess.chessBoard[row][j][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i + 1, col = j + 1; row < 8 && col < 8; ++row, ++col) {
+            if (!m_chess.chessBoard[row][col].isEmpty()) {
+                if (m_chess.chessBoard[row][col][0] == 'b'
+                    && (m_chess.chessBoard[row][col][1] == 'B' || m_chess.chessBoard[row][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i - 1, col = j - 1; row >= 0 && col >= 0; --row, --col) {
+            if (!m_chess.chessBoard[row][col].isEmpty()) {
+                if (m_chess.chessBoard[row][col][0] == 'b'
+                    && (m_chess.chessBoard[row][col][1] == 'B' || m_chess.chessBoard[row][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i - 1, col = j + 1; row >= 0 && col < 8; --row, ++col) {
+            if (!m_chess.chessBoard[row][col].isEmpty()) {
+                if (m_chess.chessBoard[row][col][0] == 'b'
+                    && (m_chess.chessBoard[row][col][1] == 'B' || m_chess.chessBoard[row][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i + 1, col = j - 1; row < 8 && col >= 0; ++row, --col) {
+            if (!m_chess.chessBoard[row][col].isEmpty()) {
+                if (m_chess.chessBoard[row][col][0] == 'b'
+                    && (m_chess.chessBoard[row][col][1] == 'B' || m_chess.chessBoard[row][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        if (((i + 2) < 8 && (j + 1) < 8 && m_chess.chessBoard[i + 2][j + 1] == "bN")
+            || ((i + 2) < 8 && (j - 1) >= 0 && m_chess.chessBoard[i + 2][j - 1] == "bN")
+            || ((i - 2) >= 0 && (j + 1) < 8 && m_chess.chessBoard[i - 2][j + 1] == "bN")
+            || ((i - 2) >= 0 && (j - 1) >= 0 && m_chess.chessBoard[i - 2][j - 1] == "bN")
+            || ((i + 1) < 8 && (j + 2) < 8 && m_chess.chessBoard[i + 1][j + 2] == "bN")
+            || ((i + 1) < 8 && (j - 2) >= 0 && m_chess.chessBoard[i + 1][j - 2] == "bN")
+            || ((i - 1) >= 0 && (j + 2) < 8 && m_chess.chessBoard[i - 1][j + 2] == "bN")
+            || ((i - 1) >= 0 && (j - 2) >= 0 && m_chess.chessBoard[i - 1][j - 2] == "bN"))
+            return true;
+
+    } else {
+        if (((i - 1) >= 0 && (j + 1) < 8 && m_chess.chessBoard[i - 1][j + 1] == "wP")
+            || ((i - 1) >= 0 && (j - 1) >= 0 && m_chess.chessBoard[i - 1][j - 1] == "wP"))
+            return true;
+
+        for (qint8 col = j + 1; col < 8; ++col) {
+            if (!m_chess.chessBoard[i][col].isEmpty()) {
+                if (m_chess.chessBoard[i][col][0] == 'w' && (m_chess.chessBoard[i][col][1] == 'R' || m_chess.chessBoard[i][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 col = j - 1; col >= 0; --col) {
+            if (!m_chess.chessBoard[i][col].isEmpty()) {
+                if (m_chess.chessBoard[i][col][0] == 'w' && (m_chess.chessBoard[i][col][1] == 'R' || m_chess.chessBoard[i][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i + 1; row < 8; ++row) {
+            if (!m_chess.chessBoard[row][j].isEmpty()) {
+                if (m_chess.chessBoard[row][j][0] == 'w' && (m_chess.chessBoard[row][j][1] == 'R' || m_chess.chessBoard[row][j][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i - 1; row >= 0; --row) {
+            if (!m_chess.chessBoard[row][j].isEmpty()) {
+                if (m_chess.chessBoard[row][j][0] == 'w' && (m_chess.chessBoard[row][j][1] == 'R' || m_chess.chessBoard[row][j][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i + 1, col = j + 1; row < 8 && col < 8; ++row, ++col) {
+            if (!m_chess.chessBoard[row][col].isEmpty()) {
+                if (m_chess.chessBoard[row][col][0] == 'w'
+                    && (m_chess.chessBoard[row][col][1] == 'B' || m_chess.chessBoard[row][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i - 1, col = j - 1; row >= 0 && col >= 0; --row, --col) {
+            if (!m_chess.chessBoard[row][col].isEmpty()) {
+                if (m_chess.chessBoard[row][col][0] == 'w'
+                    && (m_chess.chessBoard[row][col][1] == 'B' || m_chess.chessBoard[row][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i - 1, col = j + 1; row >= 0 && col < 8; --row, ++col) {
+            if (!m_chess.chessBoard[row][col].isEmpty()) {
+                if (m_chess.chessBoard[row][col][0] == 'w'
+                    && (m_chess.chessBoard[row][col][1] == 'B' || m_chess.chessBoard[row][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        for (qint8 row = i + 1, col = j - 1; row < 8 && col >= 0; ++row, --col) {
+            if (!m_chess.chessBoard[row][col].isEmpty()) {
+                if (m_chess.chessBoard[row][col][0] == 'w'
+                    && (m_chess.chessBoard[row][col][1] == 'B' || m_chess.chessBoard[row][col][1] == 'Q')) {
+                    return true;
+                }
+                break;
+            }
+        }
+
+        if (((i + 2) < 8 && (j + 1) < 8 && m_chess.chessBoard[i + 2][j + 1] == "wN")
+            || ((i + 2) < 8 && (j - 1) >= 0 && m_chess.chessBoard[i + 2][j - 1] == "wN")
+            || ((i - 2) >= 0 && (j + 1) < 8 && m_chess.chessBoard[i - 2][j + 1] == "wN")
+            || ((i - 2) >= 0 && (j - 1) >= 0 && m_chess.chessBoard[i - 2][j - 1] == "wN")
+            || ((i + 1) < 8 && (j + 2) < 8 && m_chess.chessBoard[i + 1][j + 2] == "wN")
+            || ((i + 1) < 8 && (j - 2) >= 0 && m_chess.chessBoard[i + 1][j - 2] == "wN")
+            || ((i - 1) >= 0 && (j + 2) < 8 && m_chess.chessBoard[i - 1][j + 2] == "wN")
+            || ((i - 1) >= 0 && (j - 2) >= 0 && m_chess.chessBoard[i - 1][j - 2] == "wN"))
+            return true;
+    }
+
+    return false;
 }
 
 bool ChessGame::checkMove(qint8 i, qint8 j, bool isKing)
