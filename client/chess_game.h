@@ -1,12 +1,12 @@
 #ifndef CHESS_GAME_H
 #define CHESS_GAME_H
 
+#include "defines.h"
+
 #include <QChar>
 #include <QString>
 
 #include <vector>
-
-#define EMPTY -1
 
 struct ChessParams
 {

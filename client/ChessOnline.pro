@@ -13,6 +13,7 @@ SOURCES += \
 HEADERS += \
     chess_board.h \
     chess_game.h \
+    defines.h \
     game_window.h
 
 RESOURCES += \

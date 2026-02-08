@@ -100,11 +100,6 @@ const std::vector<std::pair<qint8, qint8>> &ChessGame::takePiece(qint8 i, qint8 
                 if ((row != i || col != j) && checkMove(row, col, true))
                     m_beatFields.push_back({row, col});
 
-        if ((!(m_whiteMove && (m_castling.first.first || m_castling.first.second))
-             && !(!m_whiteMove && (m_castling.second.first || m_castling.second.second)))
-            || isCheck())
-            break;
-
         addCastling();
         break;
 
@@ -557,6 +552,11 @@ bool ChessGame::isPossibleMoveInner()
 
 void ChessGame::addCastling()
 {
+    if ((!(m_whiteMove && (m_castling.first.first || m_castling.first.second))
+         && !(!m_whiteMove && (m_castling.second.first || m_castling.second.second)))
+        || m_check)
+        return;
+
     auto posKingCol = m_chess.posKings.first.second;
     auto posRooks = m_chess.posRooksWhite;
     auto castling = m_castling.first;

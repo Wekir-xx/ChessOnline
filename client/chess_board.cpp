@@ -1,12 +1,9 @@
 #include "chess_board.h"
 
-#define BEAT_FIELD_SIZE 0.35
-#define BEAT_FIELD_OPACITY 0.27
-
 ChessBoard::ChessBoard(QWidget *parent)
     : QWidget(parent)
 {
-    m_imagesOfPieces.reserve(20);
+    m_imagesOfPieces.reserve(25);
     m_chessBoardLabels.resize(8, std::vector<QPushButton *>(8, nullptr));
 
     fillIcan();
@@ -15,7 +12,7 @@ ChessBoard::ChessBoard(QWidget *parent)
 
     QSizePolicy sizePolicy(QSizePolicy::Policy::Ignored, QSizePolicy::Policy::Ignored);
 
-    QHBoxLayout *chess_board_layout = new QHBoxLayout(this);
+    QHBoxLayout *chess_board_layout = new QHBoxLayout();
     chess_board_layout->setSpacing(0);
 
     QVBoxLayout *chess_field_name_layout = new QVBoxLayout();
@@ -31,21 +28,24 @@ ChessBoard::ChessBoard(QWidget *parent)
     name_fields->setSpacing(0);
 
     for (qint8 i = 0; i < 8; ++i) {
-        QLabel *label = new QLabel(this);
+        QLabel *label = new QLabel();
+        label->setMinimumHeight(MINIMUM_PIECE_SIZE);
+        label->setFixedWidth(20);
         label->setSizePolicy(sizePolicy);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
         label->setText(QString::number(8 - i));
         row_layout->addWidget(label);
-        row_layout->setStretch(i, 10);
     }
 
-    QLabel *empty = new QLabel(this);
+    QLabel *empty = new QLabel();
     empty->setSizePolicy(sizePolicy);
+    empty->setFixedHeight(20);
     row_layout->addWidget(empty);
-    row_layout->setStretch(8, 5);
 
     for (qint8 i = 0; i < 8; ++i) {
-        QLabel *label = new QLabel(this);
+        QLabel *label = new QLabel();
+        label->setMinimumWidth(MINIMUM_PIECE_SIZE);
+        label->setFixedHeight(20);
         label->setSizePolicy(sizePolicy);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
         label->setText(QString(QChar('a' + i)));
@@ -57,9 +57,10 @@ ChessBoard::ChessBoard(QWidget *parent)
         layout->setSpacing(0);
 
         for (qint8 j = 0; j < 8; ++j) {
-            QPushButton *button = new QPushButton(this);
+            QPushButton *button = new QPushButton();
             button->setObjectName(QString(QChar('a' + i)) + QString::number(8 - j));
             button->setSizePolicy(sizePolicy);
+            button->setMinimumSize(MINIMUM_PIECE_SIZE, MINIMUM_PIECE_SIZE);
 
             layout->addWidget(button);
             m_chessBoardLabels[7 - j][i] = button;
@@ -83,6 +84,8 @@ ChessBoard::ChessBoard(QWidget *parent)
 
     chess_board_layout->setStretch(0, 1);
     chess_board_layout->setStretch(1, 19);
+
+    this->setLayout(chess_board_layout);
 }
 
 void ChessBoard::showEvent(QShowEvent *event)
@@ -93,11 +96,17 @@ void ChessBoard::showEvent(QShowEvent *event)
 
 void ChessBoard::resizeEvent(QResizeEvent *event)
 {
-    QWidget::resizeEvent(event);
-
     for (qint8 i = 0; i < 8; ++i)
         for (qint8 j = 0; j < 8; ++j)
             m_chessBoardLabels[i][j]->setIconSize(m_chessBoardLabels[i][j]->size());
+
+    const auto &beatField = m_game.getBeatFields();
+    const auto &chessFields = m_game.getChessFields();
+
+    for (const auto &field : beatField)
+        if (chessFields[field.first][field.second].isEmpty())
+            m_chessBoardLabels[field.first][field.second]->setIconSize(m_chessBoardLabels[field.first][field.second]->size()
+                                                                       * BEAT_FIELD_SIZE);
 }
 
 void ChessBoard::clickField(const QString &nameField)
