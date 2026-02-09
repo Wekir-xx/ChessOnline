@@ -3,6 +3,9 @@
 
 #include "chess_board.h"
 
+#include <src/LayoutCustom/layoutH.h>
+#include <src/LayoutCustom/layoutV.h>
+
 class GameWindow : public QWidget
 {
 public:

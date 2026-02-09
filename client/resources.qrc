@@ -1,19 +1,19 @@
 <RCC>
-    <qresource prefix="/images">
-        <file>src/avatar.png</file>
-        <file>src/bB.png</file>
-        <file>src/beatField.png</file>
-        <file>src/beatPiece.png</file>
-        <file>src/bK.png</file>
-        <file>src/bN.png</file>
-        <file>src/bP.png</file>
-        <file>src/bQ.png</file>
-        <file>src/bR.png</file>
-        <file>src/wB.png</file>
-        <file>src/wK.png</file>
-        <file>src/wN.png</file>
-        <file>src/wP.png</file>
-        <file>src/wQ.png</file>
-        <file>src/wR.png</file>
+    <qresource prefix="/">
+        <file>src/images/avatar.png</file>
+        <file>src/images/bB.png</file>
+        <file>src/images/beatField.png</file>
+        <file>src/images/beatPiece.png</file>
+        <file>src/images/bK.png</file>
+        <file>src/images/bN.png</file>
+        <file>src/images/bP.png</file>
+        <file>src/images/bQ.png</file>
+        <file>src/images/bR.png</file>
+        <file>src/images/wB.png</file>
+        <file>src/images/wK.png</file>
+        <file>src/images/wN.png</file>
+        <file>src/images/wP.png</file>
+        <file>src/images/wQ.png</file>
+        <file>src/images/wR.png</file>
     </qresource>
 </RCC>

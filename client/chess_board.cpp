@@ -96,6 +96,8 @@ void ChessBoard::showEvent(QShowEvent *event)
 
 void ChessBoard::resizeEvent(QResizeEvent *event)
 {
+    QWidget::resizeEvent(event);
+
     for (qint8 i = 0; i < 8; ++i)
         for (qint8 j = 0; j < 8; ++j)
             m_chessBoardLabels[i][j]->setIconSize(m_chessBoardLabels[i][j]->size());
@@ -278,10 +280,10 @@ void ChessBoard::fillIcan()
     std::unordered_map<QString, QPixmap> pixmapOfPieces;
 
     for (const QString &key : pieceKeys)
-        pixmapOfPieces[key] = QPixmap(QString(":/images/src/%1.png").arg(key));
+        pixmapOfPieces[key] = QPixmap(path + QString("%1.png").arg(key));
 
     QSize baseSize = pixmapOfPieces.begin()->second.size();
-    QPixmap overlay(":/images/src/beatPiece.png");
+    QPixmap overlay(path + "beatPiece.png");
     overlay = overlay.scaled(baseSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
     int xPos = (baseSize.width() - overlay.width()) / 2;
@@ -298,7 +300,7 @@ void ChessBoard::fillIcan()
         m_imagesOfPieces[key + "beatPiece"] = QIcon(background);
     }
 
-    QPixmap beatFieldPixmap(":/images/src/beatField.png");
+    QPixmap beatFieldPixmap(path + "beatField.png");
     QPixmap transparentPixmap(beatFieldPixmap.size());
     transparentPixmap.fill(Qt::transparent);
 

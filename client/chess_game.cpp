@@ -617,8 +617,8 @@ void ChessGame::addCastling()
             m_chess.chessFields[row][posRookCol] = rook;
         }
     } else {
-        if (castling.first && m_chess.chessFields[row][2].isEmpty() && checkMove(row, 2, true) && m_chess.chessFields[row][3].isEmpty()
-            && checkMove(row, 3, true))
+        if (castling.first && m_chess.chessFields[row][1].isEmpty() && m_chess.chessFields[row][2].isEmpty() && checkMove(row, 2, true)
+            && m_chess.chessFields[row][3].isEmpty() && checkMove(row, 3, true))
             m_beatFields.push_back({row, 2});
 
         if (castling.second && m_chess.chessFields[row][5].isEmpty() && checkMove(row, 5, true) && m_chess.chessFields[row][6].isEmpty()

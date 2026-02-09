@@ -6,4 +6,8 @@
 #define BEAT_FIELD_OPACITY 0.27
 #define MINIMUM_PIECE_SIZE 25
 
+#include <QString>
+
+const QString path = ":/src/images/";
+
 #endif // DEFINES_H
