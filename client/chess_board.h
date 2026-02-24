@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QLabel>
+#include <QObject>
 #include <QPainter>
 #include <QPixmap>
 #include <QPushButton>
@@ -19,8 +20,13 @@
 
 class ChessBoard : public QWidget
 {
+    Q_OBJECT
+
 public:
     explicit ChessBoard(QWidget *parent = nullptr);
+
+signals:
+    void endGame(ResultGame result);
 
 protected:
     void showEvent(QShowEvent *event) override;
@@ -40,7 +46,7 @@ private:
 
     void fillIcan();
     void updateChessScene();
-    ChessParams fillStandartChessBoard();
+    ChessGame::ChessParams fillStandartChessBoard();
 
 private:
     ChessGame m_game;

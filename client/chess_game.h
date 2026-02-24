@@ -7,18 +7,18 @@
 
 #include <vector>
 
-struct ChessParams
-{
-    std::vector<std::vector<QString>> chessFields;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
-    bool chess960;
-};
-
 class ChessGame
 {
 public:
+    struct ChessParams
+    {
+        std::vector<std::vector<QString>> chessFields;
+        std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
+        std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
+        std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
+        bool chess960;
+    };
+
     ChessGame();
 
     void movePiece(std::pair<qint8, qint8> newPos);

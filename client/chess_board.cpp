@@ -30,7 +30,7 @@ ChessBoard::ChessBoard(QWidget *parent)
     for (qint8 i = 0; i < 8; ++i) {
         QLabel *label = new QLabel();
         label->setMinimumHeight(MINIMUM_PIECE_SIZE);
-        label->setFixedWidth(20);
+        label->setFixedWidth(FIXED_SIZE_NUMBERS);
         label->setSizePolicy(sizePolicy);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
         label->setText(QString::number(8 - i));
@@ -39,13 +39,13 @@ ChessBoard::ChessBoard(QWidget *parent)
 
     QLabel *empty = new QLabel();
     empty->setSizePolicy(sizePolicy);
-    empty->setFixedHeight(20);
+    empty->setFixedHeight(FIXED_SIZE_NUMBERS);
     row_layout->addWidget(empty);
 
     for (qint8 i = 0; i < 8; ++i) {
         QLabel *label = new QLabel();
         label->setMinimumWidth(MINIMUM_PIECE_SIZE);
-        label->setFixedHeight(20);
+        label->setFixedHeight(FIXED_SIZE_NUMBERS);
         label->setSizePolicy(sizePolicy);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
         label->setText(QString(QChar('a' + i)));
@@ -163,24 +163,18 @@ void ChessBoard::clickField(const QString &nameField)
                 m_game.movePiece(std::pair{i, j});
                 moveField(lastMove.second.first, lastMove.second.second);
 
-                if (!whiteMove) {
-                    if (m_game.getCheck()) {
+                if (m_game.getCheck()) {
+                    if (!whiteMove)
                         checkField(posKings.first.first, posKings.first.second);
-
-                        if (!m_game.isPossibleMove())
-                            this->setEnabled(false);
-                    } else if (!m_game.isPossibleMove()) {
-                        this->setEnabled(false);
-                    }
-                } else {
-                    if (m_game.getCheck()) {
+                    else
                         checkField(posKings.second.first, posKings.second.second);
+                }
 
-                        if (!m_game.isPossibleMove())
-                            this->setEnabled(false);
-                    } else if (!m_game.isPossibleMove()) {
-                        this->setEnabled(false);
-                    }
+                if (!m_game.isPossibleMove()) {
+                    if (m_game.getCheck())
+                        emit endGame(whiteMove ? ResultGame::WIN_BLACK : ResultGame::WIN_WHITE);
+                    else
+                        emit endGame(ResultGame::STALE_MATE);
                 }
             }
 
@@ -280,10 +274,10 @@ void ChessBoard::fillIcan()
     std::unordered_map<QString, QPixmap> pixmapOfPieces;
 
     for (const QString &key : pieceKeys)
-        pixmapOfPieces[key] = QPixmap(path + QString("%1.png").arg(key));
+        pixmapOfPieces[key] = QPixmap(pathStyle1 + QString("%1.png").arg(key));
 
     QSize baseSize = pixmapOfPieces.begin()->second.size();
-    QPixmap overlay(path + "beatPiece.png");
+    QPixmap overlay(pathGeneral + "beatPiece.png");
     overlay = overlay.scaled(baseSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
     int xPos = (baseSize.width() - overlay.width()) / 2;
@@ -300,7 +294,7 @@ void ChessBoard::fillIcan()
         m_imagesOfPieces[key + "beatPiece"] = QIcon(background);
     }
 
-    QPixmap beatFieldPixmap(path + "beatField.png");
+    QPixmap beatFieldPixmap(pathGeneral + "beatField.png");
     QPixmap transparentPixmap(beatFieldPixmap.size());
     transparentPixmap.fill(Qt::transparent);
 
@@ -327,9 +321,9 @@ void ChessBoard::updateChessScene()
     }
 }
 
-ChessParams ChessBoard::fillStandartChessBoard()
+ChessGame::ChessParams ChessBoard::fillStandartChessBoard()
 {
-    ChessParams chess;
+    ChessGame::ChessParams chess;
     chess.posKings = {{0, 4}, {7, 4}};
     chess.posRooksWhite = {{0, 0}, {0, 7}};
     chess.posRooksBlack = {{7, 0}, {7, 7}};

@@ -1,15 +1,18 @@
-#ifndef LAYOUTV_H
-#define LAYOUTV_H
+#ifndef PLAYER_INFO_LAYOUT_H
+#define PLAYER_INFO_LAYOUT_H
 
 #include <QVBoxLayout>
+#include <iostream>
 
-class SquareVBoxLayout : public QVBoxLayout
+class PlayerInfoLayout : public QVBoxLayout
 {
 public:
     using QVBoxLayout::QVBoxLayout;
 
     void setGeometry(const QRect& rect) override
     {
+        QVBoxLayout::setGeometry(rect);
+
         if (count() == 0)
             return;
 
@@ -23,17 +26,15 @@ public:
                                            -contentsMargins().right(),
                                            -contentsMargins().bottom());
 
-        int fixedHeight = otherWidget->height();
+        int fixedHeight = otherWidget->size().height();
         int width = adjustedRect.right() - adjustedRect.left();
-        int heigth = adjustedRect.bottom() - adjustedRect.top() - fixedHeight;
-        int newSide = qMin(width, heigth);
 
         int x = mainWidget->x();
         int y = mainWidget->y();
 
-        mainWidget->setGeometry(QRect(x, y, newSide, newSide));
-        otherWidget->setGeometry(QRect(x, y + newSide, width, heigth - newSide + fixedHeight));
+        mainWidget->setGeometry(QRect(x, y, width, width));
+        otherWidget->setGeometry(QRect(x, y + width, width, fixedHeight));
     }
 };
 
-#endif // LAYOUTV_H
+#endif // PLAYER_INFO_LAYOUT_H

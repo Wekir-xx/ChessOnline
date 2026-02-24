@@ -1,19 +1,29 @@
 <RCC>
     <qresource prefix="/">
+        <file>src/images/style1/bB.png</file>
+        <file>src/images/style1/bK.png</file>
+        <file>src/images/style1/bN.png</file>
+        <file>src/images/style1/bP.png</file>
+        <file>src/images/style1/bQ.png</file>
+        <file>src/images/style1/bR.png</file>
+        <file>src/images/style1/wB.png</file>
+        <file>src/images/style1/wK.png</file>
+        <file>src/images/style1/wN.png</file>
+        <file>src/images/style1/wP.png</file>
+        <file>src/images/style1/wQ.png</file>
+        <file>src/images/style1/wR.png</file>
         <file>src/images/avatar.png</file>
-        <file>src/images/bB.png</file>
         <file>src/images/beatField.png</file>
         <file>src/images/beatPiece.png</file>
-        <file>src/images/bK.png</file>
-        <file>src/images/bN.png</file>
-        <file>src/images/bP.png</file>
-        <file>src/images/bQ.png</file>
-        <file>src/images/bR.png</file>
-        <file>src/images/wB.png</file>
-        <file>src/images/wK.png</file>
-        <file>src/images/wN.png</file>
-        <file>src/images/wP.png</file>
-        <file>src/images/wQ.png</file>
-        <file>src/images/wR.png</file>
+        <file>src/images/draw.png</file>
+        <file>src/images/exit.png</file>
+        <file>src/images/player.png</file>
+        <file>src/images/resign.png</file>
+        <file>src/images/settings.png</file>
+        <file>src/images/blitz.png</file>
+        <file>src/images/bullet.png</file>
+        <file>src/images/other.png</file>
+        <file>src/images/rapid.png</file>
+        <file>src/images/classic.png</file>
     </qresource>
 </RCC>

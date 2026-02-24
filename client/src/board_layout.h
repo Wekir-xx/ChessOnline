@@ -1,9 +1,9 @@
-#ifndef LAYOUTH_H
-#define LAYOUTH_H
+#ifndef BOARD_LAYOUT_H
+#define BOARD_LAYOUT_H
 
 #include <QHBoxLayout>
 
-class SquareHBoxLayout : public QHBoxLayout
+class BoardLayout : public QHBoxLayout
 {
 public:
     using QHBoxLayout::QHBoxLayout;
@@ -16,14 +16,14 @@ public:
         QLayoutItem* firstItem = itemAt(0);
         QLayoutItem* secondItem = itemAt(1);
         QWidget* mainWidget = firstItem->widget();
-        QWidget* otherWidget = secondItem->widget();
+        QLayout* otherWidget = secondItem->layout();
 
         QRect adjustedRect = rect.adjusted(contentsMargins().left(),
                                            contentsMargins().top(),
                                            -contentsMargins().right(),
                                            -contentsMargins().bottom());
 
-        int fixedWidth = otherWidget->width();
+        int fixedWidth = otherWidget->minimumSize().width();
         int width = adjustedRect.right() - adjustedRect.left() - fixedWidth;
         int heigth = adjustedRect.bottom() - adjustedRect.top();
         int newSide = qMin(width, heigth);
@@ -36,4 +36,4 @@ public:
     }
 };
 
-#endif // LAYOUTH_H
+#endif // BOARD_LAYOUT_H

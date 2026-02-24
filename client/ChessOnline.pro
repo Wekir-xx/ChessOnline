@@ -1,20 +1,22 @@
 QT += core gui widgets
 
-include(src/LayoutCustom/LayoutCustom.pri)
-
 CONFIG += c++17
 
 SOURCES += \
     chess_board.cpp \
     chess_game.cpp \
     game_window.cpp \
-    main.cpp
+    main.cpp \
+    src/end_game_window.cpp
 
 HEADERS += \
     chess_board.h \
     chess_game.h \
     defines.h \
-    game_window.h
+    game_window.h \
+    src/board_layout.h \
+    src/end_game_window.h \
+    src/player_info_layout.h
 
 RESOURCES += \
     resources.qrc
