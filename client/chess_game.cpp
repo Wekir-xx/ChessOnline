@@ -227,11 +227,11 @@ void ChessGame::untransformPawn()
     m_savePiece.clear();
 }
 
-void ChessGame::setChessParams(ChessParams chess)
+void ChessGame::setChessParams(ChessParams chess, std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling)
 {
     m_chess = chess;
     m_whiteMove = true;
-    m_castling = {{true, true}, {true, true}};
+    m_castling = castling;
 
     if (m_chess.posRooksWhite.first.first != 0)
         m_castling.first.first = false;

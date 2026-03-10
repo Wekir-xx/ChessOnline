@@ -24,7 +24,7 @@ public:
         std::pair<QPixmap, QPixmap> icons;
         std::pair<qint16, qint16> ratings;
         bool mainPlayerWhite;
-        TypeChess type;
+        TypeTimeChess type;
     };
 
     explicit EndGameWindow(PlayerParams params, QWidget *parent = nullptr);
@@ -32,7 +32,16 @@ public:
     void setResult(ResultGame result, std::pair<qint16, qint16> newRatings = {0, 0});
 
 signals:
+    void newGameSignal();
+    void rematchSignal();
+    void blockUserSignal();
+    void gameReviewSignal();
     void exitSignal();
+
+private:
+    QLabel *m_newRatingsWhite;
+    QLabel *m_newRatingsBlack;
+    QLabel *m_result;
 };
 
 #endif // END_GAME_WINDOW_H

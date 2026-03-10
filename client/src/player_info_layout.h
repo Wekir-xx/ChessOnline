@@ -13,7 +13,7 @@ public:
     {
         QVBoxLayout::setGeometry(rect);
 
-        if (count() == 0)
+        if (count() < 2)
             return;
 
         QLayoutItem* firstItem = itemAt(0);
@@ -26,11 +26,11 @@ public:
                                            -contentsMargins().right(),
                                            -contentsMargins().bottom());
 
-        int fixedHeight = otherWidget->size().height();
-        int width = adjustedRect.right() - adjustedRect.left();
+        int fixedHeight = otherWidget->sizeHint().height();
+        int width = adjustedRect.width();
 
-        int x = mainWidget->x();
-        int y = mainWidget->y();
+        int x = adjustedRect.x();
+        int y = adjustedRect.y();
 
         mainWidget->setGeometry(QRect(x, y, width, width));
         otherWidget->setGeometry(QRect(x, y + width, width, fixedHeight));

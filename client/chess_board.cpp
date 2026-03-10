@@ -8,8 +8,6 @@ ChessBoard::ChessBoard(QWidget *parent)
 
     fillIcan();
 
-    m_game.setChessParams(fillStandartChessBoard());
-
     QSizePolicy sizePolicy(QSizePolicy::Policy::Ignored, QSizePolicy::Policy::Ignored);
 
     QHBoxLayout *chess_board_layout = new QHBoxLayout();
@@ -86,6 +84,83 @@ ChessBoard::ChessBoard(QWidget *parent)
     chess_board_layout->setStretch(1, 19);
 
     this->setLayout(chess_board_layout);
+}
+
+void ChessBoard::fillStandartChessBoard()
+{
+    ChessGame::ChessParams chess;
+    chess.posKings = {{0, 4}, {7, 4}};
+    chess.posRooksWhite = {{0, 0}, {0, 7}};
+    chess.posRooksBlack = {{7, 0}, {7, 7}};
+    chess.chess960 = false;
+
+    std::vector<std::vector<QString>> chessFields(8, std::vector<QString>(8));
+
+    chessFields[chess.posKings.first.first][chess.posKings.first.second] = "wK";
+    chessFields[0][3] = "wQ";
+    chessFields[chess.posRooksWhite.first.first][chess.posRooksWhite.first.second] = "wR";
+    chessFields[chess.posRooksWhite.second.first][chess.posRooksWhite.second.second] = "wR";
+    chessFields[0][2] = "wB";
+    chessFields[0][5] = "wB";
+    chessFields[0][6] = "wN";
+    chessFields[0][1] = "wN";
+
+    chessFields[chess.posKings.second.first][chess.posKings.second.second] = "bK";
+    chessFields[7][3] = "bQ";
+    chessFields[chess.posRooksBlack.first.first][chess.posRooksBlack.first.second] = "bR";
+    chessFields[chess.posRooksBlack.second.first][chess.posRooksBlack.second.second] = "bR";
+    chessFields[7][2] = "bB";
+    chessFields[7][5] = "bB";
+    chessFields[7][6] = "bN";
+    chessFields[7][1] = "bN";
+
+    for (qint8 i = 0; i < 8; ++i) {
+        chessFields[1][i] = "wP";
+        chessFields[6][i] = "bP";
+    }
+
+    chess.chessFields = chessFields;
+    m_game.setChessParams(chess, {{true, true}, {true, true}});
+}
+
+void ChessBoard::fillStandart960ChessBoard() {}
+
+void ChessBoard::fillUserChessBoard(std::vector<std::vector<QString>> chessFields,
+                                    bool chess960,
+                                    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling)
+{
+    ChessGame::ChessParams chess;
+    chess.chess960 = chess960;
+    chess.chessFields = chessFields;
+    chess.posRooksWhite = {{EMPTY, EMPTY}, {EMPTY, EMPTY}};
+    chess.posRooksBlack = {{EMPTY, EMPTY}, {EMPTY, EMPTY}};
+
+    for (size_t i = 0; i < 8; ++i) {
+        for (size_t j = 0; j < 8; ++j) {
+            if (chessFields[i][j] == "wK") {
+                chess.posKings.first = {i, j};
+            } else if (chessFields[i][j] == "bK") {
+                chess.posKings.second = {i, j};
+            } else if (chessFields[i][j] == "bK") {
+                if (chess.posRooksWhite.first.first == EMPTY)
+                    chess.posRooksWhite.first = {i, j};
+                else
+                    chess.posRooksWhite.second = {i, j};
+            } else if (chessFields[i][j] == "bK") {
+                if (chess.posRooksBlack.first.first == EMPTY)
+                    chess.posRooksBlack.first = {i, j};
+                else
+                    chess.posRooksBlack.second = {i, j};
+            }
+        }
+    }
+
+    m_game.setChessParams(chess, castling);
+}
+
+bool ChessBoard::getColorMove()
+{
+    return m_game.getColorMove();
 }
 
 void ChessBoard::showEvent(QShowEvent *event)
@@ -319,42 +394,4 @@ void ChessBoard::updateChessScene()
                 m_chessBoardLabels[i][j]->setIcon(m_imagesOfPieces[chessFields[i][j]]);
         }
     }
-}
-
-ChessGame::ChessParams ChessBoard::fillStandartChessBoard()
-{
-    ChessGame::ChessParams chess;
-    chess.posKings = {{0, 4}, {7, 4}};
-    chess.posRooksWhite = {{0, 0}, {0, 7}};
-    chess.posRooksBlack = {{7, 0}, {7, 7}};
-    chess.chess960 = false;
-
-    std::vector<std::vector<QString>> chessFields(8, std::vector<QString>(8));
-
-    chessFields[chess.posKings.first.first][chess.posKings.first.second] = "wK";
-    chessFields[0][3] = "wQ";
-    chessFields[chess.posRooksWhite.first.first][chess.posRooksWhite.first.second] = "wR";
-    chessFields[chess.posRooksWhite.second.first][chess.posRooksWhite.second.second] = "wR";
-    chessFields[0][2] = "wB";
-    chessFields[0][5] = "wB";
-    chessFields[0][6] = "wN";
-    chessFields[0][1] = "wN";
-
-    chessFields[chess.posKings.second.first][chess.posKings.second.second] = "bK";
-    chessFields[7][3] = "bQ";
-    chessFields[chess.posRooksBlack.first.first][chess.posRooksBlack.first.second] = "bR";
-    chessFields[chess.posRooksBlack.second.first][chess.posRooksBlack.second.second] = "bR";
-    chessFields[7][2] = "bB";
-    chessFields[7][5] = "bB";
-    chessFields[7][6] = "bN";
-    chessFields[7][1] = "bN";
-
-    for (qint8 i = 0; i < 8; ++i) {
-        chessFields[1][i] = "wP";
-        chessFields[6][i] = "bP";
-    }
-
-    chess.chessFields = chessFields;
-
-    return chess;
 }

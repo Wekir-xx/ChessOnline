@@ -7,6 +7,7 @@ SOURCES += \
     chess_game.cpp \
     game_window.cpp \
     main.cpp \
+    main_window.cpp \
     src/end_game_window.cpp
 
 HEADERS += \
@@ -14,6 +15,7 @@ HEADERS += \
     chess_game.h \
     defines.h \
     game_window.h \
+    main_window.h \
     src/board_layout.h \
     src/end_game_window.h \
     src/player_info_layout.h

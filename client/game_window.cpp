@@ -2,13 +2,9 @@
 
 GameWindow::GameWindow(GameParams &params, QWidget *parent)
     : QWidget{parent}
-    , _params{params}
+    , m_params{params}
 {
-    _nicknames = {"name1", "name2"};
-
-    this->resize(727, 717);
-    this->setWindowTitle("Chess Online");
-    this->setWindowIcon(QIcon(pathGeneral + "avatar.png"));
+    m_nicknames = {"name1", "name2"};
 
     QPushButton *settings = new QPushButton();
     settings->setFixedSize(35, 35);
@@ -16,24 +12,21 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     settings->setIconSize(QSize(37, 37));
     settings->setStyleSheet("QPushButton { padding: 0px; }");
 
-    QPushButton *draw = new QPushButton();
-    draw->setFixedSize(35, 35);
-    draw->setIcon(QIcon(pathGeneral + "draw.png"));
-    draw->setIconSize(QSize(30, 30));
-    draw->setStyleSheet("QPushButton { padding: 0px; }");
+    m_upButton = new QPushButton();
+    m_downButton = new QPushButton();
 
-    QPushButton *resign = new QPushButton();
-    resign->setFixedSize(35, 35);
-    resign->setIcon(QIcon(pathGeneral + "resign.png"));
-    resign->setIconSize(QSize(31, 31));
-    resign->setStyleSheet("QPushButton { padding: 0px; }");
-
-    QHBoxLayout *playingInfo = new QHBoxLayout();
-    playingInfo->addWidget(draw);
-    playingInfo->addWidget(resign);
+    QVBoxLayout *playingInfo = new QVBoxLayout();
+    playingInfo->addWidget(m_upButton);
     playingInfo->addWidget(settings);
+    playingInfo->addWidget(m_downButton);
 
     m_board = new ChessBoard();
+    if (m_params.chessType == TypeChess::STANDART)
+        m_board->fillStandartChessBoard();
+    else if (m_params.chessType == TypeChess::STANDART960)
+        m_board->fillStandart960ChessBoard();
+    else
+        m_board->fillUserChessBoard(m_params.chessFields, m_params.chessType == TypeChess::USER ? false : true, m_params.castling);
 
     BoardLayout *mainLayout = new BoardLayout();
     mainLayout->addWidget(m_board);
@@ -42,10 +35,10 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     this->setLayout(mainLayout);
 
     EndGameWindow::PlayerParams playerParams;
-    playerParams.nicknames = _nicknames;
+    playerParams.nicknames = m_nicknames;
     playerParams.icons = {QPixmap(pathGeneral + "player.png"), QPixmap(pathGeneral + "player.png")};
     playerParams.mainPlayerWhite = true;
-    playerParams.type = _params.chessType;
+    playerParams.type = m_params.timeChessType;
 
     if (params.gameType == TypeGame::ONLINE)
         playerParams.ratings = {1000, 1000};
@@ -55,15 +48,11 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     m_endGame = new EndGameWindow(playerParams, this);
     m_endGame->hide();
 
-    connect(m_board, ChessBoard::endGame, this, [this](ResultGame result) {
-        m_board->setEnabled(false);
-        m_endGame->setResult(result);
-        showEndGameWindow();
-    });
+    connect(m_board, ChessBoard::endGame, this, [this](ResultGame result) { this->endGame(result); });
 
     connect(m_endGame, EndGameWindow::exitSignal, this, [this]() { m_endGame->hide(); });
 
-    connect(settings, &QPushButton::clicked, this, &GameWindow::showEndGameWindow);
+    startGame();
 }
 
 void GameWindow::showEndGameWindow()
@@ -83,3 +72,43 @@ void GameWindow::resizeEvent(QResizeEvent *event)
 
     QWidget::resizeEvent(event);
 }
+
+void GameWindow::startGame()
+{
+    m_upButton->setText("Draw");
+    m_downButton->setText("Resign");
+
+    connect(m_upButton, QPushButton::clicked, this, [this]() {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Draw", "Are you sure?", QMessageBox::Yes | QMessageBox::No);
+
+        if (reply == QMessageBox::Yes)
+            this->endGame(ResultGame::STALE_MATE);
+    });
+
+    connect(m_downButton, QPushButton::clicked, this, [this]() {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Resign", "Are you sure?", QMessageBox::Yes | QMessageBox::No);
+
+        if (reply == QMessageBox::Yes)
+            this->endGame(m_board->getColorMove() ? ResultGame::WIN_BLACK : ResultGame::WIN_WHITE);
+    });
+}
+
+void GameWindow::endGame(ResultGame result)
+{
+    m_upButton->setText("New Game");
+    m_downButton->setText("Rematch");
+
+    m_board->setEnabled(false);
+    m_endGame->setResult(result);
+    showEndGameWindow();
+
+    connect(m_upButton, QPushButton::clicked, this, [this]() { this->newGame(); });
+
+    connect(m_downButton, QPushButton::clicked, this, [this]() { this->rematch(); });
+}
+
+void GameWindow::newGame() {}
+
+void GameWindow::rematch() {}

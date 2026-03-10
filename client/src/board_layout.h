@@ -24,12 +24,12 @@ public:
                                            -contentsMargins().bottom());
 
         int fixedWidth = otherWidget->minimumSize().width();
-        int width = adjustedRect.right() - adjustedRect.left() - fixedWidth;
-        int heigth = adjustedRect.bottom() - adjustedRect.top();
+        int width = adjustedRect.width() - fixedWidth;
+        int heigth = adjustedRect.height();
         int newSide = qMin(width, heigth);
 
-        int x = mainWidget->x();
-        int y = mainWidget->y();
+        int x = adjustedRect.x();
+        int y = adjustedRect.y();
 
         mainWidget->setGeometry(QRect(x, y, newSide, newSide));
         otherWidget->setGeometry(QRect(x + newSide, y, width - newSide + fixedWidth, heigth));

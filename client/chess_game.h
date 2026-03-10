@@ -29,7 +29,7 @@ public:
     void transformPawn(qint8 i, qint8 j);
     void untransformPawn();
 
-    void setChessParams(ChessParams chess);
+    void setChessParams(ChessParams chess, std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling);
     void untakePiece();
 
     bool getColorMove();

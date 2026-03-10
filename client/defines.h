@@ -15,6 +15,13 @@ const QString pathGeneral = ":/src/images/";
 const QString pathStyle1 = pathGeneral + "style1/";
 
 enum class TypeChess {
+    STANDART,
+    STANDART960,
+    USER,
+    USER960,
+};
+
+enum class TypeTimeChess {
     BULLET,
     BLITZ,
     RAPID,
