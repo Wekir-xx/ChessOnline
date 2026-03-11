@@ -1,7 +1,7 @@
 #ifndef CHESS_GAME_H
 #define CHESS_GAME_H
 
-#include "defines.h"
+#include "src/defines.h"
 
 #include <QChar>
 

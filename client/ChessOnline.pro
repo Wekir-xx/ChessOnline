@@ -13,9 +13,9 @@ SOURCES += \
 HEADERS += \
     chess_board.h \
     chess_game.h \
-    defines.h \
     game_window.h \
     main_window.h \
+    src/defines.h \
     src/board_layout.h \
     src/end_game_window.h \
     src/player_info_layout.h

@@ -21,12 +21,6 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     playingInfo->addWidget(m_downButton);
 
     m_board = new ChessBoard();
-    if (m_params.chessType == TypeChess::STANDART)
-        m_board->fillStandartChessBoard();
-    else if (m_params.chessType == TypeChess::STANDART960)
-        m_board->fillStandart960ChessBoard();
-    else
-        m_board->fillUserChessBoard(m_params.chessFields, m_params.chessType == TypeChess::USER ? false : true, m_params.castling);
 
     BoardLayout *mainLayout = new BoardLayout();
     mainLayout->addWidget(m_board);
@@ -75,6 +69,13 @@ void GameWindow::resizeEvent(QResizeEvent *event)
 
 void GameWindow::startGame()
 {
+    if (m_params.chessType == TypeChess::STANDART)
+        m_board->fillStandartChessBoard();
+    else if (m_params.chessType == TypeChess::STANDART960)
+        m_board->fillStandart960ChessBoard();
+    else
+        m_board->fillUserChessBoard(m_params.chessFields, m_params.chessType == TypeChess::USER ? false : true, m_params.castling);
+
     m_upButton->setText("Draw");
     m_downButton->setText("Resign");
 
@@ -97,16 +98,16 @@ void GameWindow::startGame()
 
 void GameWindow::endGame(ResultGame result)
 {
-    m_upButton->setText("New Game");
-    m_downButton->setText("Rematch");
-
     m_board->setEnabled(false);
     m_endGame->setResult(result);
     showEndGameWindow();
 
-    connect(m_upButton, QPushButton::clicked, this, [this]() { this->newGame(); });
+    m_upButton->setText("New Game");
+    m_downButton->setText("Rematch");
 
-    connect(m_downButton, QPushButton::clicked, this, [this]() { this->rematch(); });
+    connect(m_upButton, QPushButton::clicked, this, [this]() { this->startGame(); });
+
+    connect(m_downButton, QPushButton::clicked, this, [this]() { this->startGame(); });
 }
 
 void GameWindow::newGame() {}

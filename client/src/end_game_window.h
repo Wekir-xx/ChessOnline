@@ -9,7 +9,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "../defines.h"
+#include "defines.h"
 #include "src/player_info_layout.h"
 
 class EndGameWindow : public QWidget
