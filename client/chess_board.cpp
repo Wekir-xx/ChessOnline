@@ -6,7 +6,7 @@ ChessBoard::ChessBoard(QWidget *parent)
     m_imagesOfPieces.reserve(25);
     m_chessBoardLabels.resize(8, std::vector<QPushButton *>(8, nullptr));
 
-    fillIcan();
+    this->fillIcan();
 
     QSizePolicy sizePolicy(QSizePolicy::Policy::Ignored, QSizePolicy::Policy::Ignored);
 
@@ -63,9 +63,9 @@ ChessBoard::ChessBoard(QWidget *parent)
             layout->addWidget(button);
             m_chessBoardLabels[7 - j][i] = button;
 
-            baseField(7 - j, i);
+            this->baseField(7 - j, i);
 
-            connect(button, &QPushButton::clicked, this, [this, button]() { clickField(button->objectName()); });
+            connect(button, &QPushButton::clicked, this, [this, button]() { this->clickField(button->objectName()); });
         }
 
         chess_field_layout->addLayout(layout);
@@ -84,6 +84,14 @@ ChessBoard::ChessBoard(QWidget *parent)
     chess_board_layout->setStretch(1, 19);
 
     this->setLayout(chess_board_layout);
+}
+
+void ChessBoard::resetBoard()
+{
+    this->updateChessScene();
+    for (qint8 i = 0; i < 8; ++i)
+        for (qint8 j = 0; j < 8; ++j)
+            this->baseField(i, j);
 }
 
 void ChessBoard::fillStandartChessBoard()
@@ -166,7 +174,7 @@ bool ChessBoard::getColorMove()
 void ChessBoard::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
-    updateChessScene();
+    this->updateChessScene();
 }
 
 void ChessBoard::resizeEvent(QResizeEvent *event)
@@ -203,17 +211,17 @@ void ChessBoard::clickField(const QString &nameField)
 
     if (takenPiece.first != EMPTY) {
         if (std::any_of(beatFields.begin(), beatFields.end(), [=](const auto &p) { return p.first == i && p.second == j; })) {
-            untakePiece();
+            this->untakePiece();
 
             if (!m_transformPawn && chessFields[takenPiece.first][takenPiece.second][1] == 'P' && (i == 0 || i == 7)) {
                 m_transformPawn = true;
                 m_game.chooseTransformPawn(j);
-                transformPawnField(beatFields);
+                this->transformPawnField(beatFields);
             } else {
                 if (m_transformPawn) {
                     m_transformPawn = false;
                     m_game.transformPawn(i, j);
-                    untransformPawnField(beatFields);
+                    this->untransformPawnField(beatFields);
 
                     if (whiteMove)
                         i = 7;
@@ -223,58 +231,58 @@ void ChessBoard::clickField(const QString &nameField)
 
                 const auto &lastMove = m_game.getLastMove();
                 if (lastMove.first.first != EMPTY) {
-                    baseField(lastMove.first.first, lastMove.first.second);
-                    baseField(lastMove.second.first, lastMove.second.second);
+                    this->baseField(lastMove.first.first, lastMove.first.second);
+                    this->baseField(lastMove.second.first, lastMove.second.second);
                 }
 
                 const auto &posKings = m_game.getPosKings();
                 if (m_game.getCheck() && chessFields[takenPiece.first][takenPiece.second][1] != 'K') {
                     if (whiteMove)
-                        baseField(posKings.first.first, posKings.first.second);
+                        this->baseField(posKings.first.first, posKings.first.second);
                     else
-                        baseField(posKings.second.first, posKings.second.second);
+                        this->baseField(posKings.second.first, posKings.second.second);
                 }
 
                 m_game.movePiece(std::pair{i, j});
-                moveField(lastMove.second.first, lastMove.second.second);
+                this->moveField(lastMove.second.first, lastMove.second.second);
 
                 if (m_game.getCheck()) {
                     if (!whiteMove)
-                        checkField(posKings.first.first, posKings.first.second);
+                        this->checkField(posKings.first.first, posKings.first.second);
                     else
-                        checkField(posKings.second.first, posKings.second.second);
+                        this->checkField(posKings.second.first, posKings.second.second);
                 }
 
                 if (!m_game.isPossibleMove()) {
                     if (m_game.getCheck())
-                        emit endGame(whiteMove ? ResultGame::WIN_BLACK : ResultGame::WIN_WHITE);
+                        emit endGame(whiteMove ? ResultGame::WIN_WHITE : ResultGame::WIN_BLACK);
                     else
                         emit endGame(ResultGame::STALE_MATE);
                 }
             }
 
-            updateChessScene();
+            this->updateChessScene();
         } else {
             if (m_transformPawn) {
                 m_transformPawn = false;
                 m_game.untransformPawn();
-                untransformPawnField(beatFields);
+                this->untransformPawnField(beatFields);
             }
 
             if (chessFields[takenPiece.first][takenPiece.second][1] == 'K' && m_game.getCheck())
-                checkField(takenPiece.first, takenPiece.second);
+                this->checkField(takenPiece.first, takenPiece.second);
             else
-                baseField(takenPiece.first, takenPiece.second);
+                this->baseField(takenPiece.first, takenPiece.second);
 
             if ((takenPiece.first != i || takenPiece.second != j) && !chessFields[i][j].isEmpty() && chessFields[i][j][0] == color) {
-                takePiece(i, j);
+                this->takePiece(i, j);
             } else {
-                untakePiece();
+                this->untakePiece();
                 m_game.untakePiece();
             }
         }
     } else if (!chessFields[i][j].isEmpty() && chessFields[i][j][0] == color) {
-        takePiece(i, j);
+        this->takePiece(i, j);
     }
 }
 
@@ -301,8 +309,8 @@ void ChessBoard::baseField(qint8 i, qint8 j)
 
 void ChessBoard::takePiece(qint8 i, qint8 j)
 {
-    untakePiece();
-    moveField(i, j);
+    this->untakePiece();
+    this->moveField(i, j);
 
     const auto &beatField = m_game.takePiece(i, j);
     const auto &chessFields = m_game.getChessFields();
@@ -340,7 +348,7 @@ void ChessBoard::transformPawnField(const std::vector<std::pair<qint8, qint8>> &
 void ChessBoard::untransformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields)
 {
     for (const auto &field : beatFields)
-        baseField(field.first, field.second);
+        this->baseField(field.first, field.second);
 }
 
 void ChessBoard::fillIcan()

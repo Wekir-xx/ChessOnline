@@ -30,7 +30,7 @@ EndGameWindow::EndGameWindow(PlayerParams params, QWidget *parent)
                         "   background-color: #25A619;"
                         "}");
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout();
     QHBoxLayout *playerInfo = new QHBoxLayout();
     PlayerInfoLayout *whitePlayer = new PlayerInfoLayout();
     PlayerInfoLayout *blackPlayer = new PlayerInfoLayout();
@@ -140,12 +140,12 @@ EndGameWindow::EndGameWindow(PlayerParams params, QWidget *parent)
     mainLayout->addWidget(gameReview, 1);
     mainLayout->addLayout(buttonsLayout, 1);
 
-    this->setLayout(mainLayout);
-
     connect(exit, &QPushButton::clicked, this, &EndGameWindow::exitSignal);
     connect(newGame, &QPushButton::clicked, this, &EndGameWindow::newGameSignal);
     connect(rematch, &QPushButton::clicked, this, &EndGameWindow::rematchSignal);
     connect(gameReview, &QPushButton::clicked, this, &EndGameWindow::gameReviewSignal);
+
+    this->setLayout(mainLayout);
 }
 
 void EndGameWindow::setResult(ResultGame result, std::pair<qint16, qint16> newRatings)

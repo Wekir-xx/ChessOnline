@@ -25,11 +25,19 @@ class ChessBoard : public QWidget
 public:
     explicit ChessBoard(QWidget *parent = nullptr);
 
+    void resetBoard();
+
     void fillStandartChessBoard();
     void fillStandart960ChessBoard();
     void fillUserChessBoard(std::vector<std::vector<QString>> chessFields,
                             bool chess960,
                             std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling);
+
+    void reverseChess(bool white);
+    void reverseBoard();
+    void setAutoQueen(bool flag);
+    void setPremove(bool flag);
+
     bool getColorMove();
 
 signals:

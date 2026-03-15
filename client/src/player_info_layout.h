@@ -2,7 +2,7 @@
 #define PLAYER_INFO_LAYOUT_H
 
 #include <QVBoxLayout>
-#include <iostream>
+#include <QWidget>
 
 class PlayerInfoLayout : public QVBoxLayout
 {

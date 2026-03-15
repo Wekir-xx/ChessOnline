@@ -8,7 +8,8 @@ SOURCES += \
     game_window.cpp \
     main.cpp \
     main_window.cpp \
-    src/end_game_window.cpp
+    src/end_game_window.cpp \
+    src/settings_window.cpp
 
 HEADERS += \
     chess_board.h \
@@ -18,7 +19,8 @@ HEADERS += \
     src/defines.h \
     src/board_layout.h \
     src/end_game_window.h \
-    src/player_info_layout.h
+    src/player_info_layout.h \
+    src/settings_window.h
 
 RESOURCES += \
     resources.qrc

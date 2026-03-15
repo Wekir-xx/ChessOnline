@@ -1,16 +1,15 @@
 #ifndef END_GAME_WINDOW_H
 #define END_GAME_WINDOW_H
 
+#include "defines.h"
+#include "src/player_info_layout.h"
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QObject>
 #include <QPixmap>
 #include <QPushButton>
-#include <QVBoxLayout>
 #include <QWidget>
-
-#include "defines.h"
-#include "src/player_info_layout.h"
 
 class EndGameWindow : public QWidget
 {
