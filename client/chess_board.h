@@ -13,6 +13,7 @@
 #include <QResizeEvent>
 #include <QShowEvent>
 #include <QSizePolicy>
+#include <QTransform>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -33,8 +34,8 @@ public:
                             bool chess960,
                             std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling);
 
-    void reverseChess(bool white);
-    void reverseBoard();
+    void turnBoard();
+    void turnChess();
     void setAutoQueen(bool flag);
     void setPremove(bool flag);
 
@@ -59,7 +60,8 @@ private:
     void transformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields);
     void untransformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields);
 
-    void fillIcan();
+    void fillFullIcans();
+    void fillIcan(bool white, bool up);
     void updateChessScene();
 
 private:
@@ -69,6 +71,10 @@ private:
     std::vector<std::vector<QPushButton *>> m_chessBoardLabels;
 
     bool m_transformPawn{false};
+    bool m_autoQueen{false};
+    bool m_premove{false};
+    bool m_turnBoard{false};
+    bool m_turnChess{false};
 };
 
 #endif // CHESS_BOARD_H

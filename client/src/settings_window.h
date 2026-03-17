@@ -18,6 +18,7 @@ public:
         bool checkAutoQueen;
         bool checkPremove;
         bool checkNoticeTime;
+        TypeGame gameType;
     };
 
     explicit SettingsWindow(SettingsParams params, QWidget *parent = nullptr);

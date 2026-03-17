@@ -177,6 +177,11 @@ const std::vector<std::pair<qint8, qint8>> &ChessGame::takePiece(qint8 i, qint8 
     return m_beatFields;
 }
 
+void ChessGame::untakePiece()
+{
+    m_takenPiece.first = EMPTY;
+}
+
 bool ChessGame::isPossibleMove()
 {
     const auto takenPiece = m_takenPiece;
@@ -227,6 +232,11 @@ void ChessGame::untransformPawn()
     m_savePiece.clear();
 }
 
+void ChessGame::setField(QString field, qint8 i, qint8 j)
+{
+    m_chess.chessFields[i][j] = field;
+}
+
 void ChessGame::setChessParams(ChessParams chess, std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling)
 {
     m_chess = chess;
@@ -241,11 +251,6 @@ void ChessGame::setChessParams(ChessParams chess, std::pair<std::pair<bool, bool
         m_castling.second.first = false;
     if (m_chess.posRooksBlack.second.first != 7)
         m_castling.second.second = false;
-}
-
-void ChessGame::untakePiece()
-{
-    m_takenPiece.first = EMPTY;
 }
 
 bool ChessGame::getColorMove()

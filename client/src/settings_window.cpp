@@ -27,7 +27,8 @@ SettingsWindow::SettingsWindow(SettingsParams params, QWidget *parent)
     layoutV->addWidget(turnBoardBut, 2);
     layoutV->addWidget(turnChessBut, 2);
     layoutV->addWidget(autoQueenBut, 2);
-    layoutV->addWidget(premoveBut, 2);
+    if (params.gameType == TypeGame::ONLINE)
+        layoutV->addWidget(premoveBut, 2);
     layoutV->addWidget(noticeTimeBut, 2);
 
     autoQueenBut->setChecked(params.checkAutoQueen);

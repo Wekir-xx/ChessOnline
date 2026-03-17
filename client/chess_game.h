@@ -23,14 +23,15 @@ public:
 
     void movePiece(std::pair<qint8, qint8> newPos);
     const std::vector<std::pair<qint8, qint8>>& takePiece(qint8 i, qint8 j);
+    void untakePiece();
     bool isPossibleMove();
 
     void chooseTransformPawn(qint8 j);
     void transformPawn(qint8 i, qint8 j);
     void untransformPawn();
 
+    void setField(QString field, qint8 i, qint8 j);
     void setChessParams(ChessParams chess, std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling);
-    void untakePiece();
 
     bool getColorMove();
     bool getCheck();

@@ -2,21 +2,22 @@
 #define BOARD_LAYOUT_H
 
 #include <QHBoxLayout>
+#include <QWidget>
 
 class BoardLayout : public QHBoxLayout
 {
 public:
     using QHBoxLayout::QHBoxLayout;
 
-    void setGeometry(const QRect& rect) override
+    void setGeometry(const QRect &rect) override
     {
         if (count() == 0)
             return;
 
-        QLayoutItem* firstItem = itemAt(0);
-        QLayoutItem* secondItem = itemAt(1);
-        QWidget* mainWidget = firstItem->widget();
-        QLayout* otherWidget = secondItem->layout();
+        QLayoutItem *firstItem = itemAt(0);
+        QLayoutItem *secondItem = itemAt(1);
+        QWidget *mainWidget = firstItem->widget();
+        QLayout *otherWidget = secondItem->layout();
 
         QRect adjustedRect = rect.adjusted(contentsMargins().left(),
                                            contentsMargins().top(),
