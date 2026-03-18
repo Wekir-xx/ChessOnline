@@ -47,11 +47,11 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     else
         playerParams.ratings = {0, 0};
 
+    if (!mainPlayerWhite)
+        m_board->turnBoard();
+
     connect(m_board, &ChessBoard::endGame, this, [this](ResultGame result) {
         this->endGame(result);
-    });
-    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() {
-        m_endGame->hide();
     });
     connect(settings, &QPushButton::clicked, this, [this]() {
         if (!m_settings->isVisible()) {
@@ -62,11 +62,12 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
             m_settings->hide();
         }
     });
-    connect(m_settings, &SettingsWindow::exitSignal, this, [this]() {
-        m_settings->hide();
+    connect(m_settings, &SettingsWindow::turnBoard, this, [this]() {
+        m_board->turnBoard();
     });
-    connect(m_settings, &SettingsWindow::turnBoard, this, [this]() { m_board->turnBoard(); });
-    connect(m_settings, &SettingsWindow::turnChess, this, [this]() { m_board->turnChess(); });
+    connect(m_settings, &SettingsWindow::turnChess, this, [this]() {
+        m_board->turnChess();
+    });
     connect(m_settings, &SettingsWindow::autoQueen, this, [this]() {
         m_params.settingParams.checkAutoQueen ^= true;
         m_board->setAutoQueen(m_params.settingParams.checkAutoQueen);
@@ -77,6 +78,29 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     });
     connect(m_settings, &SettingsWindow::noticeTime, this, [this]() {
         m_params.settingParams.checkNoticeTime ^= true;
+    });
+    connect(m_settings, &SettingsWindow::exitSignal, this, [this]() {
+        m_settings->hide();
+    });
+    connect(m_endGame, &EndGameWindow::newGameSignal, this, [this]() {
+        this->startGame();
+        m_endGame->hide();
+    });
+    connect(m_endGame, &EndGameWindow::rematchSignal, this, [this]() {
+        this->startGame();
+        m_board->turnBoard();
+        m_endGame->hide();
+    });
+    connect(m_endGame, &EndGameWindow::blockUserSignal, this, [this]() {
+        m_endGame->hide();
+        // TODO
+    });
+    connect(m_endGame, &EndGameWindow::gameReviewSignal, this, [this]() {
+        m_endGame->hide();
+        // TODO
+    });
+    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() {
+        m_endGame->hide();
     });
 
     startGame(true);
@@ -162,6 +186,7 @@ void GameWindow::endGame(ResultGame result)
     });
     m_downButtonCon = connect(m_downButton, &QPushButton::clicked, this, [this]() {
         this->startGame();
+        m_board->turnBoard();
     });
 }
 

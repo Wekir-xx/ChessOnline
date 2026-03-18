@@ -15,6 +15,7 @@
 #include <QSizePolicy>
 #include <QTransform>
 #include <QVBoxLayout>
+#include <QGridLayout>
 #include <QWidget>
 
 #include <unordered_map>
@@ -62,13 +63,16 @@ private:
 
     void fillFullIcans();
     void fillIcan(bool white, bool up);
+    void fillBoard();
     void updateChessScene();
 
 private:
     ChessGame m_game;
 
+    QGridLayout *m_board;
     std::unordered_map<QString, QIcon> m_imagesOfPieces;
-    std::vector<std::vector<QPushButton *>> m_chessBoardLabels;
+    std::vector<std::vector<QPushButton *>> m_chessBoardBut;
+    std::vector<std::vector<QLabel *>> m_otherBoardLab;
 
     bool m_transformPawn{false};
     bool m_autoQueen{false};

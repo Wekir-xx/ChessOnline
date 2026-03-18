@@ -3,27 +3,19 @@
 ChessBoard::ChessBoard(QWidget *parent)
     : QWidget(parent)
 {
-    m_imagesOfPieces.reserve(25);
-    m_chessBoardLabels.resize(8, std::vector<QPushButton *>(8, nullptr));
-
-    this->fillFullIcans();
+    m_imagesOfPieces.reserve(40);
+    m_chessBoardBut.resize(8, std::vector<QPushButton *>(8, nullptr));
+    m_otherBoardLab.resize(2, std::vector<QLabel *>(8, nullptr));
 
     QSizePolicy sizePolicy(QSizePolicy::Policy::Ignored, QSizePolicy::Policy::Ignored);
 
-    QHBoxLayout *chess_board_layout = new QHBoxLayout();
-    chess_board_layout->setSpacing(0);
+    m_board = new QGridLayout();
+    m_board->setSpacing(0);
 
-    QVBoxLayout *chess_field_name_layout = new QVBoxLayout();
-    chess_field_name_layout->setSpacing(0);
-
-    QHBoxLayout *chess_field_layout = new QHBoxLayout();
-    chess_field_layout->setSpacing(0);
-
-    QVBoxLayout *row_layout = new QVBoxLayout();
-    row_layout->setSpacing(0);
-
-    QHBoxLayout *name_fields = new QHBoxLayout();
-    name_fields->setSpacing(0);
+    QLabel *empty = new QLabel();
+    empty->setSizePolicy(sizePolicy);
+    empty->setFixedHeight(FIXED_SIZE_NUMBERS);
+    m_board->addWidget(empty, 8, 0);
 
     for (qint8 i = 0; i < 8; ++i) {
         QLabel *label = new QLabel();
@@ -32,60 +24,34 @@ ChessBoard::ChessBoard(QWidget *parent)
         label->setSizePolicy(sizePolicy);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
         label->setText(QString::number(8 - i));
-        row_layout->addWidget(label);
-    }
+        m_otherBoardLab[0][i] = label;
 
-    QLabel *empty = new QLabel();
-    empty->setSizePolicy(sizePolicy);
-    empty->setFixedHeight(FIXED_SIZE_NUMBERS);
-    row_layout->addWidget(empty);
-
-    for (qint8 i = 0; i < 8; ++i) {
-        QLabel *label = new QLabel();
+        label = new QLabel();
         label->setMinimumWidth(MINIMUM_PIECE_SIZE);
         label->setFixedHeight(FIXED_SIZE_NUMBERS);
         label->setSizePolicy(sizePolicy);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
         label->setText(QString(QChar('a' + i)));
-        name_fields->addWidget(label);
-    }
-
-    for (qint8 i = 0; i < 8; ++i) {
-        QVBoxLayout *layout = new QVBoxLayout();
-        layout->setSpacing(0);
+        m_otherBoardLab[1][i] = label;
 
         for (qint8 j = 0; j < 8; ++j) {
             QPushButton *button = new QPushButton();
-            button->setObjectName(QString(QChar('a' + i)) + QString::number(8 - j));
+            button->setObjectName(QString(QChar('a' + j)) + QString::number(i + 1));
             button->setSizePolicy(sizePolicy);
             button->setMinimumSize(MINIMUM_PIECE_SIZE, MINIMUM_PIECE_SIZE);
 
-            layout->addWidget(button);
-            m_chessBoardLabels[7 - j][i] = button;
-
-            this->baseField(7 - j, i);
+            m_chessBoardBut[i][j] = button;
+            this->baseField(i, j);
 
             connect(button, &QPushButton::clicked, this, [this, button]() {
                 this->clickField(button->objectName());
             });
         }
-
-        chess_field_layout->addLayout(layout);
     }
 
-    chess_field_name_layout->addLayout(chess_field_layout);
-    chess_field_name_layout->addLayout(name_fields);
-
-    chess_field_name_layout->setStretch(0, 16);
-    chess_field_name_layout->setStretch(1, 1);
-
-    chess_board_layout->addLayout(row_layout);
-    chess_board_layout->addLayout(chess_field_name_layout);
-
-    chess_board_layout->setStretch(0, 1);
-    chess_board_layout->setStretch(1, 19);
-
-    this->setLayout(chess_board_layout);
+    this->fillFullIcans();
+    this->fillBoard();
+    this->setLayout(m_board);
 }
 
 void ChessBoard::resetBoard()
@@ -168,7 +134,17 @@ void ChessBoard::fillUserChessBoard(std::vector<std::vector<QString>> chessField
     m_game.setChessParams(chess, castling);
 }
 
-void ChessBoard::turnBoard() {}
+void ChessBoard::turnBoard()
+{
+    if (m_turnChess) {
+        fillIcan(m_turnBoard, true);
+        fillIcan(!m_turnBoard, false);
+        this->updateChessScene();
+    }
+
+    m_turnBoard ^= true;
+    this->fillBoard();
+}
 
 void ChessBoard::turnChess()
 {
@@ -208,14 +184,14 @@ void ChessBoard::resizeEvent(QResizeEvent *event)
 
     for (qint8 i = 0; i < 8; ++i)
         for (qint8 j = 0; j < 8; ++j)
-            m_chessBoardLabels[i][j]->setIconSize(m_chessBoardLabels[i][j]->size());
+            m_chessBoardBut[i][j]->setIconSize(m_chessBoardBut[i][j]->size());
 
     const auto &beatField = m_game.getBeatFields();
     const auto &chessFields = m_game.getChessFields();
 
     for (const auto &field : beatField)
         if (chessFields[field.first][field.second].isEmpty())
-            m_chessBoardLabels[field.first][field.second]->setIconSize(m_chessBoardLabels[field.first][field.second]->size()
+            m_chessBoardBut[field.first][field.second]->setIconSize(m_chessBoardBut[field.first][field.second]->size()
                     * BEAT_FIELD_SIZE);
 }
 
@@ -319,23 +295,23 @@ void ChessBoard::clickField(const QString &nameField)
 
 void ChessBoard::checkField(qint8 i, qint8 j)
 {
-    m_chessBoardLabels[i][j]->setStyleSheet("background-color: #ff3838; border: none;");
+    m_chessBoardBut[i][j]->setStyleSheet("background-color: #ff3838; border: none;");
 }
 
 void ChessBoard::moveField(qint8 i, qint8 j)
 {
     if ((i + j) % 2 == 0)
-        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #B9CA43; border: none;");
+        m_chessBoardBut[i][j]->setStyleSheet("background-color: #B9CA43; border: none;");
     else
-        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #F5F682; border: none;");
+        m_chessBoardBut[i][j]->setStyleSheet("background-color: #F5F682; border: none;");
 }
 
 void ChessBoard::baseField(qint8 i, qint8 j)
 {
     if ((i + j) % 2 == 0)
-        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #739552; border: none;");
+        m_chessBoardBut[i][j]->setStyleSheet("background-color: #739552; border: none;");
     else
-        m_chessBoardLabels[i][j]->setStyleSheet("background-color: #EBECD0; border: none;");
+        m_chessBoardBut[i][j]->setStyleSheet("background-color: #EBECD0; border: none;");
 }
 
 void ChessBoard::takePiece(qint8 i, qint8 j)
@@ -348,11 +324,11 @@ void ChessBoard::takePiece(qint8 i, qint8 j)
 
     for (const auto &field : beatField) {
         if (chessFields[field.first][field.second].isEmpty()) {
-            m_chessBoardLabels[field.first][field.second]->setIconSize(m_chessBoardLabels[field.first][field.second]->size()
+            m_chessBoardBut[field.first][field.second]->setIconSize(m_chessBoardBut[field.first][field.second]->size()
                     * BEAT_FIELD_SIZE);
-            m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces["beatField"]);
+            m_chessBoardBut[field.first][field.second]->setIcon(m_imagesOfPieces["beatField"]);
         } else {
-            m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces[chessFields[field.first][field.second] + "beatPiece"]);
+            m_chessBoardBut[field.first][field.second]->setIcon(m_imagesOfPieces[chessFields[field.first][field.second] + "beatPiece"]);
         }
     }
 }
@@ -364,16 +340,16 @@ void ChessBoard::untakePiece()
 
     for (const auto &field : beatFields) {
         if (chessFields[field.first][field.second].isEmpty())
-            m_chessBoardLabels[field.first][field.second]->setIcon(QIcon());
+            m_chessBoardBut[field.first][field.second]->setIcon(QIcon());
         else
-            m_chessBoardLabels[field.first][field.second]->setIcon(m_imagesOfPieces[chessFields[field.first][field.second]]);
+            m_chessBoardBut[field.first][field.second]->setIcon(m_imagesOfPieces[chessFields[field.first][field.second]]);
     }
 }
 
 void ChessBoard::transformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields)
 {
     for (const auto &field : beatFields)
-        m_chessBoardLabels[field.first][field.second]->setStyleSheet("background-color: #FFFFFF; border: none;");
+        m_chessBoardBut[field.first][field.second]->setStyleSheet("background-color: #FFFFFF; border: none;");
 }
 
 void ChessBoard::untransformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields)
@@ -439,17 +415,38 @@ void ChessBoard::fillIcan(bool white, bool up)
     }
 }
 
+void ChessBoard::fillBoard()
+{
+    if (m_turnBoard) {
+        for (qint8 i = 0; i < 8; ++i) {
+            m_board->addWidget(m_otherBoardLab[0][7 - i], i, 0);
+            m_board->addWidget(m_otherBoardLab[1][7 - i], 8, i + 1);
+
+            for (qint8 j = 0; j < 8; ++j)
+                m_board->addWidget(m_chessBoardBut[i][7 - j], i, j + 1);
+        }
+    } else {
+        for (qint8 i = 0; i < 8; ++i) {
+            m_board->addWidget(m_otherBoardLab[0][i], i, 0);
+            m_board->addWidget(m_otherBoardLab[1][i], 8, i + 1);
+
+            for (qint8 j = 0; j < 8; ++j)
+                m_board->addWidget(m_chessBoardBut[7 - i][j], i, j + 1);
+        }
+    }
+}
+
 void ChessBoard::updateChessScene()
 {
     const auto &chessFields = m_game.getChessFields();
     for (qint8 i = 0; i < 8; ++i) {
         for (qint8 j = 0; j < 8; ++j) {
-            m_chessBoardLabels[i][j]->setIconSize(m_chessBoardLabels[i][j]->size());
+            m_chessBoardBut[i][j]->setIconSize(m_chessBoardBut[i][j]->size());
 
             if (chessFields[i][j].isEmpty())
-                m_chessBoardLabels[i][j]->setIcon(QIcon());
+                m_chessBoardBut[i][j]->setIcon(QIcon());
             else
-                m_chessBoardLabels[i][j]->setIcon(m_imagesOfPieces[chessFields[i][j]]);
+                m_chessBoardBut[i][j]->setIcon(m_imagesOfPieces[chessFields[i][j]]);
         }
     }
 }
