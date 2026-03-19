@@ -266,6 +266,8 @@ void ChessBoard::clickField(const QString &nameField)
                     emit endGame(whiteMove ? ResultGame::WIN_WHITE : ResultGame::WIN_BLACK);
                 else
                     emit endGame(ResultGame::STALE_MATE);
+            } else if (m_game.isStaleMate()) {
+                emit endGame(ResultGame::STALE_MATE);
             }
 
             this->updateChessScene();

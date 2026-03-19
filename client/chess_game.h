@@ -25,6 +25,7 @@ public:
     const std::vector<std::pair<qint8, qint8>>& takePiece(qint8 i, qint8 j);
     void untakePiece();
     bool isPossibleMove();
+    bool isStaleMate();
 
     void chooseTransformPawn(qint8 j);
     void transformPawn(qint8 i, qint8 j);

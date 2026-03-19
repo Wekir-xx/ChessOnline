@@ -190,6 +190,32 @@ bool ChessGame::isPossibleMove()
     return flag;
 }
 
+bool ChessGame::isStaleMate()
+{
+    std::vector<QString> alivePiece;
+    std::vector<std::pair<qint8, qint8>> alivePieceCoord;
+    for (qint8 i = 0; i < 8; ++i) {
+        for (qint8 j = 0; j < 8; ++j) {
+            if (!m_chess.chessFields[i][j].isEmpty()) {
+                if (m_chess.chessFields[i][j][1] == 'P' || m_chess.chessFields[i][j][1] == 'R' || m_chess.chessFields[i][j][1] == 'Q') {
+                    return false;
+                } else if (m_chess.chessFields[i][j][1] != 'K') {
+                    alivePiece.push_back(m_chess.chessFields[i][j]);
+                    alivePieceCoord.push_back({i, j});
+                }
+            }
+        }
+    }
+
+    if (alivePiece.size() > 2)
+        return false;
+
+    if (alivePiece.size() > 1 && !((alivePiece[0] == "wB" && alivePiece[1] == "bB") || (alivePiece[0] == "wB" && alivePiece[1] == "bB")))
+        return false;
+
+    return true;
+}
+
 void ChessGame::chooseTransformPawn(qint8 j)
 {
     m_beatFields.clear();
