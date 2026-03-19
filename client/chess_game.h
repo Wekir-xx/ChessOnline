@@ -10,8 +10,7 @@
 class ChessGame
 {
 public:
-    struct ChessParams
-    {
+    struct ChessParams {
         std::vector<std::vector<QString>> chessFields;
         std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
         std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
@@ -22,7 +21,7 @@ public:
     ChessGame();
 
     void movePiece(std::pair<qint8, qint8> newPos);
-    const std::vector<std::pair<qint8, qint8>>& takePiece(qint8 i, qint8 j);
+    const std::vector<std::pair<qint8, qint8>> &takePiece(qint8 i, qint8 j);
     void untakePiece();
     bool isPossibleMove();
     bool isStaleMate();
@@ -36,11 +35,11 @@ public:
 
     bool getColorMove();
     bool getCheck();
-    const std::vector<std::vector<QString>>& getChessFields();
-    const std::pair<qint8, qint8>& getTakenPiece();
-    const std::vector<std::pair<qint8, qint8>>& getBeatFields();
-    const std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>>& getLastMove();
-    const std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>>& getPosKings();
+    const std::vector<std::vector<QString>> &getChessFields();
+    const std::pair<qint8, qint8> &getTakenPiece();
+    const std::vector<std::pair<qint8, qint8>> &getBeatFields();
+    const std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> &getLastMove();
+    const std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> &getPosKings();
 
 private:
     bool isCheck();
@@ -55,11 +54,13 @@ private:
     std::vector<QString> m_savePiece;
     std::pair<qint8, qint8> m_takenPiece;
     std::vector<std::pair<qint8, qint8>> m_beatFields;
+    std::vector<std::vector<std::vector<QString>>> m_chessFieldsHistory;
     std::pair<std::pair<bool, bool>, std::pair<bool, bool>> m_castling;
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> m_lastMove;
 
     bool m_whiteMove{true};
     bool m_check{false};
+    qint8 m_normalMoves;
 };
 
 #endif // CHESS_GAME_H
