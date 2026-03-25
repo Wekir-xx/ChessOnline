@@ -22,6 +22,18 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     m_settings->hide();
     m_endGame->hide();
 
+    QPushButton *leftChessHistory = new QPushButton();
+    leftChessHistory->setFixedSize(35, 35);
+    leftChessHistory->setIcon(QIcon(pathGeneral + "leftArrow.png"));
+    leftChessHistory->setIconSize(QSize(37, 37));
+    leftChessHistory->setStyleSheet("QPushButton { padding: 0px; }");
+
+    QPushButton *rightChessHistory = new QPushButton();
+    rightChessHistory->setFixedSize(35, 35);
+    rightChessHistory->setIcon(QIcon(pathGeneral + "rightArrow.png"));
+    rightChessHistory->setIconSize(QSize(37, 37));
+    rightChessHistory->setStyleSheet("QPushButton { padding: 0px; }");
+
     QPushButton *settings = new QPushButton();
     settings->setFixedSize(35, 35);
     settings->setIcon(QIcon(pathGeneral + "settings.png"));
@@ -31,9 +43,14 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     m_upButton = new QPushButton();
     m_downButton = new QPushButton();
 
+    QHBoxLayout *helperLayout = new QHBoxLayout();
+    helperLayout->addWidget(leftChessHistory);
+    helperLayout->addWidget(rightChessHistory);
+    helperLayout->addWidget(settings);
+
     QVBoxLayout *playingInfo = new QVBoxLayout();
     playingInfo->addWidget(m_upButton);
-    playingInfo->addWidget(settings);
+    playingInfo->addLayout(helperLayout);
     playingInfo->addWidget(m_downButton);
 
     BoardLayout *mainLayout = new BoardLayout();
@@ -42,7 +59,7 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
 
     this->setLayout(mainLayout);
 
-    if (params.gameType == TypeGame::ONLINE)
+    if (params.settingParams.gameType == TypeGame::ONLINE)
         playerParams.ratings = {1000, 1000};
     else
         playerParams.ratings = {0, 0};
@@ -52,6 +69,12 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
 
     connect(m_board, &ChessBoard::endGame, this, [this](ResultGame result) {
         this->endGame(result);
+    });
+    connect(leftChessHistory, &QPushButton::clicked, this, [this]() {
+        m_board->historyBack();
+    });
+    connect(rightChessHistory, &QPushButton::clicked, this, [this]() {
+        m_board->historyForward();
     });
     connect(settings, &QPushButton::clicked, this, [this]() {
         if (!m_settings->isVisible()) {
@@ -133,15 +156,13 @@ void GameWindow::resizeEvent(QResizeEvent *event)
 
 void GameWindow::startGame(bool first)
 {
+    m_board->setBlockBoard(false);
     if (m_params.chessType == TypeChess::STANDART)
         m_board->fillStandartChessBoard();
     else if (m_params.chessType == TypeChess::STANDART960)
         m_board->fillStandart960ChessBoard();
     else
         m_board->fillUserChessBoard(m_params.chessFields, m_params.chessType == TypeChess::USER ? false : true, m_params.castling);
-
-    if (!m_board->isEnabled())
-        m_board->setEnabled(true);
 
     m_upButton->setText("Draw");
     m_downButton->setText("Resign");
@@ -169,7 +190,7 @@ void GameWindow::startGame(bool first)
 
 void GameWindow::endGame(ResultGame result)
 {
-    m_board->setEnabled(false);
+    m_board->setBlockBoard(true);
 
     m_endGame->setResult(result);
     m_endGame->raise();

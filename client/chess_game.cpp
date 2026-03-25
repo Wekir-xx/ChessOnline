@@ -3,13 +3,14 @@
 ChessGame::ChessGame()
 {
     m_beatFields.reserve(30);
-    m_chessFieldsHistory.reserve(500);
+    m_chessMoveHistory.reserve(1000);
+    m_chessFieldsHistory.reserve(1000);
     m_savePiece.reserve(4);
-    m_takenPiece.first = EMPTY;
 }
 
 void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
 {
+    QString endMove;
     if (m_chess.chessFields[m_takenPiece.first][m_takenPiece.second][1] == 'K') {
         m_chess.chessFields[m_takenPiece.first][m_takenPiece.second].clear();
 
@@ -21,6 +22,7 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
                 m_chess.chessFields[0][3] = "wR";
                 m_chess.posKings.first = {0, 2};
                 m_lastMove = std::pair{m_takenPiece, m_chess.posKings.first};
+                endMove = "00";
             } else if (m_castling.first.second
                        && (newPos.second == 6
                            || newPos.second == m_chess.posRooksWhite.second.second)) {
@@ -29,6 +31,7 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
                 m_chess.chessFields[0][5] = "wR";
                 m_chess.posKings.first = {0, 6};
                 m_lastMove = std::pair{m_takenPiece, m_chess.posKings.first};
+                endMove = "0";
             } else {
                 m_chess.chessFields[newPos.first][newPos.second] = "wK";
                 m_chess.posKings.first = {newPos.first, newPos.second};
@@ -43,6 +46,7 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
                 m_chess.chessFields[7][3] = "bR";
                 m_chess.posKings.second = {7, 2};
                 m_lastMove = std::pair{m_takenPiece, m_chess.posKings.second};
+                endMove = "00";
             } else if (m_castling.second.second
                        && (newPos.second == 6
                            || newPos.second == m_chess.posRooksBlack.second.second)) {
@@ -51,6 +55,7 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
                 m_chess.chessFields[7][5] = "bR";
                 m_chess.posKings.second = {7, 6};
                 m_lastMove = std::pair{m_takenPiece, m_chess.posKings.second};
+                endMove = "0";
             } else {
                 m_chess.chessFields[newPos.first][newPos.second] = "bK";
                 m_chess.posKings.second = {newPos.first, newPos.second};
@@ -100,7 +105,10 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
     m_whiteMove ^= true;
     m_check = this->isCheck();
     m_chessFieldsHistory.push_back(m_chess.chessFields);
+    m_chessMoveHistory.push_back(QString::number(m_takenPiece.first) + QString::number(m_takenPiece.second) + QString::number(newPos.first)
+                                 + QString::number(newPos.second) + endMove);
     ++m_normalMoves;
+    ++m_numBoardInHistory;
 }
 
 const std::vector<std::pair<qint8, qint8>> &ChessGame::takePiece(qint8 i, qint8 j)
@@ -247,6 +255,32 @@ bool ChessGame::isStaleMate()
     return true;
 }
 
+bool ChessGame::isPossibleHistoryBack()
+{
+    if (m_numBoardInHistory == 0)
+        return false;
+    --m_numBoardInHistory;
+    return true;
+}
+
+bool ChessGame::isPossibleHistoryForward()
+{
+    if (m_numBoardInHistory == m_chessFieldsHistory.size() - 1)
+        return false;
+    ++m_numBoardInHistory;
+    return true;
+}
+
+void ChessGame::historyMove()
+{
+    m_chess.chessFields = m_chessFieldsHistory[m_numBoardInHistory];
+    QString lastMove = m_chessMoveHistory[m_numBoardInHistory];
+    m_lastMove = std::pair{std::pair{static_cast<qint8>(lastMove[0].digitValue()), static_cast<qint8>(lastMove[1].digitValue())},
+                           std::pair{static_cast<qint8>(lastMove[2].digitValue()), static_cast<qint8>(lastMove[3].digitValue())}};
+    m_whiteMove ^= true;
+    m_check = this->isCheck();
+}
+
 void ChessGame::chooseTransformPawn(qint8 j)
 {
     m_beatFields.clear();
@@ -309,14 +343,18 @@ void ChessGame::setChessParams(ChessParams chess, std::pair<std::pair<bool, bool
     if (m_chess.posRooksBlack.second.first != 7)
         m_castling.second.second = false;
 
+    m_beatFields.clear();
+    m_chessMoveHistory.clear();
     m_chessFieldsHistory.clear();
-    m_chessFieldsHistory.push_back(m_chess.chessFields);
+    m_savePiece.clear();
     m_normalMoves = 1;
-}
+    m_numBoardInHistory = 0;
+    m_takenPiece.first = EMPTY;
+    m_lastMove = std::pair{m_takenPiece, m_takenPiece};
 
-bool ChessGame::getColorMove()
-{
-    return m_whiteMove;
+    QString str = QString::number(EMPTY);
+    m_chessMoveHistory.push_back(str + str + str + str);
+    m_chessFieldsHistory.push_back(m_chess.chessFields);
 }
 
 bool ChessGame::getCheck()
@@ -324,14 +362,19 @@ bool ChessGame::getCheck()
     return m_check;
 }
 
+bool ChessGame::getColorMove()
+{
+    return m_whiteMove;
+}
+
+std::pair<qint8, qint8> ChessGame::getTakenPiece()
+{
+    return m_takenPiece;
+}
+
 const std::vector<std::vector<QString>> &ChessGame::getChessFields()
 {
     return m_chess.chessFields;
-}
-
-const std::pair<qint8, qint8> &ChessGame::getTakenPiece()
-{
-    return m_takenPiece;
 }
 
 const std::vector<std::pair<qint8, qint8>> &ChessGame::getBeatFields()
@@ -339,12 +382,12 @@ const std::vector<std::pair<qint8, qint8>> &ChessGame::getBeatFields()
     return m_beatFields;
 }
 
-const std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> &ChessGame::getLastMove()
+std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> ChessGame::getLastMove()
 {
     return m_lastMove;
 }
 
-const std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> &ChessGame::getPosKings()
+std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> ChessGame::getPosKings()
 {
     return m_chess.posKings;
 }

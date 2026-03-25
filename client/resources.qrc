@@ -25,5 +25,7 @@
         <file>src/images/other.png</file>
         <file>src/images/rapid.png</file>
         <file>src/images/classic.png</file>
+        <file>src/images/leftArrow.png</file>
+        <file>src/images/rightArrow.png</file>
     </qresource>
 </RCC>

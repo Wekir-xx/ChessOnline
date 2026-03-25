@@ -44,7 +44,8 @@ ChessBoard::ChessBoard(QWidget *parent)
             this->baseField(i, j);
 
             connect(button, &QPushButton::clicked, this, [this, button]() {
-                this->clickField(button->objectName());
+                if (!(m_blockBoard || m_blockBoardHistory))
+                    this->clickField(button->objectName());
             });
         }
     }
@@ -157,6 +158,27 @@ void ChessBoard::turnChess()
     this->updateChessScene();
 }
 
+void ChessBoard::historyBack()
+{
+    if (m_game.isPossibleHistoryBack()) {
+        m_blockBoardHistory = true;
+        updateHistoryScene();
+    }
+}
+
+void ChessBoard::historyForward()
+{
+    if (m_game.isPossibleHistoryForward()) {
+        m_blockBoardHistory = false;
+        updateHistoryScene();
+    }
+}
+
+void ChessBoard::setBlockBoard(bool flag)
+{
+    m_blockBoard = flag;
+}
+
 void ChessBoard::setAutoQueen(bool flag)
 {
     m_autoQueen = flag;
@@ -165,6 +187,11 @@ void ChessBoard::setAutoQueen(bool flag)
 void ChessBoard::setPremove(bool flag)
 {
     m_premove = flag;
+}
+
+bool ChessBoard::getBlockBoard()
+{
+    return m_blockBoard;
 }
 
 bool ChessBoard::getColorMove()
@@ -208,7 +235,7 @@ void ChessBoard::clickField(const QString &nameField)
 
     const auto &chessFields = m_game.getChessFields();
     const auto &beatFields = m_game.getBeatFields();
-    const auto &takenPiece = m_game.getTakenPiece();
+    const auto takenPiece = m_game.getTakenPiece();
 
     if (takenPiece.first != EMPTY) {
         if (std::any_of(beatFields.begin(), beatFields.end(), [ = ](const auto & p) {
@@ -237,29 +264,14 @@ void ChessBoard::clickField(const QString &nameField)
                     i = 0;
             }
 
-            const auto &lastMove = m_game.getLastMove();
-            if (lastMove.first.first != EMPTY) {
-                this->baseField(lastMove.first.first, lastMove.first.second);
-                this->baseField(lastMove.second.first, lastMove.second.second);
-            }
-
-            const auto &posKings = m_game.getPosKings();
-            if (m_game.getCheck() && chessFields[takenPiece.first][takenPiece.second][1] != 'K') {
-                if (whiteMove)
-                    this->baseField(posKings.first.first, posKings.first.second);
-                else
-                    this->baseField(posKings.second.first, posKings.second.second);
-            }
+            uncheckLastMove();
+            uncheckKing();
 
             m_game.movePiece(std::pair{i, j});
-            this->moveField(lastMove.second.first, lastMove.second.second);
 
-            if (m_game.getCheck()) {
-                if (!whiteMove)
-                    this->checkField(posKings.first.first, posKings.first.second);
-                else
-                    this->checkField(posKings.second.first, posKings.second.second);
-            }
+            const auto lastMove = m_game.getLastMove();
+            this->moveField(lastMove.second.first, lastMove.second.second);
+            checkKing();
 
             if (!m_game.isPossibleMove()) {
                 if (m_game.getCheck())
@@ -278,8 +290,8 @@ void ChessBoard::clickField(const QString &nameField)
                 this->untransformPawnField(beatFields);
             }
 
-            if (chessFields[takenPiece.first][takenPiece.second][1] == 'K' && m_game.getCheck())
-                this->checkField(takenPiece.first, takenPiece.second);
+            if (chessFields[takenPiece.first][takenPiece.second][1] == 'K')
+                checkKing();
             else
                 this->baseField(takenPiece.first, takenPiece.second);
 
@@ -314,6 +326,39 @@ void ChessBoard::baseField(qint8 i, qint8 j)
         m_chessBoardBut[i][j]->setStyleSheet("background-color: #739552; border: none;");
     else
         m_chessBoardBut[i][j]->setStyleSheet("background-color: #EBECD0; border: none;");
+}
+
+void ChessBoard::uncheckLastMove()
+{
+    const auto lastMove = m_game.getLastMove();
+    if (lastMove.first.first != EMPTY)
+        this->baseField(lastMove.first.first, lastMove.first.second);
+    if (lastMove.second.first != EMPTY)
+        this->baseField(lastMove.second.first, lastMove.second.second);
+}
+
+void ChessBoard::checkKing()
+{
+    bool whiteMove = m_game.getColorMove();
+    const auto posKings = m_game.getPosKings();
+    if (m_game.getCheck()) {
+        if (whiteMove)
+            this->checkField(posKings.first.first, posKings.first.second);
+        else
+            this->checkField(posKings.second.first, posKings.second.second);
+    }
+}
+
+void ChessBoard::uncheckKing()
+{
+    bool whiteMove = m_game.getColorMove();
+    const auto posKings = m_game.getPosKings();
+    if (m_game.getCheck()) {
+        if (whiteMove)
+            this->baseField(posKings.first.first, posKings.first.second);
+        else
+            this->baseField(posKings.second.first, posKings.second.second);
+    }
 }
 
 void ChessBoard::takePiece(qint8 i, qint8 j)
@@ -451,4 +496,18 @@ void ChessBoard::updateChessScene()
                 m_chessBoardBut[i][j]->setIcon(m_imagesOfPieces[chessFields[i][j]]);
         }
     }
+}
+
+void ChessBoard::updateHistoryScene()
+{
+    uncheckLastMove();
+    uncheckKing();
+    m_game.historyMove();
+    checkKing();
+    const auto lastMove = m_game.getLastMove();
+    if (lastMove.first.first != EMPTY)
+        this->moveField(lastMove.first.first, lastMove.first.second);
+    if (lastMove.second.first != EMPTY)
+        this->moveField(lastMove.second.first, lastMove.second.second);
+    this->updateChessScene();
 }

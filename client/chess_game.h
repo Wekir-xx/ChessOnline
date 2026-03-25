@@ -26,6 +26,10 @@ public:
     bool isPossibleMove();
     bool isStaleMate();
 
+    bool isPossibleHistoryBack();
+    bool isPossibleHistoryForward();
+    void historyMove();
+
     void chooseTransformPawn(qint8 j);
     void transformPawn(qint8 i, qint8 j);
     void untransformPawn();
@@ -33,13 +37,13 @@ public:
     void setField(QString field, qint8 i, qint8 j);
     void setChessParams(ChessParams chess, std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling);
 
-    bool getColorMove();
     bool getCheck();
+    bool getColorMove();
+    std::pair<qint8, qint8> getTakenPiece();
     const std::vector<std::vector<QString>> &getChessFields();
-    const std::pair<qint8, qint8> &getTakenPiece();
     const std::vector<std::pair<qint8, qint8>> &getBeatFields();
-    const std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> &getLastMove();
-    const std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> &getPosKings();
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> getLastMove();
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> getPosKings();
 
 private:
     bool isCheck();
@@ -54,6 +58,7 @@ private:
     std::vector<QString> m_savePiece;
     std::pair<qint8, qint8> m_takenPiece;
     std::vector<std::pair<qint8, qint8>> m_beatFields;
+    std::vector<QString> m_chessMoveHistory;
     std::vector<std::vector<std::vector<QString>>> m_chessFieldsHistory;
     std::pair<std::pair<bool, bool>, std::pair<bool, bool>> m_castling;
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> m_lastMove;
@@ -61,6 +66,7 @@ private:
     bool m_whiteMove{true};
     bool m_check{false};
     qint8 m_normalMoves;
+    qint16 m_numBoardInHistory;
 };
 
 #endif // CHESS_GAME_H

@@ -37,9 +37,14 @@ public:
 
     void turnBoard();
     void turnChess();
+    void historyBack();
+    void historyForward();
+
+    void setBlockBoard(bool flag);
     void setAutoQueen(bool flag);
     void setPremove(bool flag);
 
+    bool getBlockBoard();
     bool getColorMove();
 
 signals:
@@ -54,6 +59,10 @@ private:
     void checkField(qint8 i, qint8 j);
     void moveField(qint8 i, qint8 j);
     void baseField(qint8 i, qint8 j);
+    void checkLastMove();
+    void uncheckLastMove();
+    void checkKing();
+    void uncheckKing();
 
     void takePiece(qint8 i, qint8 j);
     void untakePiece();
@@ -64,7 +73,9 @@ private:
     void fillFullIcans();
     void fillIcan(bool white, bool up);
     void fillBoard();
+
     void updateChessScene();
+    void updateHistoryScene();
 
 private:
     ChessGame m_game;
@@ -74,6 +85,8 @@ private:
     std::vector<std::vector<QPushButton *>> m_chessBoardBut;
     std::vector<std::vector<QLabel *>> m_otherBoardLab;
 
+    bool m_blockBoard{false};
+    bool m_blockBoardHistory{false};
     bool m_transformPawn{false};
     bool m_autoQueen{false};
     bool m_premove{false};

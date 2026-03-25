@@ -5,6 +5,10 @@ SettingsWindow::SettingsWindow(SettingsParams params, QWidget *parent)
 {
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setAutoFillBackground(true);
+    this->setStyleSheet("SettingsWindow {"
+                        "   border: 2px solid #808080;"
+                        "   border-radius: 10px;"
+                        "}");
 
     QVBoxLayout *layoutV = new QVBoxLayout();
     QHBoxLayout *layoutH = new QHBoxLayout();
@@ -36,11 +40,11 @@ SettingsWindow::SettingsWindow(SettingsParams params, QWidget *parent)
     noticeTimeBut->setChecked(params.checkNoticeTime);
 
     connect(exit, &QPushButton::clicked, this, &SettingsWindow::exitSignal);
-    connect(turnBoardBut, QPushButton::clicked, this, &SettingsWindow::turnBoard);
-    connect(turnChessBut, QPushButton::clicked, this, &SettingsWindow::turnChess);
-    connect(autoQueenBut, QCheckBox::clicked, this, &SettingsWindow::autoQueen);
-    connect(premoveBut, QCheckBox::clicked, this, &SettingsWindow::premove);
-    connect(noticeTimeBut, QCheckBox::clicked, this, &SettingsWindow::noticeTime);
+    connect(turnBoardBut, &QPushButton::clicked, this, &SettingsWindow::turnBoard);
+    connect(turnChessBut, &QPushButton::clicked, this, &SettingsWindow::turnChess);
+    connect(autoQueenBut, &QCheckBox::clicked, this, &SettingsWindow::autoQueen);
+    connect(premoveBut, &QCheckBox::clicked, this, &SettingsWindow::premove);
+    connect(noticeTimeBut, &QCheckBox::clicked, this, &SettingsWindow::noticeTime);
 
     this->setLayout(layoutV);
 }
