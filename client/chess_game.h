@@ -21,7 +21,7 @@ public:
     ChessGame();
 
     void movePiece(std::pair<qint8, qint8> newPos);
-    const std::vector<std::pair<qint8, qint8>> &takePiece(qint8 i, qint8 j);
+    void takePiece(qint8 i, qint8 j);
     void untakePiece();
     bool isPossibleMove();
     bool isStaleMate();
@@ -65,8 +65,8 @@ private:
 
     bool m_whiteMove{true};
     bool m_check{false};
-    qint8 m_normalMoves;
-    qint16 m_numBoardInHistory;
+    qint8 m_movesHistory;
+    qint16 m_numBoardHistory;
 };
 
 #endif // CHESS_GAME_H

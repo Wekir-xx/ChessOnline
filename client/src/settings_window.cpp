@@ -6,6 +6,7 @@ SettingsWindow::SettingsWindow(SettingsParams params, QWidget *parent)
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setAutoFillBackground(true);
     this->setStyleSheet("SettingsWindow {"
+                        "   background-color: #D1D1D1;"
                         "   border: 2px solid #808080;"
                         "   border-radius: 10px;"
                         "}");

@@ -6,19 +6,20 @@
 #include "src/end_game_window.h"
 #include "src/settings_window.h"
 
+#include <QDateTime>
 #include <QMessageBox>
+#include <QTimer>
 
 class GameWindow : public QWidget
 {
 public:
-    struct GameParams
-    {
+    struct GameParams {
         SettingsWindow::SettingsParams settingParams;
         TypeGame gameType;
         TypeChess chessType;
         TypeTimeChess timeChessType;
-        std::pair<qint16, qint8> mainTime;
-        qint8 minorTime;
+        qint32 mainTime;
+        qint16 minorTime;
         std::vector<std::vector<QString>> chessFields;
         std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
     };
@@ -36,11 +37,23 @@ private:
     void endGame(ResultGame result);
     void newGame();
     void rematch();
+    void turnBoard();
+    void tick();
+    void setTime(qint32 seconds, bool white);
+    void resetTime();
 
 private:
     ChessBoard *m_board;
     SettingsWindow *m_settings;
     EndGameWindow *m_endGame;
+    QVBoxLayout *m_sideLayout;
+
+    QTimer *m_timer;
+    std::pair<QLabel *, QLabel *> m_timeLabel;
+    std::pair<qint32, qint32> m_time;
+    QDateTime m_startMove;
+    qint32 m_saveTime;
+
     QPushButton *m_upButton;
     QPushButton *m_downButton;
     QMetaObject::Connection m_upButtonCon;

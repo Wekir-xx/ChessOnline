@@ -3,6 +3,8 @@
 ChessBoard::ChessBoard(QWidget *parent)
     : QWidget(parent)
 {
+    setMouseTracking(true);
+
     m_imagesOfPieces.reserve(40);
     m_chessBoardBut.resize(8, std::vector<QPushButton *>(8, nullptr));
     m_otherBoardLab.resize(2, std::vector<QLabel *>(8, nullptr));
@@ -222,8 +224,27 @@ void ChessBoard::resizeEvent(QResizeEvent *event)
                     * BEAT_FIELD_SIZE);
 }
 
+void ChessBoard::mousePressEvent(QMouseEvent *event)
+{
+    QWidget::mousePressEvent(event);
+    qDebug() << "press";
+}
+
+void ChessBoard::mouseReleaseEvent(QMouseEvent *event)
+{
+    QWidget::mouseReleaseEvent(event);
+    qDebug() << "release";
+}
+
+void ChessBoard::mouseMoveEvent(QMouseEvent *event)
+{
+    QWidget::mouseMoveEvent(event);
+    //qDebug() << "move";
+}
+
 void ChessBoard::clickField(const QString &nameField)
 {
+    qDebug() << "click";
     qint8 i = nameField[1].digitValue() - 1;
     qint8 j = nameField[0].unicode() - 'a';
 
@@ -283,6 +304,7 @@ void ChessBoard::clickField(const QString &nameField)
             }
 
             this->updateChessScene();
+            emit didMove();
         } else {
             if (m_transformPawn) {
                 m_transformPawn = false;
@@ -366,10 +388,11 @@ void ChessBoard::takePiece(qint8 i, qint8 j)
     this->untakePiece();
     this->moveField(i, j);
 
-    const auto &beatField = m_game.takePiece(i, j);
+    m_game.takePiece(i, j);
+    const auto &beatFields = m_game.getBeatFields();
     const auto &chessFields = m_game.getChessFields();
 
-    for (const auto &field : beatField) {
+    for (const auto &field : beatFields) {
         if (chessFields[field.first][field.second].isEmpty()) {
             m_chessBoardBut[field.first][field.second]->setIconSize(m_chessBoardBut[field.first][field.second]->size()
                     * BEAT_FIELD_SIZE);
@@ -503,11 +526,11 @@ void ChessBoard::updateHistoryScene()
     uncheckLastMove();
     uncheckKing();
     m_game.historyMove();
-    checkKing();
     const auto lastMove = m_game.getLastMove();
     if (lastMove.first.first != EMPTY)
         this->moveField(lastMove.first.first, lastMove.first.second);
     if (lastMove.second.first != EMPTY)
         this->moveField(lastMove.second.first, lastMove.second.second);
+    checkKing();
     this->updateChessScene();
 }

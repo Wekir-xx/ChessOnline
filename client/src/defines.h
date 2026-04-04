@@ -8,6 +8,8 @@
 #define FIXED_SIZE_NUMBERS 20
 #define FIXED_SIZE_EXIT_BUTTON 25
 #define FIXED_SIZE_TYPE_GAME 45
+#define MAX_TIME_SECONDS 259200
+#define TICK 100
 
 #include <QString>
 

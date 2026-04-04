@@ -33,7 +33,7 @@ public:
         int y = adjustedRect.y();
 
         mainWidget->setGeometry(QRect(x, y, newSide, newSide));
-        otherWidget->setGeometry(QRect(x + newSide, y, width - newSide + fixedWidth, heigth));
+        otherWidget->setGeometry(QRect(x + newSide, y, width - newSide + fixedWidth, newSide));
     }
 };
 

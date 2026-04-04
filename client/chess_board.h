@@ -17,6 +17,7 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QWidget>
+#include <QMouseEvent>
 
 #include <unordered_map>
 
@@ -48,11 +49,15 @@ public:
     bool getColorMove();
 
 signals:
+    void didMove();
     void endGame(ResultGame result);
 
 protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     void clickField(const QString &nameField);

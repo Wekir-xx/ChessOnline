@@ -16,6 +16,7 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     m_board = new ChessBoard();
     m_settings = new SettingsWindow(params.settingParams, this);
     m_endGame = new EndGameWindow(playerParams, this);
+    m_timer = new QTimer(this);
 
     m_board->setAutoQueen(m_params.settingParams.checkAutoQueen);
     m_board->setPremove(m_params.settingParams.checkPremove);
@@ -43,19 +44,29 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     m_upButton = new QPushButton();
     m_downButton = new QPushButton();
 
+    m_timeLabel = std::pair{new QLabel(), new QLabel()};
+    m_timeLabel.first->setAlignment(Qt::AlignCenter);
+    m_timeLabel.second->setAlignment(Qt::AlignCenter);
+    m_timeLabel.first->setStyleSheet("background-color: white; color: black; font-size:24px; padding:10px;");
+    m_timeLabel.second->setStyleSheet("background-color: black; color: white; font-size:24px; padding:10px;");
+    m_timeLabel.first->setFixedHeight(FIXED_SIZE_TYPE_GAME);
+    m_timeLabel.second->setFixedHeight(FIXED_SIZE_TYPE_GAME);
+
     QHBoxLayout *helperLayout = new QHBoxLayout();
     helperLayout->addWidget(leftChessHistory);
     helperLayout->addWidget(rightChessHistory);
     helperLayout->addWidget(settings);
 
-    QVBoxLayout *playingInfo = new QVBoxLayout();
-    playingInfo->addWidget(m_upButton);
-    playingInfo->addLayout(helperLayout);
-    playingInfo->addWidget(m_downButton);
+    m_sideLayout = new QVBoxLayout();
+    m_sideLayout->addWidget(m_timeLabel.second);
+    m_sideLayout->addWidget(m_upButton);
+    m_sideLayout->addLayout(helperLayout);
+    m_sideLayout->addWidget(m_downButton);
+    m_sideLayout->addWidget(m_timeLabel.first);
 
     BoardLayout *mainLayout = new BoardLayout();
     mainLayout->addWidget(m_board);
-    mainLayout->addLayout(playingInfo);
+    mainLayout->addLayout(m_sideLayout);
 
     this->setLayout(mainLayout);
 
@@ -65,14 +76,32 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
         playerParams.ratings = {0, 0};
 
     if (!mainPlayerWhite)
-        m_board->turnBoard();
+        this->turnBoard();
 
+    connect(m_board, &ChessBoard::didMove, this, [this]() {
+        if (!m_timer->isActive()) {
+            m_startMove = QDateTime::currentDateTime();
+            m_timer->start(TICK);
+        }
+
+        bool white = !m_board->getColorMove();
+        if (white) {
+            m_time.first += m_params.minorTime - m_startMove.secsTo(QDateTime::currentDateTime());
+            if (m_time.first > MAX_TIME_SECONDS)
+                m_time.first = MAX_TIME_SECONDS;
+        } else {
+            m_time.second += m_params.minorTime - m_startMove.secsTo(QDateTime::currentDateTime());
+            if (m_time.second > MAX_TIME_SECONDS)
+                m_time.second = MAX_TIME_SECONDS;
+        }
+        this->setTime(0, white);
+        m_startMove = QDateTime::currentDateTime();
+    });
     connect(m_board, &ChessBoard::endGame, this, [this](ResultGame result) {
         this->endGame(result);
+        m_timer->stop();
     });
-    connect(leftChessHistory, &QPushButton::clicked, this, [this]() {
-        m_board->historyBack();
-    });
+    connect(leftChessHistory, &QPushButton::clicked, this, [this]() { m_board->historyBack(); });
     connect(rightChessHistory, &QPushButton::clicked, this, [this]() {
         m_board->historyForward();
     });
@@ -85,9 +114,7 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
             m_settings->hide();
         }
     });
-    connect(m_settings, &SettingsWindow::turnBoard, this, [this]() {
-        m_board->turnBoard();
-    });
+    connect(m_settings, &SettingsWindow::turnBoard, this, [this]() { this->turnBoard(); });
     connect(m_settings, &SettingsWindow::turnChess, this, [this]() {
         m_board->turnChess();
     });
@@ -111,7 +138,7 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     });
     connect(m_endGame, &EndGameWindow::rematchSignal, this, [this]() {
         this->startGame();
-        m_board->turnBoard();
+        this->turnBoard();
         m_endGame->hide();
     });
     connect(m_endGame, &EndGameWindow::blockUserSignal, this, [this]() {
@@ -122,8 +149,9 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
         m_endGame->hide();
         // TODO
     });
-    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() {
-        m_endGame->hide();
+    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() { m_endGame->hide(); });
+    connect(m_timer, &QTimer::timeout, this, [this]() {
+        this->setTime(m_startMove.secsTo(QDateTime::currentDateTime()), m_board->getColorMove());
     });
 
     startGame(true);
@@ -156,6 +184,8 @@ void GameWindow::resizeEvent(QResizeEvent *event)
 
 void GameWindow::startGame(bool first)
 {
+    this->resetTime();
+
     m_board->setBlockBoard(false);
     if (m_params.chessType == TypeChess::STANDART)
         m_board->fillStandartChessBoard();
@@ -190,6 +220,9 @@ void GameWindow::startGame(bool first)
 
 void GameWindow::endGame(ResultGame result)
 {
+    if (m_timer->isActive())
+        m_timer->stop();
+
     m_board->setBlockBoard(true);
 
     m_endGame->setResult(result);
@@ -207,10 +240,63 @@ void GameWindow::endGame(ResultGame result)
     });
     m_downButtonCon = connect(m_downButton, &QPushButton::clicked, this, [this]() {
         this->startGame();
-        m_board->turnBoard();
+        this->turnBoard();
     });
 }
 
 void GameWindow::newGame() {}
 
 void GameWindow::rematch() {}
+
+void GameWindow::turnBoard()
+{
+    m_board->turnBoard();
+
+    qint8 id1 = m_sideLayout->indexOf(m_timeLabel.first);
+    qint8 id2 = m_sideLayout->indexOf(m_timeLabel.second);
+
+    m_sideLayout->removeWidget(m_timeLabel.first);
+    m_sideLayout->removeWidget(m_timeLabel.second);
+
+    if (id1 < id2) {
+        m_sideLayout->insertWidget(id1, m_timeLabel.second);
+        m_sideLayout->insertWidget(id2, m_timeLabel.first);
+    } else {
+        m_sideLayout->insertWidget(id2, m_timeLabel.first);
+        m_sideLayout->insertWidget(id1, m_timeLabel.second);
+    }
+}
+
+void GameWindow::setTime(qint32 seconds, bool white)
+{
+    qint32 resultTime;
+    if (white)
+        resultTime = m_time.first - seconds;
+    else
+        resultTime = m_time.second - seconds;
+
+    if (resultTime == 0)
+        this->endGame(white ? ResultGame::WIN_BLACK : ResultGame::WIN_WHITE);
+
+    qint8 s = resultTime % 60;
+    qint8 m = resultTime / 60 % 60;
+    qint8 h = resultTime / 60 / 60;
+
+    QString time;
+    if (h > 0)
+        time = QString::asprintf("%2d:%02d:%02d", h, m, s);
+    else
+        time = QString::asprintf("%2d:%02d", m, s);
+
+    if (white)
+        m_timeLabel.first->setText(time);
+    else
+        m_timeLabel.second->setText(time);
+}
+
+void GameWindow::resetTime()
+{
+    m_time = {m_params.mainTime, m_params.mainTime};
+    this->setTime(0, true);
+    this->setTime(0, false);
+}

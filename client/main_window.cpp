@@ -6,7 +6,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->resize(727, 717);
     this->setWindowTitle("Chess Online");
     this->setWindowIcon(QIcon(pathGeneral + "avatar.png"));
-    this->setStyleSheet("background-color: #1e1e1e;");
 
     SettingsWindow::SettingsParams settingParams;
     settingParams.checkAutoQueen = false;
@@ -17,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     GameWindow::GameParams params;
     params.settingParams = settingParams;
     params.timeChessType = TypeTimeChess::OTHER;
-    params.mainTime = {1, 10};
+    params.mainTime = 12;
     params.minorTime = 5;
     params.chessType = TypeChess::STANDART;
 
