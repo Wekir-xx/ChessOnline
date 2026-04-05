@@ -6,8 +6,15 @@ ChessBoard::ChessBoard(QWidget *parent)
     setMouseTracking(true);
 
     m_imagesOfPieces.reserve(40);
-    m_chessBoardBut.resize(8, std::vector<QPushButton *>(8, nullptr));
+    m_chessBoardBut.resize(8, std::vector<EventButton *>(8, nullptr));
     m_otherBoardLab.resize(2, std::vector<QLabel *>(8, nullptr));
+
+#ifdef MOVE_PIECE
+    m_movePiece = new QLabel(this);
+    m_movePiece->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    m_movePiece->setWindowFlags(Qt::FramelessWindowHint);
+    m_movePiece->hide();
+#endif
 
     QSizePolicy sizePolicy(QSizePolicy::Policy::Ignored, QSizePolicy::Policy::Ignored);
 
@@ -37,7 +44,7 @@ ChessBoard::ChessBoard(QWidget *parent)
         m_otherBoardLab[1][i] = label;
 
         for (qint8 j = 0; j < 8; ++j) {
-            QPushButton *button = new QPushButton();
+            EventButton *button = new EventButton();
             button->setObjectName(QString(QChar('a' + j)) + QString::number(i + 1));
             button->setSizePolicy(sizePolicy);
             button->setMinimumSize(MINIMUM_PIECE_SIZE, MINIMUM_PIECE_SIZE);
@@ -45,7 +52,7 @@ ChessBoard::ChessBoard(QWidget *parent)
             m_chessBoardBut[i][j] = button;
             this->baseField(i, j);
 
-            connect(button, &QPushButton::clicked, this, [this, button]() {
+            connect(button, &EventButton::pressMouseSignal, this, [this, button]() {
                 if (!(m_blockBoard || m_blockBoardHistory))
                     this->clickField(button->objectName());
             });
@@ -102,7 +109,48 @@ void ChessBoard::fillStandartChessBoard()
     m_game.setChessParams(chess, {{true, true}, {true, true}});
 }
 
-void ChessBoard::fillStandart960ChessBoard() {}
+void ChessBoard::fillStandart960ChessBoard()
+{
+    ChessGame::ChessParams chess;
+    chess.chess960 = true;
+
+    std::vector<std::vector<QString>> chessFields(8, std::vector<QString>(8));
+
+    std::vector<qint8> numPos{0, 1, 2, 3, 4, 5, 6, 7};
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    std::uniform_int_distribution<> randomBishop(1, 4);
+    qint8 firstBishop = randomBishop(gen) * 2 - 2;
+    qint8 secondBishop = randomBishop(gen) * 2 - 1;
+
+    chessFields[0][firstBishop] = "wB";
+    chessFields[0][secondBishop] = "wB";
+    chessFields[7][firstBishop] = "bB";
+    chessFields[7][secondBishop] = "bB";
+
+    auto it = std::find(v.begin(), v.end(), firstBishop);
+    v.erase(it);
+    it = std::find(v.begin(), v.end(), secondBishop);
+    v.erase(it);
+
+    std::uniform_int_distribution<> randomQueen(0, 5);
+    qint8 queen = randomQueen(gen);
+
+    chessFields[0][numPos[queen]] = "wQ";
+    chessFields[7][numPos[queen]] = "bQ";
+
+    it = std::find(v.begin(), v.end(), queen);
+    v.erase(it);
+
+    for (qint8 i = 0; i < 8; ++i) {
+        chessFields[1][i] = "wP";
+        chessFields[6][i] = "bP";
+    }
+
+    chess.chessFields = chessFields;
+    m_game.setChessParams(chess, {{true, true}, {true, true}});
+}
 
 void ChessBoard::fillUserChessBoard(std::vector<std::vector<QString>> chessFields,
                                     bool chess960,
@@ -224,27 +272,45 @@ void ChessBoard::resizeEvent(QResizeEvent *event)
                     * BEAT_FIELD_SIZE);
 }
 
-void ChessBoard::mousePressEvent(QMouseEvent *event)
-{
-    QWidget::mousePressEvent(event);
-    qDebug() << "press";
-}
-
+#ifdef MOVE_PIECE
 void ChessBoard::mouseReleaseEvent(QMouseEvent *event)
 {
     QWidget::mouseReleaseEvent(event);
-    qDebug() << "release";
+    if (m_takenPiece) {
+        m_takenPiece = false;
+        const auto takenPiece = m_game.getTakenPiece();
+        const auto &chessFields = m_game.getChessFields();
+        m_chessBoardBut[takenPiece.first][takenPiece.second]->setIcon(m_imagesOfPieces[chessFields[takenPiece.first][takenPiece.second]]);
+        m_movePiece->hide();
+    }
 }
 
 void ChessBoard::mouseMoveEvent(QMouseEvent *event)
 {
+    if (event->buttons() & Qt::LeftButton) {
+        const auto takenPiece = m_game.getTakenPiece();
+        if (takenPiece.first != EMPTY) {
+            if (!m_takenPiece) {
+                m_takenPiece = true;
+                const auto &chessFields = m_game.getChessFields();
+                m_chessBoardBut[takenPiece.first][takenPiece.second]->setIcon(QIcon());
+                QIcon piece = m_imagesOfPieces[chessFields[takenPiece.first][takenPiece.second]];
+                m_movePiece->setPixmap(piece.pixmap(m_chessBoardBut[0][0]->size()));
+                m_movePiece->setFixedSize(m_chessBoardBut[0][0]->size());
+                m_movePiece->show();
+                m_movePiece->raise();
+            }
+            QPoint pos = event->pos();
+            m_movePiece->move(pos.x() - m_movePiece->width() / 2, pos.y() - m_movePiece->height() / 2);
+        }
+    }
+
     QWidget::mouseMoveEvent(event);
-    //qDebug() << "move";
 }
+#endif
 
 void ChessBoard::clickField(const QString &nameField)
 {
-    qDebug() << "click";
     qint8 i = nameField[1].digitValue() - 1;
     qint8 j = nameField[0].unicode() - 'a';
 

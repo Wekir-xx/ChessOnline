@@ -19,6 +19,7 @@ HEADERS += \
     src/defines.h \
     src/board_layout.h \
     src/end_game_window.h \
+    src/event_button.h \
     src/player_info_layout.h \
     src/settings_window.h
 

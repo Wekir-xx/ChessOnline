@@ -1,7 +1,10 @@
 #ifndef CHESS_BOARD_H
 #define CHESS_BOARD_H
 
+//#define MOVE_PIECE
+
 #include "chess_game.h"
+#include "src/event_button.h"
 
 #include <QHBoxLayout>
 #include <QIcon>
@@ -17,8 +20,12 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QWidget>
-#include <QMouseEvent>
 
+#ifdef MOVE_PIECE
+#include <QMouseEvent>
+#endif
+
+#include <random>
 #include <unordered_map>
 
 class ChessBoard : public QWidget
@@ -55,9 +62,11 @@ signals:
 protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
+
+#ifdef MOVE_PIECE
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+#endif
 
 private:
     void clickField(const QString &nameField);
@@ -86,8 +95,11 @@ private:
     ChessGame m_game;
 
     QGridLayout *m_board;
+#ifdef MOVE_PIECE
+    //QLabel *m_movePiece;
+#endif
     std::unordered_map<QString, QIcon> m_imagesOfPieces;
-    std::vector<std::vector<QPushButton *>> m_chessBoardBut;
+    std::vector<std::vector<EventButton *>> m_chessBoardBut;
     std::vector<std::vector<QLabel *>> m_otherBoardLab;
 
     bool m_blockBoard{false};
@@ -97,6 +109,7 @@ private:
     bool m_premove{false};
     bool m_turnBoard{false};
     bool m_turnChess{false};
+    bool m_takenPiece{false};
 };
 
 #endif // CHESS_BOARD_H
