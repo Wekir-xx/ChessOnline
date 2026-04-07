@@ -15,7 +15,7 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
         m_chess.chessFields[m_takenPiece.first][m_takenPiece.second].clear();
 
         if (m_whiteMove) {
-            if (m_castling.first.first
+            if (m_chess.castling.first.first
                     && (newPos.second == 2 || newPos.second == m_chess.posRooksWhite.first.second)) {
                 m_chess.chessFields[0][m_chess.posRooksWhite.first.second].clear();
                 m_chess.chessFields[0][2] = "wK";
@@ -23,7 +23,7 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
                 m_chess.posKings.first = {0, 2};
                 m_lastMove = std::pair{m_takenPiece, m_chess.posKings.first};
                 endMove = "00";
-            } else if (m_castling.first.second
+            } else if (m_chess.castling.first.second
                        && (newPos.second == 6 || newPos.second == m_chess.posRooksWhite.second.second)) {
                 m_chess.chessFields[0][m_chess.posRooksWhite.second.second].clear();
                 m_chess.chessFields[0][6] = "wK";
@@ -36,9 +36,9 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
                 m_chess.posKings.first = {newPos.first, newPos.second};
                 m_lastMove = std::pair{m_takenPiece, newPos};
             }
-            m_castling.first = {false, false};
+            m_chess.castling.first = {false, false};
         } else {
-            if (m_castling.second.first
+            if (m_chess.castling.second.first
                     && (newPos.second == 2 || newPos.second == m_chess.posRooksBlack.first.second)) {
                 m_chess.chessFields[7][m_chess.posRooksBlack.first.second].clear();
                 m_chess.chessFields[7][2] = "bK";
@@ -46,7 +46,7 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
                 m_chess.posKings.second = {7, 2};
                 m_lastMove = std::pair{m_takenPiece, m_chess.posKings.second};
                 endMove = "00";
-            } else if (m_castling.second.second
+            } else if (m_chess.castling.second.second
                        && (newPos.second == 6
                            || newPos.second == m_chess.posRooksBlack.second.second)) {
                 m_chess.chessFields[7][m_chess.posRooksBlack.second.second].clear();
@@ -60,33 +60,33 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
                 m_chess.posKings.second = {newPos.first, newPos.second};
                 m_lastMove = std::pair{m_takenPiece, newPos};
             }
-            if (m_castling.second.first || m_castling.second.second)
+            if (m_chess.castling.second.first || m_chess.castling.second.second)
                 m_movesHistory = 0;
-            m_castling.second = {false, false};
+            m_chess.castling.second = {false, false};
         }
     } else {
         if (m_chess.chessFields[m_takenPiece.first][m_takenPiece.second][1] == 'R') {
             if (m_whiteMove) {
                 if (m_takenPiece.first == m_chess.posRooksWhite.first.first && m_takenPiece.second == m_chess.posRooksWhite.first.second) {
-                    if (m_castling.first.first)
+                    if (m_chess.castling.first.first)
                         m_movesHistory = 0;
-                    m_castling.first.first = false;
+                    m_chess.castling.first.first = false;
                 } else if (m_takenPiece.first == m_chess.posRooksWhite.second.first
                            && m_takenPiece.second == m_chess.posRooksWhite.second.second) {
-                    if (m_castling.first.second)
+                    if (m_chess.castling.first.second)
                         m_movesHistory = 0;
-                    m_castling.first.second = false;
+                    m_chess.castling.first.second = false;
                 }
             } else {
                 if (m_takenPiece.first == m_chess.posRooksBlack.first.first && m_takenPiece.second == m_chess.posRooksBlack.first.second) {
-                    if (m_castling.second.first)
+                    if (m_chess.castling.second.first)
                         m_movesHistory = 0;
-                    m_castling.second.first = false;
+                    m_chess.castling.second.first = false;
                 } else if (m_takenPiece.first == m_chess.posRooksBlack.second.first
                            && m_takenPiece.second == m_chess.posRooksBlack.second.second) {
-                    if (m_castling.second.second)
+                    if (m_chess.castling.second.second)
                         m_movesHistory = 0;
-                    m_castling.second.second = false;
+                    m_chess.castling.second.second = false;
                 }
             }
         } else if (m_chess.chessFields[m_takenPiece.first][m_takenPiece.second][1] == 'P') {
@@ -103,8 +103,9 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
     m_whiteMove ^= true;
     m_check = this->isCheck();
     m_chessFieldsHistory.push_back(m_chess.chessFields);
-    m_chessMoveHistory.push_back(QString::number(m_takenPiece.first) + QString::number(m_takenPiece.second) +
-                                 QString::number(newPos.first) + QString::number(newPos.second) + endMove);
+    m_chessMoveHistory.push_back(QString::number(m_lastMove.first.first) + QString::number(m_lastMove.first.second) +
+                                 QString::number(m_lastMove.second.first) + QString::number(m_lastMove.second.second) +
+                                 endMove);
     ++m_numBoardHistory;
     ++m_movesHistory;
 
@@ -334,20 +335,19 @@ void ChessGame::setField(QString field, qint8 i, qint8 j)
     m_chess.chessFields[i][j] = field;
 }
 
-void ChessGame::setChessParams(ChessParams chess, std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling)
+void ChessGame::setChessParams(ChessParams chess)
 {
     m_chess = chess;
-    m_whiteMove = true;
-    m_castling = castling;
+    m_whiteMove = chess.whiteMove;
 
     if (m_chess.posRooksWhite.first.first != 0)
-        m_castling.first.first = false;
+        m_chess.castling.first.first = false;
     if (m_chess.posRooksWhite.second.first != 0)
-        m_castling.first.second = false;
+        m_chess.castling.first.second = false;
     if (m_chess.posRooksBlack.first.first != 7)
-        m_castling.second.first = false;
+        m_chess.castling.second.first = false;
     if (m_chess.posRooksBlack.second.first != 7)
-        m_castling.second.second = false;
+        m_chess.castling.second.second = false;
 
     m_beatFields.clear();
     m_chessMoveHistory.clear();
@@ -671,19 +671,19 @@ bool ChessGame::isPossibleMoveInner()
 
 void ChessGame::addCastling()
 {
-    if ((!(m_whiteMove && (m_castling.first.first || m_castling.first.second))
-            && !(!m_whiteMove && (m_castling.second.first || m_castling.second.second)))
+    if ((!(m_whiteMove && (m_chess.castling.first.first || m_chess.castling.first.second))
+            && !(!m_whiteMove && (m_chess.castling.second.first || m_chess.castling.second.second)))
             || m_check)
         return;
 
     auto posKingCol = m_chess.posKings.first.second;
     auto posRooks = m_chess.posRooksWhite;
-    auto castling = m_castling.first;
+    auto castling = m_chess.castling.first;
 
     if (!m_whiteMove) {
         posKingCol = m_chess.posKings.second.second;
         posRooks = m_chess.posRooksBlack;
-        castling = m_castling.second;
+        castling = m_chess.castling.second;
     }
 
     qint8 row = posRooks.first.first;

@@ -75,92 +75,117 @@ void ChessBoard::resetBoard()
 void ChessBoard::fillStandartChessBoard()
 {
     ChessGame::ChessParams chess;
+    chess.chessFields.resize(8, std::vector<QString>(8));
     chess.posKings = {{0, 4}, {7, 4}};
     chess.posRooksWhite = {{0, 0}, {0, 7}};
     chess.posRooksBlack = {{7, 0}, {7, 7}};
+    chess.castling = {{true, true}, {true, true}};
     chess.chess960 = false;
+    chess.whiteMove = true;
 
-    std::vector<std::vector<QString>> chessFields(8, std::vector<QString>(8));
+    chess.chessFields[chess.posKings.first.first][chess.posKings.first.second] = "wK";
+    chess.chessFields[0][3] = "wQ";
+    chess.chessFields[chess.posRooksWhite.first.first][chess.posRooksWhite.first.second] = "wR";
+    chess.chessFields[chess.posRooksWhite.second.first][chess.posRooksWhite.second.second] = "wR";
+    chess.chessFields[0][2] = "wB";
+    chess.chessFields[0][5] = "wB";
+    chess.chessFields[0][6] = "wN";
+    chess.chessFields[0][1] = "wN";
 
-    chessFields[chess.posKings.first.first][chess.posKings.first.second] = "wK";
-    chessFields[0][3] = "wQ";
-    chessFields[chess.posRooksWhite.first.first][chess.posRooksWhite.first.second] = "wR";
-    chessFields[chess.posRooksWhite.second.first][chess.posRooksWhite.second.second] = "wR";
-    chessFields[0][2] = "wB";
-    chessFields[0][5] = "wB";
-    chessFields[0][6] = "wN";
-    chessFields[0][1] = "wN";
-
-    chessFields[chess.posKings.second.first][chess.posKings.second.second] = "bK";
-    chessFields[7][3] = "bQ";
-    chessFields[chess.posRooksBlack.first.first][chess.posRooksBlack.first.second] = "bR";
-    chessFields[chess.posRooksBlack.second.first][chess.posRooksBlack.second.second] = "bR";
-    chessFields[7][2] = "bB";
-    chessFields[7][5] = "bB";
-    chessFields[7][6] = "bN";
-    chessFields[7][1] = "bN";
+    chess.chessFields[chess.posKings.second.first][chess.posKings.second.second] = "bK";
+    chess.chessFields[7][3] = "bQ";
+    chess.chessFields[chess.posRooksBlack.first.first][chess.posRooksBlack.first.second] = "bR";
+    chess.chessFields[chess.posRooksBlack.second.first][chess.posRooksBlack.second.second] = "bR";
+    chess.chessFields[7][2] = "bB";
+    chess.chessFields[7][5] = "bB";
+    chess.chessFields[7][6] = "bN";
+    chess.chessFields[7][1] = "bN";
 
     for (qint8 i = 0; i < 8; ++i) {
-        chessFields[1][i] = "wP";
-        chessFields[6][i] = "bP";
+        chess.chessFields[1][i] = "wP";
+        chess.chessFields[6][i] = "bP";
     }
 
-    chess.chessFields = chessFields;
-    m_game.setChessParams(chess, {{true, true}, {true, true}});
+    m_game.setChessParams(chess);
 }
 
 void ChessBoard::fillStandart960ChessBoard()
 {
     ChessGame::ChessParams chess;
+    chess.chessFields.resize(8, std::vector<QString>(8));
+    chess.castling = {{true, true}, {true, true}};
     chess.chess960 = true;
-
-    std::vector<std::vector<QString>> chessFields(8, std::vector<QString>(8));
+    chess.whiteMove = true;
 
     std::vector<qint8> numPos{0, 1, 2, 3, 4, 5, 6, 7};
     std::random_device rd;
     std::mt19937 gen(rd());
 
     std::uniform_int_distribution<> randomBishop(1, 4);
-    qint8 firstBishop = randomBishop(gen) * 2 - 2;
-    qint8 secondBishop = randomBishop(gen) * 2 - 1;
-
-    chessFields[0][firstBishop] = "wB";
-    chessFields[0][secondBishop] = "wB";
-    chessFields[7][firstBishop] = "bB";
-    chessFields[7][secondBishop] = "bB";
-
-    auto it = std::find(v.begin(), v.end(), firstBishop);
-    v.erase(it);
-    it = std::find(v.begin(), v.end(), secondBishop);
-    v.erase(it);
-
     std::uniform_int_distribution<> randomQueen(0, 5);
-    qint8 queen = randomQueen(gen);
+    std::uniform_int_distribution<> randomKnight1(0, 4);
+    std::uniform_int_distribution<> randomKnight2(0, 3);
 
-    chessFields[0][numPos[queen]] = "wQ";
-    chessFields[7][numPos[queen]] = "bQ";
+    qint8 pos = randomBishop(gen) * 2 - 2;
+    chess.chessFields[0][pos] = "wB";
+    chess.chessFields[7][pos] = "bB";
+    auto it = std::find(numPos.begin(), numPos.end(), pos);
+    numPos.erase(it);
 
-    it = std::find(v.begin(), v.end(), queen);
-    v.erase(it);
+    pos = randomBishop(gen) * 2 - 1;
+    chess.chessFields[0][pos] = "wB";
+    chess.chessFields[7][pos] = "bB";
+    it = std::find(numPos.begin(), numPos.end(), pos);
+    numPos.erase(it);
+
+    pos = randomQueen(gen);
+    chess.chessFields[0][numPos[pos]] = "wQ";
+    chess.chessFields[7][numPos[pos]] = "bQ";
+    it = std::find(numPos.begin(), numPos.end(), numPos[pos]);
+    numPos.erase(it);
+
+    pos = randomKnight1(gen);
+    chess.chessFields[0][numPos[pos]] = "wN";
+    chess.chessFields[7][numPos[pos]] = "bN";
+    it = std::find(numPos.begin(), numPos.end(), numPos[pos]);
+    numPos.erase(it);
+
+    pos = randomKnight2(gen);
+    chess.chessFields[0][numPos[pos]] = "wN";
+    chess.chessFields[7][numPos[pos]] = "bN";
+    it = std::find(numPos.begin(), numPos.end(), numPos[pos]);
+    numPos.erase(it);
 
     for (qint8 i = 0; i < 8; ++i) {
-        chessFields[1][i] = "wP";
-        chessFields[6][i] = "bP";
+        chess.chessFields[1][i] = "wP";
+        chess.chessFields[6][i] = "bP";
     }
 
-    chess.chessFields = chessFields;
-    m_game.setChessParams(chess, {{true, true}, {true, true}});
+    chess.posKings = {{0, numPos[1]}, {7, numPos[1]}};
+    chess.posRooksWhite = {{0, numPos[0]}, {0, numPos[2]}};
+    chess.posRooksBlack = {{7, numPos[0]}, {7, numPos[2]}};
+
+    chess.chessFields[chess.posKings.first.first][chess.posKings.first.second] = "wK";
+    chess.chessFields[chess.posRooksWhite.first.first][chess.posRooksWhite.first.second] = "wR";
+    chess.chessFields[chess.posRooksWhite.second.first][chess.posRooksWhite.second.second] = "wR";
+    chess.chessFields[chess.posKings.second.first][chess.posKings.second.second] = "bK";
+    chess.chessFields[chess.posRooksBlack.first.first][chess.posRooksBlack.first.second] = "bR";
+    chess.chessFields[chess.posRooksBlack.second.first][chess.posRooksBlack.second.second] = "bR";
+
+    m_game.setChessParams(chess);
 }
 
 void ChessBoard::fillUserChessBoard(std::vector<std::vector<QString>> chessFields,
-                                    bool chess960,
+                                    bool chess960, bool whiteMove,
                                     std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling)
 {
     ChessGame::ChessParams chess;
-    chess.chess960 = chess960;
     chess.chessFields = chessFields;
     chess.posRooksWhite = {{EMPTY, EMPTY}, {EMPTY, EMPTY}};
     chess.posRooksBlack = {{EMPTY, EMPTY}, {EMPTY, EMPTY}};
+    chess.castling = castling;
+    chess.chess960 = chess960;
+    chess.whiteMove = whiteMove;
 
     for (size_t i = 0; i < 8; ++i) {
         for (size_t j = 0; j < 8; ++j) {
@@ -182,7 +207,7 @@ void ChessBoard::fillUserChessBoard(std::vector<std::vector<QString>> chessField
         }
     }
 
-    m_game.setChessParams(chess, castling);
+    m_game.setChessParams(chess);
 }
 
 void ChessBoard::turnBoard()
@@ -246,7 +271,7 @@ bool ChessBoard::getBlockBoard()
 
 bool ChessBoard::getColorMove()
 {
-    return m_game.getColorMove();
+    return m_whiteMove;
 }
 
 void ChessBoard::showEvent(QShowEvent *event)
@@ -393,6 +418,8 @@ void ChessBoard::clickField(const QString &nameField)
     } else if (!chessFields[i][j].isEmpty() && chessFields[i][j][0] == color) {
         this->takePiece(i, j);
     }
+
+    m_whiteMove = m_game.getColorMove();
 }
 
 void ChessBoard::checkField(qint8 i, qint8 j)

@@ -18,6 +18,7 @@ public:
         TypeGame gameType;
         TypeChess chessType;
         TypeTimeChess timeChessType;
+        bool whiteMove {true};
         qint32 mainTime;
         qint16 minorTime;
         std::vector<std::vector<QString>> chessFields;

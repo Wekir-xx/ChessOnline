@@ -40,7 +40,7 @@ public:
     void fillStandartChessBoard();
     void fillStandart960ChessBoard();
     void fillUserChessBoard(std::vector<std::vector<QString>> chessFields,
-                            bool chess960,
+                            bool chess960, bool whiteMove,
                             std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling);
 
     void turnBoard();
@@ -110,6 +110,7 @@ private:
     bool m_turnBoard{false};
     bool m_turnChess{false};
     bool m_takenPiece{false};
+    bool m_whiteMove{false};
 };
 
 #endif // CHESS_BOARD_H

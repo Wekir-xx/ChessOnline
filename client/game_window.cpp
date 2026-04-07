@@ -101,7 +101,9 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
         this->endGame(result);
         m_timer->stop();
     });
-    connect(leftChessHistory, &QPushButton::clicked, this, [this]() { m_board->historyBack(); });
+    connect(leftChessHistory, &QPushButton::clicked, this, [this]() {
+        m_board->historyBack();
+    });
     connect(rightChessHistory, &QPushButton::clicked, this, [this]() {
         m_board->historyForward();
     });
@@ -114,7 +116,9 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
             m_settings->hide();
         }
     });
-    connect(m_settings, &SettingsWindow::turnBoard, this, [this]() { this->turnBoard(); });
+    connect(m_settings, &SettingsWindow::turnBoard, this, [this]() {
+        this->turnBoard();
+    });
     connect(m_settings, &SettingsWindow::turnChess, this, [this]() {
         m_board->turnChess();
     });
@@ -149,7 +153,9 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
         m_endGame->hide();
         // TODO
     });
-    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() { m_endGame->hide(); });
+    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() {
+        m_endGame->hide();
+    });
     connect(m_timer, &QTimer::timeout, this, [this]() {
         this->setTime(m_startMove.secsTo(QDateTime::currentDateTime()), m_board->getColorMove());
     });
@@ -192,7 +198,8 @@ void GameWindow::startGame(bool first)
     else if (m_params.chessType == TypeChess::STANDART960)
         m_board->fillStandart960ChessBoard();
     else
-        m_board->fillUserChessBoard(m_params.chessFields, m_params.chessType == TypeChess::USER ? false : true, m_params.castling);
+        m_board->fillUserChessBoard(m_params.chessFields, m_params.chessType == TypeChess::USER ? false : true,
+                                    m_params.whiteMove, m_params.castling);
 
     m_upButton->setText("Draw");
     m_downButton->setText("Resign");

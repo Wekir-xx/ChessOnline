@@ -15,7 +15,9 @@ public:
         std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
         std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
         std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
+        std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
         bool chess960;
+        bool whiteMove;
     };
 
     ChessGame();
@@ -35,7 +37,7 @@ public:
     void untransformPawn();
 
     void setField(QString field, qint8 i, qint8 j);
-    void setChessParams(ChessParams chess, std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling);
+    void setChessParams(ChessParams chess);
 
     bool getCheck();
     bool getColorMove();
@@ -60,7 +62,6 @@ private:
     std::vector<std::pair<qint8, qint8>> m_beatFields;
     std::vector<QString> m_chessMoveHistory;
     std::vector<std::vector<std::vector<QString>>> m_chessFieldsHistory;
-    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> m_castling;
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> m_lastMove;
 
     bool m_whiteMove{true};
