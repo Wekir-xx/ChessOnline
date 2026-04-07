@@ -39,6 +39,7 @@ private:
     void newGame();
     void rematch();
     void turnBoard();
+    void turnWidget(QVBoxLayout *layout, QWidget *widget1, QWidget *widget2);
     void tick();
     void setTime(qint32 seconds, bool white);
     void resetTime();
@@ -49,8 +50,13 @@ private:
     EndGameWindow *m_endGame;
     QVBoxLayout *m_sideLayout;
 
+    std::pair<QWidget *, QWidget *> m_player;
+    std::pair<QVBoxLayout *, QVBoxLayout *> m_playerLayout;
+    std::pair<QLabel *, QLabel *> m_iconPlayer;
+    std::pair<QLabel *, QLabel *> m_infoPlayer;
+    std::pair<QLabel *, QLabel *> m_timePlayer;
+
     QTimer *m_timer;
-    std::pair<QLabel *, QLabel *> m_timeLabel;
     std::pair<qint32, qint32> m_time;
     QDateTime m_startMove;
     qint32 m_saveTime;
@@ -62,6 +68,7 @@ private:
 
     GameParams m_params;
     std::pair<QString, QString> m_nicknames;
+    std::pair<qint16, qint16> m_ratings;
 };
 
 #endif // GAME_WINDOW_H

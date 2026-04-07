@@ -5,6 +5,7 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     , m_params{params}
 {
     m_nicknames = {"name1", "name2"};
+    m_ratings = {0, 0};
     bool mainPlayerWhite = true;
 
     EndGameWindow::PlayerParams playerParams;
@@ -12,6 +13,7 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     playerParams.icons = {QPixmap(pathGeneral + "player.png"), QPixmap(pathGeneral + "player.png")};
     playerParams.mainPlayerWhite = mainPlayerWhite;
     playerParams.type = m_params.timeChessType;
+    playerParams.ratings = m_ratings;
 
     m_board = new ChessBoard();
     m_settings = new SettingsWindow(params.settingParams, this);
@@ -24,45 +26,85 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
     m_endGame->hide();
 
     QPushButton *leftChessHistory = new QPushButton();
-    leftChessHistory->setFixedSize(35, 35);
-    leftChessHistory->setIcon(QIcon(pathGeneral + "leftArrow.png"));
-    leftChessHistory->setIconSize(QSize(37, 37));
-    leftChessHistory->setStyleSheet("QPushButton { padding: 0px; }");
-
     QPushButton *rightChessHistory = new QPushButton();
-    rightChessHistory->setFixedSize(35, 35);
-    rightChessHistory->setIcon(QIcon(pathGeneral + "rightArrow.png"));
-    rightChessHistory->setIconSize(QSize(37, 37));
-    rightChessHistory->setStyleSheet("QPushButton { padding: 0px; }");
-
     QPushButton *settings = new QPushButton();
-    settings->setFixedSize(35, 35);
+
+    leftChessHistory->setFixedSize(FIXED_SIZE_MINI_BUTTON, FIXED_SIZE_MINI_BUTTON);
+    rightChessHistory->setFixedSize(FIXED_SIZE_MINI_BUTTON, FIXED_SIZE_MINI_BUTTON);
+    settings->setFixedSize(FIXED_SIZE_MINI_BUTTON, FIXED_SIZE_MINI_BUTTON);
+
+    leftChessHistory->setIcon(QIcon(pathGeneral + "leftArrow.png"));
+    rightChessHistory->setIcon(QIcon(pathGeneral + "rightArrow.png"));
     settings->setIcon(QIcon(pathGeneral + "settings.png"));
-    settings->setIconSize(QSize(37, 37));
+
+    leftChessHistory->setIconSize(QSize(FIXED_SIZE_MINI_BUTTON_ICON, FIXED_SIZE_MINI_BUTTON_ICON));
+    rightChessHistory->setIconSize(QSize(FIXED_SIZE_MINI_BUTTON_ICON, FIXED_SIZE_MINI_BUTTON_ICON));
+    settings->setIconSize(QSize(FIXED_SIZE_MINI_BUTTON_ICON, FIXED_SIZE_MINI_BUTTON_ICON));
+
+    leftChessHistory->setStyleSheet("QPushButton { padding: 0px; }");
+    rightChessHistory->setStyleSheet("QPushButton { padding: 0px; }");
     settings->setStyleSheet("QPushButton { padding: 0px; }");
 
     m_upButton = new QPushButton();
     m_downButton = new QPushButton();
 
-    m_timeLabel = std::pair{new QLabel(), new QLabel()};
-    m_timeLabel.first->setAlignment(Qt::AlignCenter);
-    m_timeLabel.second->setAlignment(Qt::AlignCenter);
-    m_timeLabel.first->setStyleSheet("background-color: white; color: black; font-size:24px; padding:10px;");
-    m_timeLabel.second->setStyleSheet("background-color: black; color: white; font-size:24px; padding:10px;");
-    m_timeLabel.first->setFixedHeight(FIXED_SIZE_TYPE_GAME);
-    m_timeLabel.second->setFixedHeight(FIXED_SIZE_TYPE_GAME);
+    m_iconPlayer = std::pair{new QLabel(), new QLabel()};
+    m_infoPlayer = std::pair{new QLabel(), new QLabel()};
+    m_timePlayer = std::pair{new QLabel(), new QLabel()};
+
+    m_iconPlayer.first->setPixmap(playerParams.icons.first);
+    m_iconPlayer.second->setPixmap(playerParams.icons.second);
+    m_iconPlayer.first->setScaledContents(true);
+    m_iconPlayer.second->setScaledContents(true);
+    m_iconPlayer.first->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    m_iconPlayer.second->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+    m_infoPlayer.first->setAlignment(Qt::AlignCenter);
+    m_infoPlayer.second->setAlignment(Qt::AlignCenter);
+    m_timePlayer.first->setAlignment(Qt::AlignCenter);
+    m_timePlayer.second->setAlignment(Qt::AlignCenter);
+    m_infoPlayer.first->setFixedHeight(FIXED_SIZE_NUMBERS);
+    m_infoPlayer.second->setFixedHeight(FIXED_SIZE_NUMBERS);
+    m_timePlayer.first->setFixedHeight(FIXED_SIZE_TYPE_GAME);
+    m_timePlayer.second->setFixedHeight(FIXED_SIZE_TYPE_GAME);
+
+    m_timePlayer.first->setStyleSheet("background-color: white; color: black; font-size:24px; padding:10px;");
+    m_timePlayer.second->setStyleSheet("background-color: black; color: white; font-size:24px; padding:10px;");
+
+    if (m_ratings.first != 0) {
+        m_infoPlayer.first->setText(m_nicknames.first + QString::number(m_ratings.first));
+        m_infoPlayer.second->setText(m_nicknames.second + QString::number(m_ratings.second));
+    } else {
+        m_infoPlayer.first->setText(m_nicknames.first);
+        m_infoPlayer.second->setText(m_nicknames.second);
+    }
 
     QHBoxLayout *helperLayout = new QHBoxLayout();
+
     helperLayout->addWidget(leftChessHistory);
     helperLayout->addWidget(rightChessHistory);
     helperLayout->addWidget(settings);
 
+    m_player = std::pair{new QWidget(), new QWidget()};
+    m_playerLayout = std::pair{new QVBoxLayout(), new QVBoxLayout()};
+
+    m_player.first->setLayout(m_playerLayout.first);
+    m_player.second->setLayout(m_playerLayout.second);
+
+    m_playerLayout.first->addWidget(m_timePlayer.first);
+    m_playerLayout.first->addWidget(m_infoPlayer.first);
+    m_playerLayout.first->addWidget(m_iconPlayer.first);
+    m_playerLayout.second->addWidget(m_iconPlayer.second);
+    m_playerLayout.second->addWidget(m_infoPlayer.second);
+    m_playerLayout.second->addWidget(m_timePlayer.second);
+
     m_sideLayout = new QVBoxLayout();
-    m_sideLayout->addWidget(m_timeLabel.second);
+
+    m_sideLayout->addWidget(m_player.second);
     m_sideLayout->addWidget(m_upButton);
     m_sideLayout->addLayout(helperLayout);
     m_sideLayout->addWidget(m_downButton);
-    m_sideLayout->addWidget(m_timeLabel.first);
+    m_sideLayout->addWidget(m_player.first);
 
     BoardLayout *mainLayout = new BoardLayout();
     mainLayout->addWidget(m_board);
@@ -84,7 +126,7 @@ GameWindow::GameWindow(GameParams &params, QWidget *parent)
             m_timer->start(TICK);
         }
 
-        bool white = !m_board->getColorMove();
+        bool white = m_board->getColorMove();
         if (white) {
             m_time.first += m_params.minorTime - m_startMove.secsTo(QDateTime::currentDateTime());
             if (m_time.first > MAX_TIME_SECONDS)
@@ -258,19 +300,25 @@ void GameWindow::rematch() {}
 void GameWindow::turnBoard()
 {
     m_board->turnBoard();
+    turnWidget(m_sideLayout, m_player.first, m_player.second);
+    turnWidget(m_playerLayout.first, m_iconPlayer.first, m_timePlayer.first);
+    turnWidget(m_playerLayout.second, m_iconPlayer.second, m_timePlayer.second);
+}
 
-    qint8 id1 = m_sideLayout->indexOf(m_timeLabel.first);
-    qint8 id2 = m_sideLayout->indexOf(m_timeLabel.second);
+void GameWindow::turnWidget(QVBoxLayout *layout, QWidget *widget1, QWidget *widget2)
+{
+    qint8 id1 = layout->indexOf(widget1);
+    qint8 id2 = layout->indexOf(widget2);
 
-    m_sideLayout->removeWidget(m_timeLabel.first);
-    m_sideLayout->removeWidget(m_timeLabel.second);
+    layout->removeWidget(widget1);
+    layout->removeWidget(widget2);
 
     if (id1 < id2) {
-        m_sideLayout->insertWidget(id1, m_timeLabel.second);
-        m_sideLayout->insertWidget(id2, m_timeLabel.first);
+        layout->insertWidget(id1, widget2);
+        layout->insertWidget(id2, widget1);
     } else {
-        m_sideLayout->insertWidget(id2, m_timeLabel.first);
-        m_sideLayout->insertWidget(id1, m_timeLabel.second);
+        layout->insertWidget(id2, widget1);
+        layout->insertWidget(id1, widget2);
     }
 }
 
@@ -296,9 +344,9 @@ void GameWindow::setTime(qint32 seconds, bool white)
         time = QString::asprintf("%2d:%02d", m, s);
 
     if (white)
-        m_timeLabel.first->setText(time);
+        m_timePlayer.first->setText(time);
     else
-        m_timeLabel.second->setText(time);
+        m_timePlayer.second->setText(time);
 }
 
 void GameWindow::resetTime()
