@@ -2,32 +2,22 @@
 #define END_GAME_WINDOW_H
 
 #include "defines.h"
-#include "src/player_info_layout.h"
+#include "src/player_info_layout2.h"
 
-#include <QHBoxLayout>
 #include <QLabel>
 #include <QObject>
 #include <QPixmap>
-#include <QPushButton>
 #include <QWidget>
+#include <QHBoxLayout>
+#include <QPushButton>
 
 class EndGameWindow : public QWidget
 {
     Q_OBJECT
-
 public:
+    explicit EndGameWindow(QWidget *parent = nullptr);
 
-    struct PlayerParams
-    {
-        std::pair<QString, QString> nicknames;
-        std::pair<QPixmap, QPixmap> icons;
-        std::pair<qint16, qint16> ratings;
-        bool mainPlayerWhite;
-        TypeTimeChess type;
-    };
-
-    explicit EndGameWindow(PlayerParams params, QWidget *parent = nullptr);
-
+    void setParams(PlayerParams params);
     void setResult(ResultGame result, std::pair<qint16, qint16> newRatings = {0, 0});
 
 signals:
@@ -38,9 +28,28 @@ signals:
     void exitSignal();
 
 private:
+    QVBoxLayout *m_mainLayout;
+    QHBoxLayout *m_playerInfo;
+    QHBoxLayout *m_resultLayout;
+    PlayerInfoLayout2 *m_whitePlayer;
+    PlayerInfoLayout2 *m_blackPlayer;
+    QHBoxLayout *m_topLayout;
+    QHBoxLayout *m_buttonsLayout;
+
+    QPushButton *m_exit;
+    QPushButton *m_gameReview;
+    QPushButton *m_newGame;
+    QPushButton *m_rematch;
+    QPushButton *m_blockUser;
+
+    QLabel *m_playerWhiteInfo;
+    QLabel *m_playerBlackInfo;
     QLabel *m_newRatingsWhite;
     QLabel *m_newRatingsBlack;
     QLabel *m_result;
+    QLabel *m_iconPlayerWhite;
+    QLabel *m_iconPlayerBlack;
+    QLabel *m_iconGame;
 };
 
 #endif // END_GAME_WINDOW_H

@@ -1,5 +1,7 @@
 #include "chess_game.h"
 
+#include <QChar>
+
 ChessGame::ChessGame()
 {
     m_beatFields.reserve(30);
@@ -67,7 +69,8 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
     } else {
         if (m_chess.chessFields[m_takenPiece.first][m_takenPiece.second][1] == 'R') {
             if (m_whiteMove) {
-                if (m_takenPiece.first == m_chess.posRooksWhite.first.first && m_takenPiece.second == m_chess.posRooksWhite.first.second) {
+                if (m_takenPiece.first == m_chess.posRooksWhite.first.first
+                        && m_takenPiece.second == m_chess.posRooksWhite.first.second) {
                     if (m_chess.castling.first.first)
                         m_movesHistory = 0;
                     m_chess.castling.first.first = false;
@@ -78,7 +81,8 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
                     m_chess.castling.first.second = false;
                 }
             } else {
-                if (m_takenPiece.first == m_chess.posRooksBlack.first.first && m_takenPiece.second == m_chess.posRooksBlack.first.second) {
+                if (m_takenPiece.first == m_chess.posRooksBlack.first.first
+                        && m_takenPiece.second == m_chess.posRooksBlack.first.second) {
                     if (m_chess.castling.second.first)
                         m_movesHistory = 0;
                     m_chess.castling.second.first = false;
@@ -164,7 +168,8 @@ void ChessGame::takePiece(qint8 i, qint8 j)
         if (m_whiteMove) {
             if (m_chess.chessFields[i + 1][j].isEmpty() && this->checkMove(i + 1, j))
                 m_beatFields.push_back({i + 1, j});
-            if (i == 1 && m_chess.chessFields[2][j].isEmpty() && m_chess.chessFields[3][j].isEmpty() && this->checkMove(3, j))
+            if (i == 1 && m_chess.chessFields[2][j].isEmpty()
+                    && m_chess.chessFields[3][j].isEmpty() && this->checkMove(3, j))
                 m_beatFields.push_back({3, j});
             if (this->checkMove(i + 1, j + 1) && !m_chess.chessFields[i + 1][j + 1].isEmpty())
                 m_beatFields.push_back({i + 1, j + 1});
@@ -172,16 +177,19 @@ void ChessGame::takePiece(qint8 i, qint8 j)
                 m_beatFields.push_back({i + 1, j - 1});
             if (i == 4) {
                 if (this->checkMove(4, j + 1) && m_chess.chessFields[4][j + 1] == "bP"
-                        && m_lastMove.first == std::pair<qint8, qint8> {6, j + 1} && m_lastMove.second == std::pair<qint8, qint8> {4, j + 1})
+                        && m_lastMove.first == std::pair<qint8, qint8> {6, j + 1}
+                        && m_lastMove.second == std::pair<qint8, qint8> {4, j + 1})
                     m_beatFields.push_back({5, j + 1});
                 if (this->checkMove(4, j - 1) && m_chess.chessFields[4][j - 1] == "bP"
-                        && m_lastMove.first == std::pair<qint8, qint8> {6, j - 1} && m_lastMove.second == std::pair<qint8, qint8> {4, j - 1})
+                        && m_lastMove.first == std::pair<qint8, qint8> {6, j - 1}
+                        && m_lastMove.second == std::pair<qint8, qint8> {4, j - 1})
                     m_beatFields.push_back({5, j - 1});
             }
         } else {
             if (m_chess.chessFields[i - 1][j].isEmpty() && this->checkMove(i - 1, j))
                 m_beatFields.push_back({i - 1, j});
-            if (i == 6 && m_chess.chessFields[4][j].isEmpty() && m_chess.chessFields[5][j].isEmpty() && this->checkMove(4, j))
+            if (i == 6 && m_chess.chessFields[4][j].isEmpty()
+                    && m_chess.chessFields[5][j].isEmpty() && this->checkMove(4, j))
                 m_beatFields.push_back({4, j});
             if (this->checkMove(i - 1, j + 1) && !m_chess.chessFields[i - 1][j + 1].isEmpty())
                 m_beatFields.push_back({i - 1, j + 1});
@@ -189,10 +197,12 @@ void ChessGame::takePiece(qint8 i, qint8 j)
                 m_beatFields.push_back({i - 1, j - 1});
             if (i == 3) {
                 if (this->checkMove(3, j + 1) && m_chess.chessFields[3][j + 1] == "wP"
-                        && m_lastMove.first == std::pair<qint8, qint8> {1, j + 1} && m_lastMove.second == std::pair<qint8, qint8> {3, j + 1})
+                        && m_lastMove.first == std::pair<qint8, qint8> {1, j + 1}
+                        && m_lastMove.second == std::pair<qint8, qint8> {3, j + 1})
                     m_beatFields.push_back({2, j + 1});
                 if (this->checkMove(3, j - 1) && m_chess.chessFields[3][j - 1] == "wP"
-                        && m_lastMove.first == std::pair<qint8, qint8> {1, j - 1} && m_lastMove.second == std::pair<qint8, qint8> {3, j - 1})
+                        && m_lastMove.first == std::pair<qint8, qint8> {1, j - 1}
+                        && m_lastMove.second == std::pair<qint8, qint8> {3, j - 1})
                     m_beatFields.push_back({2, j - 1});
             }
         }
@@ -235,7 +245,8 @@ bool ChessGame::isStaleMate()
     for (qint8 i = 0; i < 8; ++i) {
         for (qint8 j = 0; j < 8; ++j) {
             if (!m_chess.chessFields[i][j].isEmpty()) {
-                if (m_chess.chessFields[i][j][1] == 'P' || m_chess.chessFields[i][j][1] == 'R' || m_chess.chessFields[i][j][1] == 'Q') {
+                if (m_chess.chessFields[i][j][1] == 'P' || m_chess.chessFields[i][j][1] == 'R'
+                        || m_chess.chessFields[i][j][1] == 'Q') {
                     return false;
                 } else if (m_chess.chessFields[i][j][1] != 'K') {
                     if (piece.size() > 2)
@@ -274,8 +285,10 @@ void ChessGame::historyMove()
 {
     m_chess.chessFields = m_chessFieldsHistory[m_numBoardHistory];
     QString lastMove = m_chessMoveHistory[m_numBoardHistory];
-    m_lastMove = std::pair{std::pair{static_cast<qint8>(lastMove[0].digitValue()), static_cast<qint8>(lastMove[1].digitValue())},
-                           std::pair{static_cast<qint8>(lastMove[2].digitValue()), static_cast<qint8>(lastMove[3].digitValue())}};
+    m_lastMove = std::pair{std::pair{static_cast<qint8>(lastMove[0].digitValue()),
+                                     static_cast<qint8>(lastMove[1].digitValue())},
+                           std::pair{static_cast<qint8>(lastMove[2].digitValue()),
+                                     static_cast<qint8>(lastMove[3].digitValue())}};
     for (size_t i = 0; i < 8; ++i) {
         for (size_t j = 0; j < 8; ++j) {
             if (m_chess.chessFields[i][j] == "wK")
@@ -414,10 +427,14 @@ bool ChessGame::isCheck()
             || ((i - 1) >= 0 && !m_chess.chessFields[i - 1][j].isEmpty() && m_chess.chessFields[i - 1][j][1] == 'K')
             || ((j + 1) < 8 && !m_chess.chessFields[i][j + 1].isEmpty() && m_chess.chessFields[i][j + 1][1] == 'K')
             || ((j - 1) >= 0 && !m_chess.chessFields[i][j - 1].isEmpty() && m_chess.chessFields[i][j - 1][1] == 'K')
-            || ((i + 1) < 8 && (j + 1) < 8 && !m_chess.chessFields[i + 1][j + 1].isEmpty() && m_chess.chessFields[i + 1][j + 1][1] == 'K')
-            || ((i + 1) < 8 && (j - 1) >= 0 && !m_chess.chessFields[i + 1][j - 1].isEmpty() && m_chess.chessFields[i + 1][j - 1][1] == 'K')
-            || ((i - 1) >= 0 && (j + 1) < 8 && !m_chess.chessFields[i - 1][j + 1].isEmpty() && m_chess.chessFields[i - 1][j + 1][1] == 'K')
-            || ((i - 1) >= 0 && (j - 1) >= 0 && !m_chess.chessFields[i - 1][j - 1].isEmpty() && m_chess.chessFields[i - 1][j - 1][1] == 'K'))
+            || ((i + 1) < 8 && (j + 1) < 8 && !m_chess.chessFields[i + 1][j + 1].isEmpty()
+                && m_chess.chessFields[i + 1][j + 1][1] == 'K')
+            || ((i + 1) < 8 && (j - 1) >= 0 && !m_chess.chessFields[i + 1][j - 1].isEmpty()
+                && m_chess.chessFields[i + 1][j - 1][1] == 'K')
+            || ((i - 1) >= 0 && (j + 1) < 8 && !m_chess.chessFields[i - 1][j + 1].isEmpty()
+                && m_chess.chessFields[i - 1][j + 1][1] == 'K')
+            || ((i - 1) >= 0 && (j - 1) >= 0 && !m_chess.chessFields[i - 1][j - 1].isEmpty()
+                && m_chess.chessFields[i - 1][j - 1][1] == 'K'))
         return true;
 
     if (m_whiteMove) {
@@ -697,7 +714,8 @@ void ChessGame::addCastling()
             m_chess.chessFields[row][posRookCol].clear();
 
             for (qint8 col = (posKingCol - 1) <= 3 ? 3 : (posKingCol - 1); col > 1; --col) {
-                if (col != posKingCol && (!m_chess.chessFields[row][col].isEmpty() || !this->checkMove(row, col, true))) {
+                if (col != posKingCol && (!m_chess.chessFields[row][col].isEmpty()
+                                          || !this->checkMove(row, col, true))) {
                     possibleCastling = false;
                     break;
                 }
@@ -720,7 +738,8 @@ void ChessGame::addCastling()
             m_chess.chessFields[row][posRookCol].clear();
 
             for (qint8 col = (posKingCol + 1) >= 5 ? 5 : (posKingCol + 1); col < 7; ++col) {
-                if (col != posKingCol && (!m_chess.chessFields[row][col].isEmpty() || !this->checkMove(row, col, true))) {
+                if (col != posKingCol && (!m_chess.chessFields[row][col].isEmpty()
+                                          || !this->checkMove(row, col, true))) {
                     possibleCastling = false;
                     break;
                 }
@@ -737,7 +756,8 @@ void ChessGame::addCastling()
         }
     } else {
         if (castling.first && m_chess.chessFields[row][1].isEmpty() && m_chess.chessFields[row][2].isEmpty()
-                && this->checkMove(row, 2, true) && m_chess.chessFields[row][3].isEmpty() && this->checkMove(row, 3, true))
+                && this->checkMove(row, 2, true) && m_chess.chessFields[row][3].isEmpty()
+                && this->checkMove(row, 3, true))
             m_beatFields.push_back({row, 2});
 
         if (castling.second && m_chess.chessFields[row][5].isEmpty() && this->checkMove(row, 5, true)

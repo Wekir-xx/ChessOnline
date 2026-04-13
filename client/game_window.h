@@ -2,30 +2,20 @@
 #define GAME_WINDOW_H
 
 #include "chess_board.h"
-#include "src/board_layout.h"
 #include "src/end_game_window.h"
 #include "src/settings_window.h"
+#include "src/player_info_layout3.h"
+#include "src/rotatable_label.h"
 
 #include <QDateTime>
-#include <QMessageBox>
 #include <QTimer>
 
 class GameWindow : public QWidget
 {
 public:
-    struct GameParams {
-        SettingsWindow::SettingsParams settingParams;
-        TypeGame gameType;
-        TypeChess chessType;
-        TypeTimeChess timeChessType;
-        bool whiteMove {true};
-        qint32 mainTime;
-        qint16 minorTime;
-        std::vector<std::vector<QString>> chessFields;
-        std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
-    };
+    explicit GameWindow(QWidget *parent = nullptr);
 
-    explicit GameWindow(GameParams &params, QWidget *parent = nullptr);
+    void startGame(GameParams &params);
 
     void showSettingWindow();
     void showEndGameWindow();
@@ -34,12 +24,17 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    void startGame(bool first = false);
+    void startGameInner(bool first = false);
     void endGame(ResultGame result);
     void newGame();
     void rematch();
+
     void turnBoard();
     void turnWidget(QVBoxLayout *layout, QWidget *widget1, QWidget *widget2);
+    void turnSecondPlayer();
+    void turnPlayerLayout(QLabel *iconPlayer, RotatableLabel *infoPlayer,
+                          RotatableLabel *timePlayer, QPixmap pixmap, bool up);
+
     void tick();
     void setTime(qint32 seconds, bool white);
     void resetTime();
@@ -50,11 +45,12 @@ private:
     EndGameWindow *m_endGame;
     QVBoxLayout *m_sideLayout;
 
-    std::pair<QWidget *, QWidget *> m_player;
-    std::pair<QVBoxLayout *, QVBoxLayout *> m_playerLayout;
-    std::pair<QLabel *, QLabel *> m_iconPlayer;
-    std::pair<QLabel *, QLabel *> m_infoPlayer;
-    std::pair<QLabel *, QLabel *> m_timePlayer;
+    std::pair<QWidget *, QWidget *> m_players;
+    std::pair<PlayerInfoLayout3 *, PlayerInfoLayout3 *> m_playersLayout;
+    std::pair<QPixmap, QPixmap> m_pixmapPlayers;
+    std::pair<QLabel *, QLabel *> m_iconPlayers;
+    std::pair<RotatableLabel *, RotatableLabel *> m_infoPlayers;
+    std::pair<RotatableLabel *, RotatableLabel *> m_timePlayers;
 
     QTimer *m_timer;
     std::pair<qint32, qint32> m_time;
@@ -66,7 +62,8 @@ private:
     QMetaObject::Connection m_upButtonCon;
     QMetaObject::Connection m_downButtonCon;
 
-    GameParams m_params;
+    StartParams m_StartParams;
+    SettingsParams m_SettingsParams;
     std::pair<QString, QString> m_nicknames;
     std::pair<qint16, qint16> m_ratings;
 };

@@ -6,42 +6,127 @@
 #define BEAT_FIELD_OPACITY 0.27
 #define MINIMUM_PIECE_SIZE 25
 #define FIXED_SIZE_NUMBERS 20
-#define FIXED_SIZE_MINI_BUTTON 35
-#define FIXED_SIZE_MINI_BUTTON_ICON 37
+#define FIXED_SIZE_BUTTON 35
+#define FIXED_SIZE_BUTTON_ICON 37
 #define FIXED_SIZE_EXIT_BUTTON 25
 #define FIXED_SIZE_TYPE_GAME 45
 #define MAX_TIME_SECONDS 259200
 #define TICK 100
+#define MIN 60
 
 #include <QString>
+#include <QPixmap>
+
+#include <vector>
 
 const QString pathGeneral = ":/src/images/";
 const QString pathStyle1 = pathGeneral + "style1/";
 
-enum class TypeChess {
-    STANDART,
+enum class TypeChess : int {
+    UNDEFINED = -1,
+    STANDART = 0,
     STANDART960,
     USER,
     USER960,
+    NUMBER,
 };
 
-enum class TypeTimeChess {
-    BULLET,
+const std::vector<std::string> TypeChessStr = {
+    "Standart",
+    "Standart960",
+    "User",
+    "User960",
+};
+
+enum class TypeTimeChess : int {
+    UNDEFINED = -1,
+    BULLET = 0,
     BLITZ,
     RAPID,
     CLASSIC,
     OTHER,
+    NO_TIME,
+    NUMBER,
 };
 
-enum class TypeGame {
-    ONLINE,
+const std::vector<std::string> TypeTimeChessStr = {
+    "Bullet",
+    "Blitz",
+    "Rapid",
+    "Classic",
+    "Other",
+    "No time",
+};
+
+const std::vector<std::vector<std::string>> TimeChessStr = {{"30s", "1m", "1m|1s", "2m", "2m|1s", "2m|2s"},
+                                                            {"3m", "3m|2s", "3m|3s", "5m", "5m|3s", "5m|5s"},
+                                                            {"10m", "10m|5s", "10m|15s", "30m", "30m|15s", "30m|30s"},
+                                                            {"1h", "1h|30s", "2h", "2h|30s", "3h", "3h|30s"}};
+
+const std::vector<std::vector<std::pair<qint32, qint8>>> TimeChessValue
+    = {{{30, 0}, {MIN, 0}, {MIN, 1}, {2 * MIN, 0}, {2 * MIN, 1}, {2 * MIN, 2}},
+       {{3 * MIN, 0}, {3 * MIN, 2}, {3 * MIN, 3}, {5 * MIN, 0}, {5 * MIN, 3}, {5 * MIN, 5}},
+       {{10 * MIN, 0}, {10 * MIN, 5}, {10 * MIN, 15}, {30 * MIN, 0}, {30 * MIN, 15}, {30 * MIN, 30}},
+       {{60 * MIN, 0}, {60 * MIN, 30}, {120 * MIN, 0}, {120 * MIN, 30}, {180 * MIN, 0}, {180 * MIN, 30}}};
+
+enum class TypeGame : int {
+    UNDEFINED = -1,
+    ONLINE = 0,
     OFFLINE,
+    NUMBER,
 };
 
-enum class ResultGame {
-    WIN_WHITE,
+const std::vector<std::string> TypeGameStr = {
+    "Online",
+    "Offline",
+};
+
+enum class ResultGame : int {
+    WIN_WHITE = 0,
     WIN_BLACK,
     STALE_MATE,
+    NUMBER,
+};
+
+struct SettingsParams {
+    bool checkAutoQueen;
+    bool checkAutoRotate;
+    bool checkPremove;
+    bool checkNoticeTime;
+};
+
+struct StartParams {
+    TypeGame gameType;
+    TypeChess chessType;
+    TypeTimeChess timeChessType;
+    qint32 mainTime;
+    qint8 minorTime;
+    std::vector<std::vector<QString>> chessFields;
+    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
+    bool whiteMove;
+};
+
+struct PlayerParams {
+    std::pair<QString, QString> nicknames;
+    std::pair<QPixmap, QPixmap> icons;
+    std::pair<qint16, qint16> ratings;
+    bool mainPlayerWhite;
+    TypeTimeChess type;
+};
+
+struct GameParams {
+    SettingsParams settingsParams;
+    StartParams startParams;
+};
+
+struct ChessParams {
+    std::vector<std::vector<QString>> chessFields;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
+    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
+    bool chess960;
+    bool whiteMove;
 };
 
 #endif // DEFINES_H

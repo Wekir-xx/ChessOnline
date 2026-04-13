@@ -1,6 +1,6 @@
 #include "end_game_window.h"
 
-EndGameWindow::EndGameWindow(PlayerParams params, QWidget *parent)
+EndGameWindow::EndGameWindow(QWidget *parent)
     : QWidget{parent}
 {
     this->setAttribute(Qt::WA_StyledBackground, true);
@@ -30,122 +30,141 @@ EndGameWindow::EndGameWindow(PlayerParams params, QWidget *parent)
                         "   background-color: #25A619;"
                         "}");
 
-    QVBoxLayout *mainLayout = new QVBoxLayout();
-    QHBoxLayout *playerInfo = new QHBoxLayout();
-    PlayerInfoLayout *whitePlayer = new PlayerInfoLayout();
-    PlayerInfoLayout *blackPlayer = new PlayerInfoLayout();
-    QHBoxLayout *topLayout = new QHBoxLayout();
-    QHBoxLayout *resultLayout = new QHBoxLayout();
-    QHBoxLayout *buttonsLayout = new QHBoxLayout();
+    m_mainLayout = new QVBoxLayout();
+    m_playerInfo = new QHBoxLayout();
+    m_whitePlayer = new PlayerInfoLayout2();
+    m_blackPlayer = new PlayerInfoLayout2();
+    m_topLayout = new QHBoxLayout();
+    m_resultLayout = new QHBoxLayout();
+    m_buttonsLayout = new QHBoxLayout();
 
-    QPushButton *exit = new QPushButton();
-    QPushButton *gameReview = new QPushButton("Game Review");
-    QPushButton *newGame = new QPushButton("New Game");
-    QPushButton *rematch = new QPushButton("Rematch");
+    m_exit = new QPushButton();
+    m_gameReview = new QPushButton("Game Review");
+    m_newGame = new QPushButton("New Game");
+    m_rematch = new QPushButton("Rematch");
+    m_blockUser = new QPushButton("Block User", this);
 
-    exit->setIcon(QIcon(pathGeneral + "exit.png"));
-    exit->setFixedSize(FIXED_SIZE_EXIT_BUTTON, FIXED_SIZE_EXIT_BUTTON);
-    exit->setIconSize(exit->size());
-    gameReview->setObjectName("review");
-    gameReview->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    newGame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    rematch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_exit->setIcon(QIcon(pathGeneral + "exit.png"));
+    m_exit->setFixedSize(FIXED_SIZE_EXIT_BUTTON, FIXED_SIZE_EXIT_BUTTON);
+    m_exit->setIconSize(m_exit->size());
+    m_gameReview->setObjectName("review");
+    m_blockUser->hide();
 
-    QLabel *iconPlayerWhite = new QLabel();
-    QLabel *iconPlayerBlack = new QLabel();
-    QLabel *iconGame = new QLabel();
+    m_gameReview->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_newGame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_rematch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_blockUser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+    m_iconPlayerWhite = new QLabel();
+    m_iconPlayerBlack = new QLabel();
+    m_iconGame = new QLabel();
+
+    m_iconPlayerWhite->setAlignment(Qt::AlignCenter);
+    m_iconPlayerBlack->setAlignment(Qt::AlignCenter);
+    m_iconGame->setAlignment(Qt::AlignCenter);
+
+    m_iconPlayerWhite->setScaledContents(true);
+    m_iconPlayerBlack->setScaledContents(true);
+    m_iconGame->setScaledContents(true);
+
+    m_iconPlayerWhite->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    m_iconPlayerBlack->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    m_iconGame->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+    m_iconGame->setFixedSize(FIXED_SIZE_TYPE_GAME, FIXED_SIZE_TYPE_GAME);
+
+    m_playerWhiteInfo = new QLabel();
+    m_playerBlackInfo = new QLabel();
+    m_newRatingsWhite = new QLabel();
+    m_newRatingsBlack = new QLabel();
+    m_result = new QLabel();
+
+    m_playerWhiteInfo->setFixedHeight(FIXED_SIZE_NUMBERS);
+    m_playerBlackInfo->setFixedHeight(FIXED_SIZE_NUMBERS);
+    m_newRatingsWhite->setFixedHeight(FIXED_SIZE_TYPE_GAME);
+    m_newRatingsBlack->setFixedHeight(FIXED_SIZE_TYPE_GAME);
+
+    m_playerWhiteInfo->setAlignment(Qt::AlignCenter);
+    m_playerBlackInfo->setAlignment(Qt::AlignCenter);
+    m_newRatingsWhite->setAlignment(Qt::AlignCenter);
+    m_newRatingsBlack->setAlignment(Qt::AlignCenter);
+    m_result->setAlignment(Qt::AlignCenter);
+
+    m_whitePlayer->addWidget(m_iconPlayerWhite, 1);
+    m_whitePlayer->addWidget(m_playerWhiteInfo, 0);
+
+    m_blackPlayer->addWidget(m_iconPlayerBlack, 1);
+    m_blackPlayer->addWidget(m_playerBlackInfo, 0);
+
+    m_topLayout->addWidget(m_result, 10);
+    m_topLayout->addWidget(m_exit, 1);
+
+    m_buttonsLayout->addWidget(m_newGame);
+    m_buttonsLayout->addWidget(m_rematch);
+
+    m_mainLayout->addLayout(m_topLayout, 1);
+    m_mainLayout->addLayout(m_playerInfo, 4);
+    m_mainLayout->addSpacing(15);
+    m_mainLayout->addLayout(m_resultLayout, 1);
+    m_mainLayout->addWidget(m_gameReview, 1);
+    m_mainLayout->addLayout(m_buttonsLayout, 1);
+
+    connect(m_exit, &QPushButton::clicked, this, &EndGameWindow::exitSignal);
+    connect(m_newGame, &QPushButton::clicked, this, &EndGameWindow::newGameSignal);
+    connect(m_rematch, &QPushButton::clicked, this, &EndGameWindow::rematchSignal);
+    connect(m_gameReview, &QPushButton::clicked, this, &EndGameWindow::gameReviewSignal);
+    connect(m_blockUser, &QPushButton::clicked, this, &EndGameWindow::blockUserSignal);
+
+    this->setLayout(m_mainLayout);
+}
+
+void EndGameWindow::setParams(PlayerParams params)
+{
     if (params.type == TypeTimeChess::BULLET)
-        iconGame->setPixmap(QPixmap(pathGeneral + "bullet.png"));
+        m_iconGame->setPixmap(QPixmap(pathGeneral + "bullet.png"));
     else if (params.type == TypeTimeChess::BLITZ)
-        iconGame->setPixmap(QPixmap(pathGeneral + "blitz.png"));
+        m_iconGame->setPixmap(QPixmap(pathGeneral + "blitz.png"));
     else if (params.type == TypeTimeChess::RAPID)
-        iconGame->setPixmap(QPixmap(pathGeneral + "rapid.png"));
+        m_iconGame->setPixmap(QPixmap(pathGeneral + "rapid.png"));
     else if (params.type == TypeTimeChess::CLASSIC)
-        iconGame->setPixmap(QPixmap(pathGeneral + "classic.png"));
+        m_iconGame->setPixmap(QPixmap(pathGeneral + "classic.png"));
     else if (params.type == TypeTimeChess::OTHER)
-        iconGame->setPixmap(QPixmap(pathGeneral + "other.png"));
+        m_iconGame->setPixmap(QPixmap(pathGeneral + "other.png"));
 
-    iconPlayerWhite->setPixmap(params.icons.first);
-    iconPlayerBlack->setPixmap(params.icons.second);
-    iconPlayerWhite->setAlignment(Qt::AlignCenter);
-    iconPlayerBlack->setAlignment(Qt::AlignCenter);
-    iconGame->setAlignment(Qt::AlignCenter);
-    iconPlayerWhite->setScaledContents(true);
-    iconPlayerBlack->setScaledContents(true);
-    iconGame->setScaledContents(true);
-    iconPlayerWhite->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    iconPlayerBlack->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    iconGame->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    iconGame->setFixedSize(FIXED_SIZE_TYPE_GAME, FIXED_SIZE_TYPE_GAME);
+    m_iconPlayerWhite->setPixmap(params.icons.first);
+    m_iconPlayerBlack->setPixmap(params.icons.second);
 
     QString playerWhiteInfoStr = params.nicknames.first;
     QString playerBlackInfoStr = params.nicknames.second;
 
     if (params.ratings.first != 0) {
-        QPushButton *blockUser = new QPushButton("Block User");
-        blockUser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        buttonsLayout->addWidget(blockUser);
-        connect(blockUser, &QPushButton::clicked, this, &EndGameWindow::blockUserSignal);
+        m_buttonsLayout->addWidget(m_blockUser);
 
         playerWhiteInfoStr += " " + QString::number(params.ratings.first);
         playerBlackInfoStr += " " + QString::number(params.ratings.second);
+    } else {
+        m_blockUser->setParent(this);
+        m_blockUser->hide();
     }
 
-    QLabel *playerWhiteInfo = new QLabel(playerWhiteInfoStr);
-    QLabel *playerBlackInfo = new QLabel(playerBlackInfoStr);
-    m_newRatingsWhite = new QLabel();
-    m_newRatingsBlack = new QLabel();
-    m_result = new QLabel();
-
-    playerWhiteInfo->setFixedHeight(FIXED_SIZE_NUMBERS);
-    playerBlackInfo->setFixedHeight(FIXED_SIZE_NUMBERS);
-    m_newRatingsWhite->setFixedHeight(FIXED_SIZE_TYPE_GAME);
-    m_newRatingsBlack->setFixedHeight(FIXED_SIZE_TYPE_GAME);
-    playerWhiteInfo->setAlignment(Qt::AlignCenter);
-    playerBlackInfo->setAlignment(Qt::AlignCenter);
-    m_newRatingsWhite->setAlignment(Qt::AlignCenter);
-    m_newRatingsBlack->setAlignment(Qt::AlignCenter);
-    m_result->setAlignment(Qt::AlignCenter);
-
-    whitePlayer->addWidget(iconPlayerWhite, 1);
-    whitePlayer->addWidget(playerWhiteInfo, 0);
-    blackPlayer->addWidget(iconPlayerBlack, 1);
-    blackPlayer->addWidget(playerBlackInfo, 0);
+    m_playerWhiteInfo->setText(playerWhiteInfoStr);
+    m_playerBlackInfo->setText(playerBlackInfoStr);
 
     if (params.mainPlayerWhite) {
-        playerInfo->addLayout(whitePlayer, 1);
-        playerInfo->addLayout(blackPlayer, 1);
+        m_playerInfo->addLayout(m_whitePlayer, 1);
+        m_playerInfo->addLayout(m_blackPlayer, 1);
 
-        resultLayout->addWidget(m_newRatingsWhite);
-        resultLayout->addWidget(iconGame);
-        resultLayout->addWidget(m_newRatingsBlack);
+        m_resultLayout->addWidget(m_newRatingsWhite);
+        m_resultLayout->addWidget(m_iconGame);
+        m_resultLayout->addWidget(m_newRatingsBlack);
     } else {
-        playerInfo->addLayout(blackPlayer, 1);
-        playerInfo->addLayout(whitePlayer, 1);
+        m_playerInfo->addLayout(m_blackPlayer, 1);
+        m_playerInfo->addLayout(m_whitePlayer, 1);
 
-        resultLayout->addWidget(m_newRatingsBlack);
-        resultLayout->addWidget(iconGame);
-        resultLayout->addWidget(m_newRatingsWhite);
+        m_resultLayout->addWidget(m_newRatingsBlack);
+        m_resultLayout->addWidget(m_iconGame);
+        m_resultLayout->addWidget(m_newRatingsWhite);
     }
-
-    topLayout->addWidget(m_result, 10);
-    topLayout->addWidget(exit, 1);
-    buttonsLayout->addWidget(newGame);
-    buttonsLayout->addWidget(rematch);
-    mainLayout->addLayout(topLayout, 1);
-    mainLayout->addLayout(playerInfo, 4);
-    mainLayout->addSpacing(15);
-    mainLayout->addLayout(resultLayout, 1);
-    mainLayout->addWidget(gameReview, 1);
-    mainLayout->addLayout(buttonsLayout, 1);
-
-    connect(exit, &QPushButton::clicked, this, &EndGameWindow::exitSignal);
-    connect(newGame, &QPushButton::clicked, this, &EndGameWindow::newGameSignal);
-    connect(rematch, &QPushButton::clicked, this, &EndGameWindow::rematchSignal);
-    connect(gameReview, &QPushButton::clicked, this, &EndGameWindow::gameReviewSignal);
-
-    this->setLayout(mainLayout);
 }
 
 void EndGameWindow::setResult(ResultGame result, std::pair<qint16, qint16> newRatings)

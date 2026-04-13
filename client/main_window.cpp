@@ -7,20 +7,27 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowTitle("Chess Online");
     this->setWindowIcon(QIcon(pathGeneral + "avatar.png"));
 
-    SettingsWindow::SettingsParams settingParams;
+    SettingsParams settingParams;
     settingParams.checkAutoQueen = false;
+    settingParams.checkAutoRotate = false;
     settingParams.checkPremove = false;
     settingParams.checkNoticeTime = false;
-    settingParams.gameType = TypeGame::OFFLINE;
 
-    GameWindow::GameParams params;
-    params.settingParams = settingParams;
-    params.timeChessType = TypeTimeChess::OTHER;
-    params.mainTime = 12;
-    params.minorTime = 5;
-    params.chessType = TypeChess::STANDART;
+    m_params.settingsParams = settingParams;
 
-    m_gameWindow = new GameWindow(params);
+    m_startGameWindow = new StartGameWindow(this);
+    m_gameWindow = new GameWindow(this);
 
-    this->setCentralWidget(m_gameWindow);
+    m_gameWindow->hide();
+
+    connect(m_startGameWindow, &StartGameWindow::startGame, this, [this]() {
+        m_params.startParams = m_startGameWindow->getStartParams();
+        m_gameWindow->startGame(m_params);
+
+        m_startGameWindow->hide();
+        m_gameWindow->show();
+        this->setCentralWidget(m_gameWindow);
+    });
+
+    this->setCentralWidget(m_startGameWindow);
 }

@@ -1,6 +1,7 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
+#include "start_game_window.h"
 #include "game_window.h"
 
 #include <QMainWindow>
@@ -13,7 +14,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
 
 private:
+    StartGameWindow *m_startGameWindow;
     GameWindow *m_gameWindow;
+    GameParams m_params;
 };
 
 #endif // MAIN_WINDOW_H

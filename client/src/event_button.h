@@ -15,8 +15,8 @@ signals:
 protected:
     void mousePressEvent(QMouseEvent *event) override
     {
-        QPushButton::mousePressEvent(event);
         emit pressMouseSignal(event);
+        QPushButton::mousePressEvent(event);
     }
 };
 

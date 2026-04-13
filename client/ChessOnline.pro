@@ -8,20 +8,28 @@ SOURCES += \
     game_window.cpp \
     main.cpp \
     main_window.cpp \
+    src/button_complex.cpp \
     src/end_game_window.cpp \
-    src/settings_window.cpp
+    src/settings_window.cpp \
+    src/time_chess.cpp \
+    start_game_window.cpp
 
 HEADERS += \
     chess_board.h \
     chess_game.h \
     game_window.h \
     main_window.h \
+    src/button_complex.h \
     src/defines.h \
     src/board_layout.h \
     src/end_game_window.h \
     src/event_button.h \
-    src/player_info_layout.h \
-    src/settings_window.h
+    src/player_info_layout2.h \
+    src/player_info_layout3.h \
+    src/rotatable_label.h \
+    src/settings_window.h \
+    src/time_chess.h \
+    start_game_window.h
 
 RESOURCES += \
     resources.qrc

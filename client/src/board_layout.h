@@ -26,8 +26,8 @@ public:
 
         int fixedWidth = otherWidget->minimumSize().width();
         int width = adjustedRect.width() - fixedWidth;
-        int heigth = adjustedRect.height();
-        int newSide = qMin(width, heigth);
+        int height = adjustedRect.height();
+        int newSide = qMin(width, height);
 
         int x = adjustedRect.x();
         int y = adjustedRect.y();

@@ -12,24 +12,33 @@
 class SettingsWindow : public QWidget
 {
     Q_OBJECT
-public:
-    struct SettingsParams
-    {
-        bool checkAutoQueen;
-        bool checkPremove;
-        bool checkNoticeTime;
-        TypeGame gameType;
-    };
 
-    explicit SettingsWindow(SettingsParams params, QWidget *parent = nullptr);
+public:
+    explicit SettingsWindow(QWidget *parent = nullptr);
+
+    void setParams(SettingsParams params, TypeGame gameType);
 
 signals:
     void turnBoard();
-    void turnChess();
+    void turnSecondPlayer();
     void autoQueen();
+    void autoRotate();
     void premove();
     void noticeTime();
     void exitSignal();
+
+private:
+    QVBoxLayout *m_layoutV;
+    QHBoxLayout *m_layoutH;
+
+    QPushButton *m_exit;
+    QPushButton *m_turnBoardBut;
+    QPushButton *m_turnChessBut;
+
+    QCheckBox *m_autoQueenBut;
+    QCheckBox *m_autoRotateBut;
+    QCheckBox *m_premoveBut;
+    QCheckBox *m_noticeTimeBut;
 };
 
 #endif // SETTINGS_WINDOW_H

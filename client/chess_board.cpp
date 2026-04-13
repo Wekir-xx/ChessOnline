@@ -1,9 +1,18 @@
 #include "chess_board.h"
 
+#include <QIcon>
+#include <QPainter>
+#include <QPixmap>
+#include <QSizePolicy>
+#include <QTransform>
+#include <QChar>
+
+#include <random>
+
 ChessBoard::ChessBoard(QWidget *parent)
     : QWidget(parent)
 {
-    setMouseTracking(true);
+    this->setMouseTracking(true);
 
     m_imagesOfPieces.reserve(40);
     m_chessBoardBut.resize(8, std::vector<EventButton *>(8, nullptr));
@@ -74,7 +83,7 @@ void ChessBoard::resetBoard()
 
 void ChessBoard::fillStandartChessBoard()
 {
-    ChessGame::ChessParams chess;
+    ChessParams chess;
     chess.chessFields.resize(8, std::vector<QString>(8));
     chess.posKings = {{0, 4}, {7, 4}};
     chess.posRooksWhite = {{0, 0}, {0, 7}};
@@ -111,7 +120,7 @@ void ChessBoard::fillStandartChessBoard()
 
 void ChessBoard::fillStandart960ChessBoard()
 {
-    ChessGame::ChessParams chess;
+    ChessParams chess;
     chess.chessFields.resize(8, std::vector<QString>(8));
     chess.castling = {{true, true}, {true, true}};
     chess.chess960 = true;
@@ -179,7 +188,7 @@ void ChessBoard::fillUserChessBoard(std::vector<std::vector<QString>> chessField
                                     bool chess960, bool whiteMove,
                                     std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling)
 {
-    ChessGame::ChessParams chess;
+    ChessParams chess;
     chess.chessFields = chessFields;
     chess.posRooksWhite = {{EMPTY, EMPTY}, {EMPTY, EMPTY}};
     chess.posRooksBlack = {{EMPTY, EMPTY}, {EMPTY, EMPTY}};
@@ -212,9 +221,9 @@ void ChessBoard::fillUserChessBoard(std::vector<std::vector<QString>> chessField
 
 void ChessBoard::turnBoard()
 {
-    if (m_turnChess) {
-        fillIcan(m_turnBoard, true);
-        fillIcan(!m_turnBoard, false);
+    if (m_turnSecondPlayer) {
+        this->fillIcan(m_turnBoard, true);
+        this->fillIcan(!m_turnBoard, false);
         this->updateChessScene();
     }
 
@@ -222,13 +231,13 @@ void ChessBoard::turnBoard()
     this->fillBoard();
 }
 
-void ChessBoard::turnChess()
+void ChessBoard::turnSecondPlayer()
 {
-    m_turnChess ^= true;
+    m_turnSecondPlayer ^= true;
     if (m_turnBoard)
-        fillIcan(true, !m_turnChess);
+        this->fillIcan(true, !m_turnSecondPlayer);
     else
-        fillIcan(false, !m_turnChess);
+        this->fillIcan(false, !m_turnSecondPlayer);
 
     this->updateChessScene();
 }
@@ -237,7 +246,7 @@ void ChessBoard::historyBack()
 {
     if (m_game.isPossibleHistoryBack()) {
         m_blockBoardHistory = true;
-        updateHistoryScene();
+        this->updateHistoryScene();
     }
 }
 
@@ -245,7 +254,7 @@ void ChessBoard::historyForward()
 {
     if (m_game.isPossibleHistoryForward()) {
         m_blockBoardHistory = false;
-        updateHistoryScene();
+        this->updateHistoryScene();
     }
 }
 
@@ -272,6 +281,16 @@ bool ChessBoard::getBlockBoard()
 bool ChessBoard::getColorMove()
 {
     return m_whiteMove;
+}
+
+bool ChessBoard::getTurnBoard()
+{
+    return m_turnBoard;
+}
+
+bool ChessBoard::getTurnSecondPlayer()
+{
+    return m_turnSecondPlayer;
 }
 
 void ChessBoard::showEvent(QShowEvent *event)
@@ -305,7 +324,8 @@ void ChessBoard::mouseReleaseEvent(QMouseEvent *event)
         m_takenPiece = false;
         const auto takenPiece = m_game.getTakenPiece();
         const auto &chessFields = m_game.getChessFields();
-        m_chessBoardBut[takenPiece.first][takenPiece.second]->setIcon(m_imagesOfPieces[chessFields[takenPiece.first][takenPiece.second]]);
+        m_chessBoardBut[takenPiece.first][takenPiece.second]->setIcon(
+            m_imagesOfPieces[chessFields[takenPiece.first][takenPiece.second]]);
         m_movePiece->hide();
     }
 }
@@ -376,14 +396,14 @@ void ChessBoard::clickField(const QString &nameField)
                     i = 0;
             }
 
-            uncheckLastMove();
-            uncheckKing();
+            this->uncheckLastMove();
+            this->uncheckKing();
 
             m_game.movePiece(std::pair{i, j});
 
             const auto lastMove = m_game.getLastMove();
             this->moveField(lastMove.second.first, lastMove.second.second);
-            checkKing();
+            this->checkKing();
 
             if (!m_game.isPossibleMove()) {
                 if (m_game.getCheck())
@@ -404,11 +424,12 @@ void ChessBoard::clickField(const QString &nameField)
             }
 
             if (chessFields[takenPiece.first][takenPiece.second][1] == 'K')
-                checkKing();
+                this->checkKing();
             else
                 this->baseField(takenPiece.first, takenPiece.second);
 
-            if ((takenPiece.first != i || takenPiece.second != j) && !chessFields[i][j].isEmpty() && chessFields[i][j][0] == color) {
+            if ((takenPiece.first != i || takenPiece.second != j)
+                    && !chessFields[i][j].isEmpty() && chessFields[i][j][0] == color) {
                 this->takePiece(i, j);
             } else {
                 this->untakePiece();
@@ -491,7 +512,8 @@ void ChessBoard::takePiece(qint8 i, qint8 j)
                     * BEAT_FIELD_SIZE);
             m_chessBoardBut[field.first][field.second]->setIcon(m_imagesOfPieces["beatField"]);
         } else {
-            m_chessBoardBut[field.first][field.second]->setIcon(m_imagesOfPieces[chessFields[field.first][field.second] + "beatPiece"]);
+            m_chessBoardBut[field.first][field.second]->setIcon(
+                m_imagesOfPieces[chessFields[field.first][field.second] + "beatPiece"]);
         }
     }
 }
@@ -523,8 +545,8 @@ void ChessBoard::untransformPawnField(const std::vector<std::pair<qint8, qint8>>
 
 void ChessBoard::fillFullIcans()
 {
-    fillIcan(true, true);
-    fillIcan(false, true);
+    this->fillIcan(true, true);
+    this->fillIcan(false, true);
 
     QPixmap beatFieldPixmap(pathGeneral + "beatField.png");
     QPixmap transparentPixmap(beatFieldPixmap.size());
@@ -616,14 +638,14 @@ void ChessBoard::updateChessScene()
 
 void ChessBoard::updateHistoryScene()
 {
-    uncheckLastMove();
-    uncheckKing();
+    this->uncheckLastMove();
+    this->uncheckKing();
     m_game.historyMove();
     const auto lastMove = m_game.getLastMove();
     if (lastMove.first.first != EMPTY)
         this->moveField(lastMove.first.first, lastMove.first.second);
     if (lastMove.second.first != EMPTY)
         this->moveField(lastMove.second.first, lastMove.second.second);
-    checkKing();
+    this->checkKing();
     this->updateChessScene();
 }

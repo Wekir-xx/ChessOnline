@@ -3,28 +3,17 @@
 
 #include "src/defines.h"
 
-#include <QChar>
-
 #include <vector>
 
 class ChessGame
 {
 public:
-    struct ChessParams {
-        std::vector<std::vector<QString>> chessFields;
-        std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
-        std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
-        std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
-        std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
-        bool chess960;
-        bool whiteMove;
-    };
-
     ChessGame();
 
     void movePiece(std::pair<qint8, qint8> newPos);
     void takePiece(qint8 i, qint8 j);
     void untakePiece();
+
     bool isPossibleMove();
     bool isStaleMate();
 
@@ -51,23 +40,26 @@ private:
     bool isCheck();
     bool checkMove(qint8 i, qint8 j, bool isKing = false);
     bool isPossibleMoveInner();
+
     void addCastling();
     void addMovesRook();
     void addMovesBishop();
 
 private:
     ChessParams m_chess;
+
     std::vector<QString> m_savePiece;
     std::pair<qint8, qint8> m_takenPiece;
     std::vector<std::pair<qint8, qint8>> m_beatFields;
-    std::vector<QString> m_chessMoveHistory;
-    std::vector<std::vector<std::vector<QString>>> m_chessFieldsHistory;
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> m_lastMove;
+
+    std::vector<std::vector<std::vector<QString>>> m_chessFieldsHistory;
+    std::vector<QString> m_chessMoveHistory;
+    size_t m_numBoardHistory;
+    qint8 m_movesHistory;
 
     bool m_whiteMove{true};
     bool m_check{false};
-    qint8 m_movesHistory;
-    qint16 m_numBoardHistory;
 };
 
 #endif // CHESS_GAME_H

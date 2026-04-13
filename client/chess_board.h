@@ -6,18 +6,10 @@
 #include "chess_game.h"
 #include "src/event_button.h"
 
-#include <QHBoxLayout>
-#include <QIcon>
 #include <QLabel>
 #include <QObject>
-#include <QPainter>
-#include <QPixmap>
-#include <QPushButton>
 #include <QResizeEvent>
 #include <QShowEvent>
-#include <QSizePolicy>
-#include <QTransform>
-#include <QVBoxLayout>
 #include <QGridLayout>
 #include <QWidget>
 
@@ -25,7 +17,6 @@
 #include <QMouseEvent>
 #endif
 
-#include <random>
 #include <unordered_map>
 
 class ChessBoard : public QWidget
@@ -44,7 +35,7 @@ public:
                             std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling);
 
     void turnBoard();
-    void turnChess();
+    void turnSecondPlayer();
     void historyBack();
     void historyForward();
 
@@ -54,6 +45,8 @@ public:
 
     bool getBlockBoard();
     bool getColorMove();
+    bool getTurnBoard();
+    bool getTurnSecondPlayer();
 
 signals:
     void didMove();
@@ -70,9 +63,11 @@ protected:
 
 private:
     void clickField(const QString &nameField);
+
     void checkField(qint8 i, qint8 j);
     void moveField(qint8 i, qint8 j);
     void baseField(qint8 i, qint8 j);
+
     void checkLastMove();
     void uncheckLastMove();
     void checkKing();
@@ -96,7 +91,7 @@ private:
 
     QGridLayout *m_board;
 #ifdef MOVE_PIECE
-    //QLabel *m_movePiece;
+    QLabel *m_movePiece;
 #endif
     std::unordered_map<QString, QIcon> m_imagesOfPieces;
     std::vector<std::vector<EventButton *>> m_chessBoardBut;
@@ -108,7 +103,7 @@ private:
     bool m_autoQueen{false};
     bool m_premove{false};
     bool m_turnBoard{false};
-    bool m_turnChess{false};
+    bool m_turnSecondPlayer{false};
     bool m_takenPiece{false};
     bool m_whiteMove{false};
 };

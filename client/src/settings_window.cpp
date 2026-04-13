@@ -1,6 +1,6 @@
 #include "settings_window.h"
 
-SettingsWindow::SettingsWindow(SettingsParams params, QWidget *parent)
+SettingsWindow::SettingsWindow(QWidget *parent)
     : QWidget{parent}
 {
     this->setAttribute(Qt::WA_StyledBackground, true);
@@ -11,41 +11,51 @@ SettingsWindow::SettingsWindow(SettingsParams params, QWidget *parent)
                         "   border-radius: 10px;"
                         "}");
 
-    QVBoxLayout *layoutV = new QVBoxLayout();
-    QHBoxLayout *layoutH = new QHBoxLayout();
+    m_layoutV = new QVBoxLayout();
+    m_layoutH = new QHBoxLayout();
 
-    QPushButton *exit = new QPushButton();
-    QPushButton *turnBoardBut = new QPushButton("Turn board");
-    QPushButton *turnChessBut = new QPushButton("Turn second player");
-    QCheckBox *autoQueenBut = new QCheckBox("Auto queen");
-    QCheckBox *premoveBut = new QCheckBox("Premove");
-    QCheckBox *noticeTimeBut = new QCheckBox("Notice small time");
+    m_exit = new QPushButton();
+    m_turnBoardBut = new QPushButton("Turn board");
+    m_turnChessBut = new QPushButton("Turn second player");
+    m_autoQueenBut = new QCheckBox("Auto queen");
+    m_autoRotateBut = new QCheckBox("Auto-rotate game");
+    m_premoveBut = new QCheckBox("Premove", this);
+    m_noticeTimeBut = new QCheckBox("Notice small time");
 
-    exit->setIcon(QIcon(pathGeneral + "exit.png"));
-    exit->setFixedSize(FIXED_SIZE_EXIT_BUTTON, FIXED_SIZE_EXIT_BUTTON);
-    exit->setIconSize(exit->size());
-    exit->setStyleSheet("padding: 0px;");
+    m_exit->setIcon(QIcon(pathGeneral + "exit.png"));
+    m_exit->setFixedSize(FIXED_SIZE_EXIT_BUTTON, FIXED_SIZE_EXIT_BUTTON);
+    m_exit->setIconSize(m_exit->size());
+    m_exit->setStyleSheet("padding: 0px;");
 
-    layoutH->addStretch();
-    layoutH->addWidget(exit, 1);
-    layoutV->addLayout(layoutH);
-    layoutV->addWidget(turnBoardBut, 2);
-    layoutV->addWidget(turnChessBut, 2);
-    layoutV->addWidget(autoQueenBut, 2);
-    if (params.gameType == TypeGame::ONLINE)
-        layoutV->addWidget(premoveBut, 2);
-    layoutV->addWidget(noticeTimeBut, 2);
+    m_layoutH->addStretch();
+    m_layoutH->addWidget(m_exit, 1);
 
-    autoQueenBut->setChecked(params.checkAutoQueen);
-    premoveBut->setChecked(params.checkPremove);
-    noticeTimeBut->setChecked(params.checkNoticeTime);
+    m_layoutV->addLayout(m_layoutH);
+    m_layoutV->addWidget(m_turnBoardBut, 2);
+    m_layoutV->addWidget(m_turnChessBut, 2);
+    m_layoutV->addWidget(m_autoQueenBut, 2);
+    m_layoutV->addWidget(m_autoRotateBut, 2);
+    m_layoutV->addWidget(m_noticeTimeBut, 2);
 
-    connect(exit, &QPushButton::clicked, this, &SettingsWindow::exitSignal);
-    connect(turnBoardBut, &QPushButton::clicked, this, &SettingsWindow::turnBoard);
-    connect(turnChessBut, &QPushButton::clicked, this, &SettingsWindow::turnChess);
-    connect(autoQueenBut, &QCheckBox::clicked, this, &SettingsWindow::autoQueen);
-    connect(premoveBut, &QCheckBox::clicked, this, &SettingsWindow::premove);
-    connect(noticeTimeBut, &QCheckBox::clicked, this, &SettingsWindow::noticeTime);
+    connect(m_exit, &QPushButton::clicked, this, &SettingsWindow::exitSignal);
+    connect(m_turnBoardBut, &QPushButton::clicked, this, &SettingsWindow::turnBoard);
+    connect(m_turnChessBut, &QPushButton::clicked, this, &SettingsWindow::turnSecondPlayer);
+    connect(m_autoQueenBut, &QCheckBox::clicked, this, &SettingsWindow::autoQueen);
+    connect(m_autoRotateBut, &QCheckBox::clicked, this, &SettingsWindow::autoRotate);
+    connect(m_premoveBut, &QCheckBox::clicked, this, &SettingsWindow::premove);
+    connect(m_noticeTimeBut, &QCheckBox::clicked, this, &SettingsWindow::noticeTime);
 
-    this->setLayout(layoutV);
+    this->setLayout(m_layoutV);
+}
+
+void SettingsWindow::setParams(SettingsParams params, TypeGame gameType)
+{
+    if (gameType == TypeGame::ONLINE) {
+        m_layoutV->addWidget(m_premoveBut, 2);
+        m_premoveBut->setChecked(params.checkPremove);
+    }
+
+    m_autoQueenBut->setChecked(params.checkAutoQueen);
+    m_autoRotateBut->setChecked(params.checkAutoRotate);
+    m_noticeTimeBut->setChecked(params.checkNoticeTime);
 }
