@@ -16,7 +16,7 @@ class SettingsWindow : public QWidget
 public:
     explicit SettingsWindow(QWidget *parent = nullptr);
 
-    void setParams(SettingsParams params, TypeGame gameType);
+    void setParams(SettingsParams params, TypeGame gameType, TypeTimeChess timeChessType);
 
 signals:
     void turnBoard();
@@ -25,7 +25,8 @@ signals:
     void autoRotate();
     void premove();
     void noticeTime();
-    void exitSignal();
+    void exit();
+    void exitGame();
 
 private:
     QVBoxLayout *m_layoutV;
@@ -34,6 +35,7 @@ private:
     QPushButton *m_exit;
     QPushButton *m_turnBoardBut;
     QPushButton *m_turnChessBut;
+    QPushButton *m_exitGame;
 
     QCheckBox *m_autoQueenBut;
     QCheckBox *m_autoRotateBut;

@@ -6,6 +6,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    SomeConstans::getInstance();
     MainWindow w;
     w.show();
 

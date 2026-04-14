@@ -21,6 +21,14 @@
 
 const QString pathGeneral = ":/src/images/";
 const QString pathStyle1 = pathGeneral + "style1/";
+const QString smallTimeNotice = "background-color: red; color: black; font-size:24px; padding:10px;";
+
+enum class TypeGame : int {
+    UNDEFINED = -1,
+    ONLINE = 0,
+    OFFLINE,
+    NUMBER,
+};
 
 enum class TypeChess : int {
     UNDEFINED = -1,
@@ -29,13 +37,6 @@ enum class TypeChess : int {
     USER,
     USER960,
     NUMBER,
-};
-
-const std::vector<std::string> TypeChessStr = {
-    "Standart",
-    "Standart960",
-    "User",
-    "User960",
 };
 
 enum class TypeTimeChess : int {
@@ -49,38 +50,6 @@ enum class TypeTimeChess : int {
     NUMBER,
 };
 
-const std::vector<std::string> TypeTimeChessStr = {
-    "Bullet",
-    "Blitz",
-    "Rapid",
-    "Classic",
-    "Other",
-    "No time",
-};
-
-const std::vector<std::vector<std::string>> TimeChessStr = {{"30s", "1m", "1m|1s", "2m", "2m|1s", "2m|2s"},
-                                                            {"3m", "3m|2s", "3m|3s", "5m", "5m|3s", "5m|5s"},
-                                                            {"10m", "10m|5s", "10m|15s", "30m", "30m|15s", "30m|30s"},
-                                                            {"1h", "1h|30s", "2h", "2h|30s", "3h", "3h|30s"}};
-
-const std::vector<std::vector<std::pair<qint32, qint8>>> TimeChessValue
-    = {{{30, 0}, {MIN, 0}, {MIN, 1}, {2 * MIN, 0}, {2 * MIN, 1}, {2 * MIN, 2}},
-       {{3 * MIN, 0}, {3 * MIN, 2}, {3 * MIN, 3}, {5 * MIN, 0}, {5 * MIN, 3}, {5 * MIN, 5}},
-       {{10 * MIN, 0}, {10 * MIN, 5}, {10 * MIN, 15}, {30 * MIN, 0}, {30 * MIN, 15}, {30 * MIN, 30}},
-       {{60 * MIN, 0}, {60 * MIN, 30}, {120 * MIN, 0}, {120 * MIN, 30}, {180 * MIN, 0}, {180 * MIN, 30}}};
-
-enum class TypeGame : int {
-    UNDEFINED = -1,
-    ONLINE = 0,
-    OFFLINE,
-    NUMBER,
-};
-
-const std::vector<std::string> TypeGameStr = {
-    "Online",
-    "Offline",
-};
-
 enum class ResultGame : int {
     WIN_WHITE = 0,
     WIN_BLACK,
@@ -88,30 +57,106 @@ enum class ResultGame : int {
     NUMBER,
 };
 
+class SomeConstans
+{
+public:
+    static SomeConstans &getInstance()
+    {
+        static SomeConstans instance;
+        return instance;
+    }
+
+    const std::vector<std::string> &getTypeGameStr() const
+    {
+        return m_typeGameStr;
+    }
+
+    const std::vector<std::string> &getTypeChessStr() const
+    {
+        return m_typeChessStr;
+    }
+
+    const std::vector<std::string> &getTypeTimeChessStr() const
+    {
+        return m_typeTimeChessStr;
+    }
+
+    const std::vector<std::vector<std::string>> &getTimeChessStr() const
+    {
+        return m_timeChessStr;
+    }
+
+    const std::vector<std::vector<std::pair<qint32, qint8>>> &getTimeChessValue() const
+    {
+        return m_timeChessValue;
+    }
+
+private:
+
+    SomeConstans() = default;
+    SomeConstans(const SomeConstans &) = delete;
+    SomeConstans(const SomeConstans &&) = delete;
+    SomeConstans &operator=(const SomeConstans &) = delete;
+    SomeConstans &operator=(const SomeConstans &&) = delete;
+
+    const std::vector<std::string> m_typeGameStr = {
+        "Online",
+        "Offline",
+    };
+
+    const std::vector<std::string> m_typeChessStr = {
+        "Standart",
+        "Standart960",
+        "User",
+        "User960",
+    };
+
+    const std::vector<std::string> m_typeTimeChessStr = {
+        "Bullet",
+        "Blitz",
+        "Rapid",
+        "Classic",
+        "Other",
+        "No time",
+    };
+
+    const std::vector<std::vector<std::string>> m_timeChessStr = {{"30s", "1m", "1m|1s", "2m", "2m|1s", "2m|2s"},
+        {"3m", "3m|2s", "3m|3s", "5m", "5m|3s", "5m|5s"},
+        {"10m", "10m|5s", "10m|10s", "30m", "30m|5s", "30m|10s"},
+        {"1h", "1h|30s", "2h", "2h|30s", "3h", "3h|30s"}
+    };
+
+    const std::vector<std::vector<std::pair<qint32, qint8>>> m_timeChessValue
+    = {{{30, 0}, {MIN, 0}, {MIN, 1}, {2 * MIN, 0}, {2 * MIN, 1}, {2 * MIN, 2}},
+        {{3 * MIN, 0}, {3 * MIN, 2}, {3 * MIN, 3}, {5 * MIN, 0}, {5 * MIN, 3}, {5 * MIN, 5}},
+        {{10 * MIN, 0}, {10 * MIN, 5}, {10 * MIN, 10}, {30 * MIN, 0}, {30 * MIN, 5}, {30 * MIN, 10}},
+        {{60 * MIN, 0}, {60 * MIN, 30}, {120 * MIN, 0}, {120 * MIN, 30}, {180 * MIN, 0}, {180 * MIN, 30}}
+    };
+};
+
 struct SettingsParams {
-    bool checkAutoQueen;
-    bool checkAutoRotate;
-    bool checkPremove;
-    bool checkNoticeTime;
+    bool checkAutoQueen{false};
+    bool checkAutoRotate{false};
+    bool checkPremove{false};
+    bool checkNoticeTime{false};
 };
 
 struct StartParams {
-    TypeGame gameType;
-    TypeChess chessType;
-    TypeTimeChess timeChessType;
-    qint32 mainTime;
-    qint8 minorTime;
+    TypeGame gameType{TypeGame::UNDEFINED};
+    TypeChess chessType{TypeChess::UNDEFINED};
+    TypeTimeChess timeChessType{TypeTimeChess::UNDEFINED};
+    qint32 mainTime{0};
+    qint8 minorTime{0};
     std::vector<std::vector<QString>> chessFields;
     std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
-    bool whiteMove;
+    bool whiteMove{true};
 };
 
 struct PlayerParams {
-    std::pair<QString, QString> nicknames;
+    std::pair<QString, QString> nicknames{"", ""};
     std::pair<QPixmap, QPixmap> icons;
-    std::pair<qint16, qint16> ratings;
-    bool mainPlayerWhite;
-    TypeTimeChess type;
+    std::pair<qint16, qint16> ratings{0, 0};
+    bool mainPlayerWhite{true};
 };
 
 struct GameParams {

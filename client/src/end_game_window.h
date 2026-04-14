@@ -17,7 +17,7 @@ class EndGameWindow : public QWidget
 public:
     explicit EndGameWindow(QWidget *parent = nullptr);
 
-    void setParams(PlayerParams params);
+    void setParams(PlayerParams params, TypeTimeChess timeChessType);
     void setResult(ResultGame result, std::pair<qint16, qint16> newRatings = {0, 0});
 
 signals:

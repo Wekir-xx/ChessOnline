@@ -118,17 +118,17 @@ EndGameWindow::EndGameWindow(QWidget *parent)
     this->setLayout(m_mainLayout);
 }
 
-void EndGameWindow::setParams(PlayerParams params)
+void EndGameWindow::setParams(PlayerParams params, TypeTimeChess timeChessType)
 {
-    if (params.type == TypeTimeChess::BULLET)
+    if (timeChessType == TypeTimeChess::BULLET)
         m_iconGame->setPixmap(QPixmap(pathGeneral + "bullet.png"));
-    else if (params.type == TypeTimeChess::BLITZ)
+    else if (timeChessType == TypeTimeChess::BLITZ)
         m_iconGame->setPixmap(QPixmap(pathGeneral + "blitz.png"));
-    else if (params.type == TypeTimeChess::RAPID)
+    else if (timeChessType == TypeTimeChess::RAPID)
         m_iconGame->setPixmap(QPixmap(pathGeneral + "rapid.png"));
-    else if (params.type == TypeTimeChess::CLASSIC)
+    else if (timeChessType == TypeTimeChess::CLASSIC)
         m_iconGame->setPixmap(QPixmap(pathGeneral + "classic.png"));
-    else if (params.type == TypeTimeChess::OTHER)
+    else if (timeChessType == TypeTimeChess::OTHER)
         m_iconGame->setPixmap(QPixmap(pathGeneral + "other.png"));
 
     m_iconPlayerWhite->setPixmap(params.icons.first);
@@ -137,13 +137,14 @@ void EndGameWindow::setParams(PlayerParams params)
     QString playerWhiteInfoStr = params.nicknames.first;
     QString playerBlackInfoStr = params.nicknames.second;
 
+    m_blockUser->setParent(this);
     if (params.ratings.first != 0) {
         m_buttonsLayout->addWidget(m_blockUser);
+        m_blockUser->show();
 
         playerWhiteInfoStr += " " + QString::number(params.ratings.first);
         playerBlackInfoStr += " " + QString::number(params.ratings.second);
     } else {
-        m_blockUser->setParent(this);
         m_blockUser->hide();
     }
 

@@ -34,6 +34,7 @@ private:
     QPushButton *m_startGame;
 
     StartParams m_params;
+    SomeConstans *m_constans;
 };
 
 #endif // STARTGAMEWINDOW_H

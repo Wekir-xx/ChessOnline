@@ -3,13 +3,6 @@
 StartGameWindow::StartGameWindow(QWidget *parent)
     : QWidget{parent}
 {
-    m_params.gameType = TypeGame::UNDEFINED;
-    m_params.chessType = TypeChess::UNDEFINED;
-    m_params.timeChessType = TypeTimeChess::UNDEFINED;
-    m_params.mainTime = 0;
-    m_params.minorTime = 0;
-    m_params.whiteMove = true;
-
     m_mainLayout = new QVBoxLayout();
 
     m_gameTypeButtons = new ButtonComplex();
@@ -20,14 +13,14 @@ StartGameWindow::StartGameWindow(QWidget *parent)
     m_errorLabel = new QLabel();
     m_startGame = new QPushButton("Start Game");
 
-    m_gameTypeButtons->setButtons(TypeGameStr);
-    m_chessTypeButtons->setButtons(TypeChessStr);
-    m_timeChessTypeButtons->setButtons(TypeTimeChessStr);
+    m_constans = &SomeConstans::getInstance();
+    m_gameTypeButtons->setButtons(m_constans->getTypeGameStr());
+    m_chessTypeButtons->setButtons(m_constans->getTypeChessStr());
+    m_timeChessTypeButtons->setButtons(m_constans->getTypeTimeChessStr());
     m_timeChessSpin->setTime(0, 0, 0, 0);
 
     m_errorLabel->setStyleSheet("color: red;"
                                 "font-size: 18px;");
-    m_timeChessSpin->setFixedWidth(this->width() * 2 / 3);
     m_startGame->setFixedHeight(FIXED_SIZE_BUTTON);
 
     m_mainLayout->setSpacing(0);
@@ -68,12 +61,12 @@ StartGameWindow::StartGameWindow(QWidget *parent)
             m_params.minorTime = 0;
         } else {
             m_mainLayout->insertWidget(id, m_timeChessButtons);
-            m_timeChessButtons->setButtons(TimeChessStr[num]);
+            m_timeChessButtons->setButtons(m_constans->getTimeChessStr()[num]);
         }
     });
     connect(m_timeChessButtons, &ButtonComplex::selectButtonSignals, this, [this](size_t num) {
         m_errorLabel->clear();
-        const auto &time = TimeChessValue[static_cast<size_t>(m_params.timeChessType)][num];
+        const auto &time = m_constans->getTimeChessValue()[static_cast<size_t>(m_params.timeChessType)][num];
         m_params.mainTime = time.first;
         m_params.minorTime = time.second;
     });

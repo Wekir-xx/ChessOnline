@@ -2,16 +2,20 @@
 #define GAME_WINDOW_H
 
 #include "chess_board.h"
+#include "src/board_layout.h"
 #include "src/end_game_window.h"
-#include "src/settings_window.h"
 #include "src/player_info_layout3.h"
 #include "src/rotatable_label.h"
+#include "src/settings_window.h"
 
 #include <QDateTime>
+#include <QObject>
 #include <QTimer>
 
 class GameWindow : public QWidget
 {
+    Q_OBJECT
+
 public:
     explicit GameWindow(QWidget *parent = nullptr);
 
@@ -19,6 +23,9 @@ public:
 
     void showSettingWindow();
     void showEndGameWindow();
+
+signals:
+    void exitGame();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -43,7 +50,14 @@ private:
     ChessBoard *m_board;
     SettingsWindow *m_settings;
     EndGameWindow *m_endGame;
+
+    BoardLayout *m_mainLayout;
     QVBoxLayout *m_sideLayout;
+    QHBoxLayout *m_helperLayout;
+
+    QPushButton *m_leftChessHistory;
+    QPushButton *m_rightChessHistory;
+    QPushButton *m_settingsButton;
 
     std::pair<QWidget *, QWidget *> m_players;
     std::pair<PlayerInfoLayout3 *, PlayerInfoLayout3 *> m_playersLayout;
@@ -62,8 +76,8 @@ private:
     QMetaObject::Connection m_upButtonCon;
     QMetaObject::Connection m_downButtonCon;
 
-    StartParams m_StartParams;
-    SettingsParams m_SettingsParams;
+    StartParams m_startParams;
+    SettingsParams m_settingsParams;
     std::pair<QString, QString> m_nicknames;
     std::pair<qint16, qint16> m_ratings;
 };

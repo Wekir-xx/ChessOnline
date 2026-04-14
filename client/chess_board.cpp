@@ -415,7 +415,8 @@ void ChessBoard::clickField(const QString &nameField)
             }
 
             this->updateChessScene();
-            emit didMove();
+            if (!m_blockBoard)
+                emit didMove();
         } else {
             if (m_transformPawn) {
                 m_transformPawn = false;

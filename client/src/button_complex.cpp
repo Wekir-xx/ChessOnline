@@ -3,6 +3,8 @@
 ButtonComplex::ButtonComplex(QWidget *parent)
     : QWidget{parent}
 {
+    m_buttons.reserve(10);
+
     m_layout = new QHBoxLayout();
     m_layout->setSpacing(0);
     this->setLayout(m_layout);
@@ -10,13 +12,13 @@ ButtonComplex::ButtonComplex(QWidget *parent)
 
 void ButtonComplex::setButtons(std::vector<std::string> nameButtons)
 {
-    for (const auto &button : m_buttons)
-        button->deleteLater();
-    m_buttons.clear();
+    size_t i = 0;
+    for (; i < nameButtons.size() && i < m_buttons.size(); ++i) {
+        m_buttons[i]->setText(QString::fromStdString(nameButtons[i]));
+        m_buttons[i]->show();
+    }
 
-    m_numUseButton = nameButtons.size();
-    m_buttons.reserve(m_numUseButton);
-    for (size_t i = 0; i < m_numUseButton; ++i) {
+    for (; i < nameButtons.size(); ++i) {
         m_buttons.push_back(new QPushButton(QString::fromStdString(nameButtons[i])));
         m_layout->addWidget(m_buttons[i]);
 
@@ -26,6 +28,11 @@ void ButtonComplex::setButtons(std::vector<std::string> nameButtons)
             emit selectButtonSignals(i);
         });
     }
+
+    for (; i < m_buttons.size(); ++i)
+        m_buttons[i]->hide();
+
+    m_numUseButton = i;
 }
 
 void ButtonComplex::useButton(size_t num)
