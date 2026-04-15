@@ -31,10 +31,12 @@ private:
     QVBoxLayout *m_mainLayout;
     QHBoxLayout *m_playerInfo;
     QHBoxLayout *m_resultLayout;
-    PlayerInfoLayout2 *m_whitePlayer;
-    PlayerInfoLayout2 *m_blackPlayer;
     QHBoxLayout *m_topLayout;
     QHBoxLayout *m_buttonsLayout;
+    PlayerInfoLayout2 *m_whitePlayerLayout;
+    PlayerInfoLayout2 *m_blackPlayerLayout;
+    QWidget *m_whitePlayer;
+    QWidget *m_blackPlayer;
 
     QPushButton *m_exit;
     QPushButton *m_gameReview;
@@ -50,6 +52,8 @@ private:
     QLabel *m_iconPlayerWhite;
     QLabel *m_iconPlayerBlack;
     QLabel *m_iconGame;
+
+    bool m_whiteTurn;
 };
 
 #endif // END_GAME_WINDOW_H

@@ -31,13 +31,12 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    void startGameInner(bool first = false);
+    void startGameInner();
     void endGame(ResultGame result);
     void newGame();
     void rematch();
 
     void turnBoard();
-    void turnWidget(QVBoxLayout *layout, QWidget *widget1, QWidget *widget2);
     void turnSecondPlayer();
     void turnPlayerLayout(QLabel *iconPlayer, RotatableLabel *infoPlayer,
                           RotatableLabel *timePlayer, QPixmap pixmap, bool up);
@@ -80,6 +79,8 @@ private:
     SettingsParams m_settingsParams;
     std::pair<QString, QString> m_nicknames;
     std::pair<qint16, qint16> m_ratings;
+
+    bool m_connection;
 };
 
 #endif // GAME_WINDOW_H

@@ -4,6 +4,7 @@ StartGameWindow::StartGameWindow(QWidget *parent)
     : QWidget{parent}
 {
     m_mainLayout = new QVBoxLayout();
+    m_stackedTime = new QStackedWidget();
 
     m_gameTypeButtons = new ButtonComplex();
     m_chessTypeButtons = new ButtonComplex();
@@ -23,16 +24,21 @@ StartGameWindow::StartGameWindow(QWidget *parent)
                                 "font-size: 18px;");
     m_startGame->setFixedHeight(FIXED_SIZE_BUTTON);
 
+    m_stackedTime->addWidget(m_timeChessButtons);
+    m_stackedTime->addWidget(m_timeChessSpin);
+
     m_mainLayout->setSpacing(0);
     m_mainLayout->addStretch(1);
     m_mainLayout->addWidget(m_gameTypeButtons);
     m_mainLayout->addWidget(m_chessTypeButtons);
     m_mainLayout->addStretch(1);
     m_mainLayout->addWidget(m_timeChessTypeButtons);
+    m_mainLayout->addWidget(m_stackedTime);
     m_mainLayout->addStretch(1);
     m_mainLayout->addWidget(m_errorLabel);
     m_mainLayout->addWidget(m_startGame);
 
+    m_mainLayout->setAlignment(m_stackedTime, Qt::AlignCenter);
     m_mainLayout->setAlignment(m_errorLabel, Qt::AlignCenter);
 
     connect(m_gameTypeButtons, &ButtonComplex::selectButtonSignals, this, [this](size_t num) {
@@ -45,33 +51,31 @@ StartGameWindow::StartGameWindow(QWidget *parent)
     });
     connect(m_timeChessTypeButtons, &ButtonComplex::selectButtonSignals, this, [this](size_t num) {
         m_errorLabel->clear();
+
         m_params.timeChessType = static_cast<TypeTimeChess>(num);
-
-        if (m_timeChessButtons->parent())
-            m_timeChessButtons->setParent(nullptr);
-        if (m_timeChessSpin->parent())
-            m_timeChessSpin->setParent(nullptr);
-
-        int id = m_mainLayout->indexOf(m_timeChessTypeButtons) + 1;
         if (m_params.timeChessType == TypeTimeChess::OTHER) {
-            m_mainLayout->insertWidget(id, m_timeChessSpin);
-            m_mainLayout->setAlignment(m_timeChessSpin, Qt::AlignCenter);
+            m_stackedTime->setCurrentWidget(m_timeChessSpin);
+            m_stackedTime->show();
         } else if (m_params.timeChessType == TypeTimeChess::NO_TIME) {
             m_params.mainTime = 0;
             m_params.minorTime = 0;
+            m_stackedTime->hide();
         } else {
-            m_mainLayout->insertWidget(id, m_timeChessButtons);
+            m_stackedTime->setCurrentWidget(m_timeChessButtons);
+            m_stackedTime->show();
             m_timeChessButtons->setButtons(m_constans->getTimeChessStr()[num]);
         }
     });
     connect(m_timeChessButtons, &ButtonComplex::selectButtonSignals, this, [this](size_t num) {
         m_errorLabel->clear();
+
         const auto &time = m_constans->getTimeChessValue()[static_cast<size_t>(m_params.timeChessType)][num];
         m_params.mainTime = time.first;
         m_params.minorTime = time.second;
     });
     connect(m_timeChessSpin, &TimeChess::changeTimeSignal, this, [this]() {
         m_errorLabel->clear();
+        
         const auto &time = m_timeChessSpin->getTime();
         m_params.mainTime = time.first;
         m_params.minorTime = time.second;

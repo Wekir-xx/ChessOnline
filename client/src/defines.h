@@ -14,8 +14,10 @@
 #define TICK 100
 #define MIN 60
 
-#include <QString>
+#include <QHBoxLayout>
 #include <QPixmap>
+#include <QString>
+#include <QVBoxLayout>
 
 #include <vector>
 
@@ -57,42 +59,71 @@ enum class ResultGame : int {
     NUMBER,
 };
 
+struct SettingsParams
+{
+    bool checkAutoQueen{false};
+    bool checkAutoRotate{false};
+    bool checkPremove{false};
+    bool checkNoticeTime{false};
+};
+
+struct StartParams
+{
+    TypeGame gameType{TypeGame::UNDEFINED};
+    TypeChess chessType{TypeChess::UNDEFINED};
+    TypeTimeChess timeChessType{TypeTimeChess::UNDEFINED};
+    qint32 mainTime{0};
+    qint8 minorTime{0};
+    std::vector<std::vector<QString>> chessFields;
+    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
+    bool whiteMove{true};
+};
+
+struct PlayerParams
+{
+    std::pair<QString, QString> nicknames{"", ""};
+    std::pair<QPixmap, QPixmap> icons;
+    std::pair<qint16, qint16> ratings{0, 0};
+    bool mainPlayerWhite{true};
+};
+
+struct GameParams
+{
+    SettingsParams settingsParams;
+    StartParams startParams;
+};
+
+struct ChessParams
+{
+    std::vector<std::vector<QString>> chessFields;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
+    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
+    bool chess960;
+    bool whiteMove;
+};
+
 class SomeConstans
 {
 public:
-    static SomeConstans &getInstance()
-    {
-        static SomeConstans instance;
-        return instance;
-    }
+    static SomeConstans &getInstance();
 
-    const std::vector<std::string> &getTypeGameStr() const
-    {
-        return m_typeGameStr;
-    }
+    static void swapWidgetVBox(QVBoxLayout *layout, QWidget *widget1, QWidget *widget2);
 
-    const std::vector<std::string> &getTypeChessStr() const
-    {
-        return m_typeChessStr;
-    }
+    static void swapWidgetHBox(QHBoxLayout *layout, QWidget *widget1, QWidget *widget2);
 
-    const std::vector<std::string> &getTypeTimeChessStr() const
-    {
-        return m_typeTimeChessStr;
-    }
+    const std::vector<std::string> &getTypeGameStr() const;
 
-    const std::vector<std::vector<std::string>> &getTimeChessStr() const
-    {
-        return m_timeChessStr;
-    }
+    const std::vector<std::string> &getTypeChessStr() const;
 
-    const std::vector<std::vector<std::pair<qint32, qint8>>> &getTimeChessValue() const
-    {
-        return m_timeChessValue;
-    }
+    const std::vector<std::string> &getTypeTimeChessStr() const;
+
+    const std::vector<std::vector<std::string>> &getTimeChessStr() const;
+
+    const std::vector<std::vector<std::pair<qint32, qint8>>> &getTimeChessValue() const;
 
 private:
-
     SomeConstans() = default;
     SomeConstans(const SomeConstans &) = delete;
     SomeConstans(const SomeConstans &&) = delete;
@@ -121,57 +152,15 @@ private:
     };
 
     const std::vector<std::vector<std::string>> m_timeChessStr = {{"30s", "1m", "1m|1s", "2m", "2m|1s", "2m|2s"},
-        {"3m", "3m|2s", "3m|3s", "5m", "5m|3s", "5m|5s"},
-        {"10m", "10m|5s", "10m|10s", "30m", "30m|5s", "30m|10s"},
-        {"1h", "1h|30s", "2h", "2h|30s", "3h", "3h|30s"}
-    };
+                                                                  {"3m", "3m|2s", "3m|3s", "5m", "5m|3s", "5m|5s"},
+                                                                  {"10m", "10m|5s", "10m|10s", "30m", "30m|5s", "30m|10s"},
+                                                                  {"1h", "1h|30s", "2h", "2h|30s", "3h", "3h|30s"}};
 
     const std::vector<std::vector<std::pair<qint32, qint8>>> m_timeChessValue
-    = {{{30, 0}, {MIN, 0}, {MIN, 1}, {2 * MIN, 0}, {2 * MIN, 1}, {2 * MIN, 2}},
-        {{3 * MIN, 0}, {3 * MIN, 2}, {3 * MIN, 3}, {5 * MIN, 0}, {5 * MIN, 3}, {5 * MIN, 5}},
-        {{10 * MIN, 0}, {10 * MIN, 5}, {10 * MIN, 10}, {30 * MIN, 0}, {30 * MIN, 5}, {30 * MIN, 10}},
-        {{60 * MIN, 0}, {60 * MIN, 30}, {120 * MIN, 0}, {120 * MIN, 30}, {180 * MIN, 0}, {180 * MIN, 30}}
-    };
-};
-
-struct SettingsParams {
-    bool checkAutoQueen{false};
-    bool checkAutoRotate{false};
-    bool checkPremove{false};
-    bool checkNoticeTime{false};
-};
-
-struct StartParams {
-    TypeGame gameType{TypeGame::UNDEFINED};
-    TypeChess chessType{TypeChess::UNDEFINED};
-    TypeTimeChess timeChessType{TypeTimeChess::UNDEFINED};
-    qint32 mainTime{0};
-    qint8 minorTime{0};
-    std::vector<std::vector<QString>> chessFields;
-    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
-    bool whiteMove{true};
-};
-
-struct PlayerParams {
-    std::pair<QString, QString> nicknames{"", ""};
-    std::pair<QPixmap, QPixmap> icons;
-    std::pair<qint16, qint16> ratings{0, 0};
-    bool mainPlayerWhite{true};
-};
-
-struct GameParams {
-    SettingsParams settingsParams;
-    StartParams startParams;
-};
-
-struct ChessParams {
-    std::vector<std::vector<QString>> chessFields;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
-    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
-    bool chess960;
-    bool whiteMove;
+        = {{{30, 0}, {MIN, 0}, {MIN, 1}, {2 * MIN, 0}, {2 * MIN, 1}, {2 * MIN, 2}},
+           {{3 * MIN, 0}, {3 * MIN, 2}, {3 * MIN, 3}, {5 * MIN, 0}, {5 * MIN, 3}, {5 * MIN, 5}},
+           {{10 * MIN, 0}, {10 * MIN, 5}, {10 * MIN, 10}, {30 * MIN, 0}, {30 * MIN, 5}, {30 * MIN, 10}},
+           {{60 * MIN, 0}, {60 * MIN, 30}, {120 * MIN, 0}, {120 * MIN, 30}, {180 * MIN, 0}, {180 * MIN, 30}}};
 };
 
 #endif // DEFINES_H

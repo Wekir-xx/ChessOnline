@@ -9,6 +9,7 @@ SOURCES += \
     main.cpp \
     main_window.cpp \
     src/button_complex.cpp \
+    src/defines.cpp \
     src/end_game_window.cpp \
     src/settings_window.cpp \
     src/time_chess.cpp \

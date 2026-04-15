@@ -69,3 +69,8 @@ void SettingsWindow::setParams(SettingsParams params, TypeGame gameType, TypeTim
     m_noticeTimeBut->setChecked(params.checkNoticeTime);
     m_premoveBut->setChecked(params.checkPremove);
 }
+
+void SettingsWindow::setExitButton(bool flag)
+{
+    m_exitGame->setEnabled(flag);
+}

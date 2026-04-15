@@ -1,5 +1,7 @@
 #include "end_game_window.h"
 
+#include <QFont>
+
 EndGameWindow::EndGameWindow(QWidget *parent)
     : QWidget{parent}
 {
@@ -30,77 +32,93 @@ EndGameWindow::EndGameWindow(QWidget *parent)
                         "   background-color: #25A619;"
                         "}");
 
+    m_whiteTurn = true;
+
     m_mainLayout = new QVBoxLayout();
     m_playerInfo = new QHBoxLayout();
-    m_whitePlayer = new PlayerInfoLayout2();
-    m_blackPlayer = new PlayerInfoLayout2();
     m_topLayout = new QHBoxLayout();
     m_resultLayout = new QHBoxLayout();
     m_buttonsLayout = new QHBoxLayout();
+    m_whitePlayerLayout = new PlayerInfoLayout2();
+    m_blackPlayerLayout = new PlayerInfoLayout2();
+    m_whitePlayer = new QWidget();
+    m_blackPlayer = new QWidget();
 
     m_exit = new QPushButton();
     m_gameReview = new QPushButton("Game Review");
     m_newGame = new QPushButton("New Game");
     m_rematch = new QPushButton("Rematch");
-    m_blockUser = new QPushButton("Block User", this);
-
-    m_exit->setIcon(QIcon(pathGeneral + "exit.png"));
-    m_exit->setFixedSize(FIXED_SIZE_EXIT_BUTTON, FIXED_SIZE_EXIT_BUTTON);
-    m_exit->setIconSize(m_exit->size());
-    m_gameReview->setObjectName("review");
-    m_blockUser->hide();
-
-    m_gameReview->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_newGame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_rematch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_blockUser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    m_iconPlayerWhite = new QLabel();
-    m_iconPlayerBlack = new QLabel();
-    m_iconGame = new QLabel();
-
-    m_iconPlayerWhite->setAlignment(Qt::AlignCenter);
-    m_iconPlayerBlack->setAlignment(Qt::AlignCenter);
-    m_iconGame->setAlignment(Qt::AlignCenter);
-
-    m_iconPlayerWhite->setScaledContents(true);
-    m_iconPlayerBlack->setScaledContents(true);
-    m_iconGame->setScaledContents(true);
-
-    m_iconPlayerWhite->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    m_iconPlayerBlack->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    m_iconGame->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-
-    m_iconGame->setFixedSize(FIXED_SIZE_TYPE_GAME, FIXED_SIZE_TYPE_GAME);
+    m_blockUser = new QPushButton("Block User");
 
     m_playerWhiteInfo = new QLabel();
     m_playerBlackInfo = new QLabel();
     m_newRatingsWhite = new QLabel();
     m_newRatingsBlack = new QLabel();
     m_result = new QLabel();
+    m_iconPlayerWhite = new QLabel();
+    m_iconPlayerBlack = new QLabel();
+    m_iconGame = new QLabel();
 
+    QFont font = m_result->font();
+    font.setPointSize(16);
+    font.setBold(true);
+    m_result->setFont(font);
+
+    m_exit->setIcon(QIcon(pathGeneral + "exit.png"));
+    m_exit->setFixedSize(FIXED_SIZE_EXIT_BUTTON, FIXED_SIZE_EXIT_BUTTON);
+    m_exit->setIconSize(m_exit->size());
+    m_gameReview->setObjectName("review");
+
+    m_iconPlayerWhite->setScaledContents(true);
+    m_iconPlayerBlack->setScaledContents(true);
+    m_iconGame->setScaledContents(true);
+
+    m_gameReview->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_newGame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_rematch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_blockUser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_iconPlayerWhite->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    m_iconPlayerBlack->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    m_iconGame->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+    m_iconGame->setFixedSize(FIXED_SIZE_TYPE_GAME, FIXED_SIZE_TYPE_GAME);
     m_playerWhiteInfo->setFixedHeight(FIXED_SIZE_NUMBERS);
     m_playerBlackInfo->setFixedHeight(FIXED_SIZE_NUMBERS);
     m_newRatingsWhite->setFixedHeight(FIXED_SIZE_TYPE_GAME);
     m_newRatingsBlack->setFixedHeight(FIXED_SIZE_TYPE_GAME);
 
+    m_iconPlayerWhite->setAlignment(Qt::AlignCenter);
+    m_iconPlayerBlack->setAlignment(Qt::AlignCenter);
+    m_iconGame->setAlignment(Qt::AlignCenter);
     m_playerWhiteInfo->setAlignment(Qt::AlignCenter);
     m_playerBlackInfo->setAlignment(Qt::AlignCenter);
     m_newRatingsWhite->setAlignment(Qt::AlignCenter);
     m_newRatingsBlack->setAlignment(Qt::AlignCenter);
     m_result->setAlignment(Qt::AlignCenter);
 
-    m_whitePlayer->addWidget(m_iconPlayerWhite, 1);
-    m_whitePlayer->addWidget(m_playerWhiteInfo, 0);
+    m_whitePlayerLayout->addWidget(m_iconPlayerWhite, 1);
+    m_whitePlayerLayout->addWidget(m_playerWhiteInfo, 0);
 
-    m_blackPlayer->addWidget(m_iconPlayerBlack, 1);
-    m_blackPlayer->addWidget(m_playerBlackInfo, 0);
+    m_blackPlayerLayout->addWidget(m_iconPlayerBlack, 1);
+    m_blackPlayerLayout->addWidget(m_playerBlackInfo, 0);
 
-    m_topLayout->addWidget(m_result, 10);
+    m_whitePlayer->setLayout(m_whitePlayerLayout);
+    m_blackPlayer->setLayout(m_blackPlayerLayout);
+
+    m_playerInfo->addWidget(m_whitePlayer, 1);
+    m_playerInfo->addWidget(m_blackPlayer, 1);
+
+    m_topLayout->addSpacing(20);
+    m_topLayout->addWidget(m_result, 20);
     m_topLayout->addWidget(m_exit, 1);
 
     m_buttonsLayout->addWidget(m_newGame);
     m_buttonsLayout->addWidget(m_rematch);
+    m_buttonsLayout->addWidget(m_blockUser);
+
+    m_resultLayout->addWidget(m_newRatingsWhite);
+    m_resultLayout->addWidget(m_iconGame);
+    m_resultLayout->addWidget(m_newRatingsBlack);
 
     m_mainLayout->addLayout(m_topLayout, 1);
     m_mainLayout->addLayout(m_playerInfo, 4);
@@ -137,9 +155,7 @@ void EndGameWindow::setParams(PlayerParams params, TypeTimeChess timeChessType)
     QString playerWhiteInfoStr = params.nicknames.first;
     QString playerBlackInfoStr = params.nicknames.second;
 
-    m_blockUser->setParent(this);
     if (params.ratings.first != 0) {
-        m_buttonsLayout->addWidget(m_blockUser);
         m_blockUser->show();
 
         playerWhiteInfoStr += " " + QString::number(params.ratings.first);
@@ -151,20 +167,10 @@ void EndGameWindow::setParams(PlayerParams params, TypeTimeChess timeChessType)
     m_playerWhiteInfo->setText(playerWhiteInfoStr);
     m_playerBlackInfo->setText(playerBlackInfoStr);
 
-    if (params.mainPlayerWhite) {
-        m_playerInfo->addLayout(m_whitePlayer, 1);
-        m_playerInfo->addLayout(m_blackPlayer, 1);
-
-        m_resultLayout->addWidget(m_newRatingsWhite);
-        m_resultLayout->addWidget(m_iconGame);
-        m_resultLayout->addWidget(m_newRatingsBlack);
-    } else {
-        m_playerInfo->addLayout(m_blackPlayer, 1);
-        m_playerInfo->addLayout(m_whitePlayer, 1);
-
-        m_resultLayout->addWidget(m_newRatingsBlack);
-        m_resultLayout->addWidget(m_iconGame);
-        m_resultLayout->addWidget(m_newRatingsWhite);
+    if ((params.mainPlayerWhite && !m_whiteTurn) || (!params.mainPlayerWhite && m_whiteTurn)) {
+        m_whiteTurn ^= true;
+        SomeConstans::swapWidgetHBox(m_playerInfo, m_whitePlayer, m_blackPlayer);
+        SomeConstans::swapWidgetHBox(m_resultLayout, m_newRatingsWhite, m_newRatingsBlack);
     }
 }
 

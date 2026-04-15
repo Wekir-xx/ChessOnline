@@ -5,6 +5,8 @@
 GameWindow::GameWindow(QWidget *parent)
     : QWidget{parent}
 {
+    m_connection = false;
+
     m_board = new ChessBoard();
     m_settings = new SettingsWindow(this);
     m_endGame = new EndGameWindow(this);
@@ -217,7 +219,7 @@ void GameWindow::startGame(GameParams &params)
     if (!mainPlayerWhite)
         this->turnBoard();
 
-    startGameInner(true);
+    startGameInner();
 }
 
 void GameWindow::showSettingWindow()
@@ -245,12 +247,14 @@ void GameWindow::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 }
 
-void GameWindow::startGameInner(bool first)
+void GameWindow::startGameInner()
 {
     if (m_startParams.timeChessType != TypeTimeChess::NO_TIME)
         this->resetTime();
 
+    m_settings->setExitButton(false);
     m_board->setBlockBoard(false);
+
     if (m_startParams.chessType == TypeChess::STANDART)
         m_board->fillStandartChessBoard();
     else if (m_startParams.chessType == TypeChess::STANDART960)
@@ -259,14 +263,16 @@ void GameWindow::startGameInner(bool first)
         m_board->fillUserChessBoard(m_startParams.chessFields, m_startParams.chessType == TypeChess::USER ? false : true,
                                     m_startParams.whiteMove, m_startParams.castling);
 
-    m_upButton->setText("Draw");
-    m_downButton->setText("Resign");
-    if (!first) {
+    if (m_connection) {
         disconnect(m_upButtonCon);
         disconnect(m_downButtonCon);
         m_board->resetBoard();
     }
 
+    m_upButton->setText("Draw");
+    m_downButton->setText("Resign");
+
+    m_connection = true;
     m_upButtonCon = connect(m_upButton, &QPushButton::clicked, this, [this]() {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this, "Draw", "Are you sure?", QMessageBox::Yes | QMessageBox::No);
@@ -288,15 +294,18 @@ void GameWindow::endGame(ResultGame result)
     if (m_startParams.timeChessType != TypeTimeChess::NO_TIME)
         m_timer->stop();
 
+    m_settings->setExitButton(true);
     m_board->setBlockBoard(true);
 
     m_endGame->setResult(result);
     m_endGame->raise();
     m_endGame->show();
+
     this->showEndGameWindow();
 
     m_upButton->setText("New Game");
     m_downButton->setText("Rematch");
+
     disconnect(m_upButtonCon);
     disconnect(m_downButtonCon);
 
@@ -324,29 +333,12 @@ void GameWindow::turnBoard()
 
     m_board->turnBoard();
 
-    this->turnWidget(m_sideLayout, m_players.first, m_players.second);
-    this->turnWidget(m_playersLayout.first, m_iconPlayers.first, m_timePlayers.first);
-    this->turnWidget(m_playersLayout.second, m_iconPlayers.second, m_timePlayers.second);
+    SomeConstans::swapWidgetVBox(m_sideLayout, m_players.first, m_players.second);
+    SomeConstans::swapWidgetVBox(m_playersLayout.first, m_iconPlayers.first, m_timePlayers.first);
+    SomeConstans::swapWidgetVBox(m_playersLayout.second, m_iconPlayers.second, m_timePlayers.second);
 
     m_playersLayout.first->swapOrientation();
     m_playersLayout.second->swapOrientation();
-}
-
-void GameWindow::turnWidget(QVBoxLayout *layout, QWidget *widget1, QWidget *widget2)
-{
-    qint8 id1 = layout->indexOf(widget1);
-    qint8 id2 = layout->indexOf(widget2);
-
-    layout->removeWidget(widget1);
-    layout->removeWidget(widget2);
-
-    if (id1 < id2) {
-        layout->insertWidget(id1, widget2);
-        layout->insertWidget(id2, widget1);
-    } else {
-        layout->insertWidget(id2, widget1);
-        layout->insertWidget(id1, widget2);
-    }
 }
 
 void GameWindow::turnSecondPlayer()

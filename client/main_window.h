@@ -14,8 +14,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
 
 private:
+    QStackedWidget *m_stacked;
     StartGameWindow *m_startGameWindow;
     GameWindow *m_gameWindow;
+
     GameParams m_params;
 };
 

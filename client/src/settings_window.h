@@ -17,6 +17,7 @@ public:
     explicit SettingsWindow(QWidget *parent = nullptr);
 
     void setParams(SettingsParams params, TypeGame gameType, TypeTimeChess timeChessType);
+    void setExitButton(bool flag);
 
 signals:
     void turnBoard();

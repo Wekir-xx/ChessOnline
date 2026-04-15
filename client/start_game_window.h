@@ -7,6 +7,7 @@
 
 #include <QLabel>
 #include <QObject>
+#include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -24,6 +25,7 @@ signals:
 
 private:
     QVBoxLayout *m_mainLayout;
+    QStackedWidget *m_stackedTime;
 
     ButtonComplex *m_gameTypeButtons;
     ButtonComplex *m_chessTypeButtons;
