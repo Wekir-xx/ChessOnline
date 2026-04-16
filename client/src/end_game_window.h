@@ -54,6 +54,7 @@ private:
     QLabel *m_iconGame;
 
     bool m_whiteTurn;
+    QString m_path;
 };
 
 #endif // END_GAME_WINDOW_H

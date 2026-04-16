@@ -549,7 +549,7 @@ void ChessBoard::fillFullIcans()
     this->fillIcan(true, true);
     this->fillIcan(false, true);
 
-    QPixmap beatFieldPixmap(pathGeneral + "beatField.png");
+    QPixmap beatFieldPixmap(SomeConstans::getInstance().getPathGeneral() + "beatField.png");
     QPixmap transparentPixmap(beatFieldPixmap.size());
     transparentPixmap.fill(Qt::transparent);
 
@@ -575,7 +575,7 @@ void ChessBoard::fillIcan(bool white, bool up)
     QTransform transform;
     transform.rotate(180);
     for (const QString &key : pieceKeys) {
-        QPixmap pix = QPixmap(pathStyle1 + QString("%1.png").arg(key));
+        QPixmap pix = QPixmap(SomeConstans::getInstance().getPathStyle1() + QString("%1.png").arg(key));
         if (up)
             pixmapOfPieces[key] = pix;
         else
@@ -583,7 +583,7 @@ void ChessBoard::fillIcan(bool white, bool up)
     }
 
     QSize baseSize = pixmapOfPieces.begin()->second.size();
-    QPixmap overlay(pathGeneral + "beatPiece.png");
+    QPixmap overlay(SomeConstans::getInstance().getPathGeneral() + "beatPiece.png");
     overlay = overlay.scaled(baseSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
     int xPos = (baseSize.width() - overlay.width()) / 2;

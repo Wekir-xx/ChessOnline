@@ -40,6 +40,26 @@ void SomeConstans::swapWidgetHBox(QHBoxLayout *layout, QWidget *widget1, QWidget
     }
 }
 
+const QString &SomeConstans::getConfigFile() const
+{
+    return m_configFile;
+}
+
+const QString &SomeConstans::getPathGeneral() const
+{
+    return m_pathGeneral;
+}
+
+const QString &SomeConstans::getPathStyle1() const
+{
+    return m_pathStyle1;
+}
+
+const QString &SomeConstans::getSmallTimeNoticeStyle() const
+{
+    return m_smallTimeNotice;
+}
+
 const std::vector<std::string> &SomeConstans::getTypeGameStr() const
 {
     return m_typeGameStr;
@@ -55,12 +75,12 @@ const std::vector<std::string> &SomeConstans::getTypeTimeChessStr() const
     return m_typeTimeChessStr;
 }
 
-const std::vector<std::vector<std::string> > &SomeConstans::getTimeChessStr() const
+const std::vector<std::vector<std::string>> &SomeConstans::getTimeChessStr() const
 {
     return m_timeChessStr;
 }
 
-const std::vector<std::vector<std::pair<qint32, qint8> > > &SomeConstans::getTimeChessValue() const
+const std::vector<std::vector<std::pair<qint32, qint8>>> &SomeConstans::getTimeChessValue() const
 {
     return m_timeChessValue;
 }

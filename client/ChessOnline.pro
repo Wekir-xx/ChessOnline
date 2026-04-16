@@ -3,34 +3,34 @@ QT += core gui widgets
 CONFIG += c++17
 
 SOURCES += \
+    main_window.cpp \
+    game_window.cpp \
+    start_game_window.cpp \
     chess_board.cpp \
     chess_game.cpp \
-    game_window.cpp \
-    main.cpp \
-    main_window.cpp \
-    src/button_complex.cpp \
-    src/defines.cpp \
     src/end_game_window.cpp \
     src/settings_window.cpp \
+    src/defines.cpp \
+    src/button_complex.cpp \
     src/time_chess.cpp \
-    start_game_window.cpp
+    main.cpp \
 
 HEADERS += \
+    main_window.h \
+    game_window.h \
+    start_game_window.h \
     chess_board.h \
     chess_game.h \
-    game_window.h \
-    main_window.h \
-    src/button_complex.h \
-    src/defines.h \
-    src/board_layout.h \
     src/end_game_window.h \
+    src/settings_window.h \
+    src/defines.h \
+    src/button_complex.h \
+    src/time_chess.h \
+    src/board_layout.h \
     src/event_button.h \
     src/player_info_layout2.h \
     src/player_info_layout3.h \
     src/rotatable_label.h \
-    src/settings_window.h \
-    src/time_chess.h \
-    start_game_window.h
 
 RESOURCES += \
     resources.qrc

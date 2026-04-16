@@ -6,6 +6,7 @@ GameWindow::GameWindow(QWidget *parent)
     : QWidget{parent}
 {
     m_connection = false;
+    m_pathGeneral = SomeConstans::getInstance().getPathGeneral();
 
     m_board = new ChessBoard();
     m_settings = new SettingsWindow(this);
@@ -33,9 +34,9 @@ GameWindow::GameWindow(QWidget *parent)
     m_rightChessHistory->setFixedSize(FIXED_SIZE_BUTTON, FIXED_SIZE_BUTTON);
     m_settingsButton->setFixedSize(FIXED_SIZE_BUTTON, FIXED_SIZE_BUTTON);
 
-    m_leftChessHistory->setIcon(QIcon(pathGeneral + "leftArrow.png"));
-    m_rightChessHistory->setIcon(QIcon(pathGeneral + "rightArrow.png"));
-    m_settingsButton->setIcon(QIcon(pathGeneral + "settings.png"));
+    m_leftChessHistory->setIcon(QIcon(m_pathGeneral + "leftArrow.png"));
+    m_rightChessHistory->setIcon(QIcon(m_pathGeneral + "rightArrow.png"));
+    m_settingsButton->setIcon(QIcon(m_pathGeneral + "settings.png"));
 
     m_leftChessHistory->setIconSize(QSize(FIXED_SIZE_BUTTON_ICON, FIXED_SIZE_BUTTON_ICON));
     m_rightChessHistory->setIconSize(QSize(FIXED_SIZE_BUTTON_ICON, FIXED_SIZE_BUTTON_ICON));
@@ -111,10 +112,16 @@ GameWindow::GameWindow(QWidget *parent)
         this->setTime(0, white);
         m_startMove = QDateTime::currentDateTime();
     });
-    connect(m_board, &ChessBoard::endGame, this, [this](ResultGame result) { this->endGame(result); });
+    connect(m_board, &ChessBoard::endGame, this, [this](ResultGame result) {
+        this->endGame(result);
+    });
 
-    connect(m_leftChessHistory, &QPushButton::clicked, this, [this]() { m_board->historyBack(); });
-    connect(m_rightChessHistory, &QPushButton::clicked, this, [this]() { m_board->historyForward(); });
+    connect(m_leftChessHistory, &QPushButton::clicked, this, [this]() {
+        m_board->historyBack();
+    });
+    connect(m_rightChessHistory, &QPushButton::clicked, this, [this]() {
+        m_board->historyForward();
+    });
     connect(m_settingsButton, &QPushButton::clicked, this, [this]() {
         if (!m_settings->isVisible()) {
             m_settings->raise();
@@ -131,13 +138,19 @@ GameWindow::GameWindow(QWidget *parent)
         m_settingsParams.checkAutoQueen ^= true;
         m_board->setAutoQueen(m_settingsParams.checkAutoQueen);
     });
-    connect(m_settings, &SettingsWindow::autoRotate, this, [this]() { m_settingsParams.checkAutoRotate ^= true; });
+    connect(m_settings, &SettingsWindow::autoRotate, this, [this]() {
+        m_settingsParams.checkAutoRotate ^= true;
+    });
     connect(m_settings, &SettingsWindow::premove, this, [this]() {
         m_settingsParams.checkPremove ^= true;
         m_board->setPremove(m_settingsParams.checkPremove);
     });
-    connect(m_settings, &SettingsWindow::noticeTime, this, [this]() { m_settingsParams.checkNoticeTime ^= true; });
-    connect(m_settings, &SettingsWindow::exit, this, [this]() { m_settings->hide(); });
+    connect(m_settings, &SettingsWindow::noticeTime, this, [this]() {
+        m_settingsParams.checkNoticeTime ^= true;
+    });
+    connect(m_settings, &SettingsWindow::exit, this, [this]() {
+        m_settings->hide();
+    });
     connect(m_settings, &SettingsWindow::exitGame, this, &GameWindow::exitGame);
 
     connect(m_endGame, &EndGameWindow::newGameSignal, this, [this]() {
@@ -157,11 +170,18 @@ GameWindow::GameWindow(QWidget *parent)
         m_endGame->hide();
         // TODO
     });
-    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() { m_endGame->hide(); });
+    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() {
+        m_endGame->hide();
+    });
 
     connect(m_timer, &QTimer::timeout, this, [this]() {
         this->setTime(m_startMove.secsTo(QDateTime::currentDateTime()), m_board->getColorMove());
     });
+}
+
+SettingsParams &GameWindow::getSettingsParams()
+{
+    return m_settingsParams;
 }
 
 void GameWindow::startGame(GameParams &params)
@@ -171,7 +191,7 @@ void GameWindow::startGame(GameParams &params)
 
     m_nicknames = {"name1", "name2"};
     m_ratings = {0, 0};
-    m_pixmapPlayers = std::pair{QPixmap(pathGeneral + "player.png"), QPixmap(pathGeneral + "player.png")};
+    m_pixmapPlayers = std::pair{QPixmap(m_pathGeneral + "player.png"), QPixmap(m_pathGeneral + "player.png")};
     bool mainPlayerWhite = true;
 
     PlayerParams playerParams;
@@ -382,9 +402,9 @@ void GameWindow::setTime(qint32 seconds, bool white)
              (m_startParams.mainTime >= 3 * MIN && resultTime <= 30) ||
              resultTime <= 10)) {
         if (white)
-            m_timePlayers.first->setStyleSheet(smallTimeNotice);
+            m_timePlayers.first->setStyleSheet(m_smallTimeNoticeStyle);
         else
-            m_timePlayers.second->setStyleSheet(smallTimeNotice);
+            m_timePlayers.second->setStyleSheet(m_smallTimeNoticeStyle);
     } else {
         if (white)
             m_timePlayers.first->setStyleSheet("background-color: white; color: black; font-size:24px; padding:10px;");

@@ -23,7 +23,7 @@ SettingsWindow::SettingsWindow(QWidget *parent)
     m_premoveBut = new QCheckBox("Premove", this);
     m_noticeTimeBut = new QCheckBox("Notice small time");
 
-    m_exit->setIcon(QIcon(pathGeneral + "exit.png"));
+    m_exit->setIcon(QIcon(SomeConstans::getInstance().getPathGeneral() + "exit.png"));
     m_exit->setFixedSize(FIXED_SIZE_EXIT_BUTTON, FIXED_SIZE_EXIT_BUTTON);
     m_exit->setIconSize(m_exit->size());
     m_exit->setStyleSheet("padding: 0px;");

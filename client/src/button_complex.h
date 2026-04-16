@@ -15,10 +15,10 @@ public:
     explicit ButtonComplex(QWidget *parent = nullptr);
 
     void setButtons(std::vector<std::string> nameButtons);
-    void useButton(size_t num);
+    void useButton(qint8 id);
 
 signals:
-    void selectButtonSignals(size_t num);
+    void selectButtonSignals(qint8 id);
 
 private:
     void unUseButton();
@@ -27,7 +27,7 @@ private:
     QHBoxLayout *m_layout;
 
     std::vector<QPushButton *> m_buttons;
-    size_t m_numUseButton;
+    size_t m_idUseButton;
 };
 
 #endif // BUTTON_COMPLEX_H

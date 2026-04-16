@@ -16,7 +16,7 @@ class StartGameWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit StartGameWindow(QWidget *parent = nullptr);
+    explicit StartGameWindow(StartParams &params, QWidget *parent = nullptr);
 
     StartParams &getStartParams();
 
@@ -31,12 +31,14 @@ private:
     ButtonComplex *m_chessTypeButtons;
     ButtonComplex *m_timeChessTypeButtons;
     ButtonComplex *m_timeChessButtons;
-    TimeChess *m_timeChessSpin;
+    TimeChess *m_timeChessSpins;
     QLabel *m_errorLabel;
     QPushButton *m_startGame;
 
     StartParams m_params;
     SomeConstans *m_constans;
+
+    std::pair<qint8, qint8> m_saveIdTime;
 };
 
 #endif // STARTGAMEWINDOW_H

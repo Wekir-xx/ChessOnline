@@ -33,6 +33,7 @@ EndGameWindow::EndGameWindow(QWidget *parent)
                         "}");
 
     m_whiteTurn = true;
+    m_path = SomeConstans::getInstance().getPathGeneral();
 
     m_mainLayout = new QVBoxLayout();
     m_playerInfo = new QHBoxLayout();
@@ -64,7 +65,7 @@ EndGameWindow::EndGameWindow(QWidget *parent)
     font.setBold(true);
     m_result->setFont(font);
 
-    m_exit->setIcon(QIcon(pathGeneral + "exit.png"));
+    m_exit->setIcon(QIcon(m_path + "exit.png"));
     m_exit->setFixedSize(FIXED_SIZE_EXIT_BUTTON, FIXED_SIZE_EXIT_BUTTON);
     m_exit->setIconSize(m_exit->size());
     m_gameReview->setObjectName("review");
@@ -139,15 +140,15 @@ EndGameWindow::EndGameWindow(QWidget *parent)
 void EndGameWindow::setParams(PlayerParams params, TypeTimeChess timeChessType)
 {
     if (timeChessType == TypeTimeChess::BULLET)
-        m_iconGame->setPixmap(QPixmap(pathGeneral + "bullet.png"));
+        m_iconGame->setPixmap(QPixmap(m_path + "bullet.png"));
     else if (timeChessType == TypeTimeChess::BLITZ)
-        m_iconGame->setPixmap(QPixmap(pathGeneral + "blitz.png"));
+        m_iconGame->setPixmap(QPixmap(m_path + "blitz.png"));
     else if (timeChessType == TypeTimeChess::RAPID)
-        m_iconGame->setPixmap(QPixmap(pathGeneral + "rapid.png"));
+        m_iconGame->setPixmap(QPixmap(m_path + "rapid.png"));
     else if (timeChessType == TypeTimeChess::CLASSIC)
-        m_iconGame->setPixmap(QPixmap(pathGeneral + "classic.png"));
+        m_iconGame->setPixmap(QPixmap(m_path + "classic.png"));
     else if (timeChessType == TypeTimeChess::OTHER)
-        m_iconGame->setPixmap(QPixmap(pathGeneral + "other.png"));
+        m_iconGame->setPixmap(QPixmap(m_path + "other.png"));
 
     m_iconPlayerWhite->setPixmap(params.icons.first);
     m_iconPlayerBlack->setPixmap(params.icons.second);

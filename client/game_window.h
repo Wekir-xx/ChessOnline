@@ -19,6 +19,8 @@ class GameWindow : public QWidget
 public:
     explicit GameWindow(QWidget *parent = nullptr);
 
+    SettingsParams &getSettingsParams();
+
     void startGame(GameParams &params);
 
     void showSettingWindow();
@@ -81,6 +83,9 @@ private:
     std::pair<qint16, qint16> m_ratings;
 
     bool m_connection;
+    QString m_pathGeneral;
+    QString m_smallTimeNoticeStyle;
+
 };
 
 #endif // GAME_WINDOW_H

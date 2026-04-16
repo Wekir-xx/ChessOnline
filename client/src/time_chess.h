@@ -13,7 +13,7 @@ class TimeChess : public QWidget
 public:
     explicit TimeChess(QWidget *parent = nullptr);
 
-    void setTime(qint8 hour, qint8 min, qint8 sec, qint8 minorSec);
+    void setTime(qint32 mainTime, qint8 minorTime);
     std::pair<qint32, qint8> getTime();
 
 signals:
@@ -26,6 +26,8 @@ private:
     QSpinBox *m_timeM;
     QSpinBox *m_timeS;
     QSpinBox *m_timeMinorS;
+
+    bool m_block;
 };
 
 #endif // TIME_CHESS_H
