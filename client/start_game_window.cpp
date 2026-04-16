@@ -123,6 +123,7 @@ StartGameWindow::StartGameWindow(StartParams &params, QWidget *parent)
             }
         }
     });
+    connect(m_boardSetupButton, &QPushButton::clicked, this, &StartGameWindow::boardSetup);
     connect(m_timeChessButtons, &ButtonComplex::selectButtonSignals, this, [this](qint8 id) {
         m_errorLabel->clear();
 
