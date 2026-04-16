@@ -3,10 +3,10 @@ QT += core gui widgets
 CONFIG += c++17
 
 SOURCES += \
-    board_setup_window.cpp \
     main_window.cpp \
     game_window.cpp \
     start_game_window.cpp \
+    board_setup_window.cpp \
     chess_board.cpp \
     chess_game.cpp \
     src/end_game_window.cpp \
@@ -17,10 +17,10 @@ SOURCES += \
     main.cpp \
 
 HEADERS += \
-    board_setup_window.h \
     main_window.h \
     game_window.h \
     start_game_window.h \
+    board_setup_window.h \
     chess_board.h \
     chess_game.h \
     src/end_game_window.h \
