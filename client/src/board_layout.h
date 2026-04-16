@@ -11,7 +11,7 @@ public:
 
     void setGeometry(const QRect &rect) override
     {
-        if (count() == 0)
+        if (count() < 2)
             return;
 
         QLayoutItem *firstItem = itemAt(0);
@@ -24,7 +24,7 @@ public:
                                            -contentsMargins().right(),
                                            -contentsMargins().bottom());
 
-        int fixedWidth = otherWidget->minimumSize().width();
+        int fixedWidth = otherWidget->sizeHint().width();
         int width = adjustedRect.width() - fixedWidth;
         int height = adjustedRect.height();
         int newSide = qMin(width, height);
@@ -33,7 +33,7 @@ public:
         int y = adjustedRect.y();
 
         mainWidget->setGeometry(QRect(x, y, newSide, newSide));
-        otherWidget->setGeometry(QRect(x + newSide, y, width - newSide + fixedWidth, newSide));
+        otherWidget->setGeometry(QRect(x + newSide, y, fixedWidth, newSide));
     }
 };
 

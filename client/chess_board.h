@@ -29,10 +29,8 @@ public:
     void resetBoard();
 
     void fillStandartChessBoard();
-    void fillStandart960ChessBoard();
-    void fillUserChessBoard(std::vector<std::vector<QString>> chessFields,
-                            bool chess960, bool whiteMove,
-                            std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling);
+    void fill960ChessBoard();
+    void fillUserChessBoard(ChessBoardParams &boardParams);
 
     void turnBoard();
     void turnSecondPlayer();

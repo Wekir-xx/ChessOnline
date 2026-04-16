@@ -27,13 +27,15 @@ public:
                                            -contentsMargins().bottom());
 
         int fixedHeight = otherWidget->sizeHint().height();
+        int height = adjustedRect.height() - fixedHeight;
         int width = adjustedRect.width();
+        int newSide = qMin(width, height);
 
         int x = adjustedRect.x();
         int y = adjustedRect.y();
 
-        mainWidget->setGeometry(QRect(x, y, width, width));
-        otherWidget->setGeometry(QRect(x, y + width, width, fixedHeight));
+        mainWidget->setGeometry(QRect(x, y, newSide, newSide));
+        otherWidget->setGeometry(QRect(x, y + newSide, newSide, fixedHeight));
     }
 };
 

@@ -40,6 +40,32 @@ void SomeConstans::swapWidgetHBox(QHBoxLayout *layout, QWidget *widget1, QWidget
     }
 }
 
+void SomeConstans::fillStandartChessField(std::vector<std::vector<QString>> &chessFields)
+{
+    chessFields[0][4] = "wK";
+    chessFields[0][3] = "wQ";
+    chessFields[0][0] = "wR";
+    chessFields[0][7] = "wR";
+    chessFields[0][2] = "wB";
+    chessFields[0][5] = "wB";
+    chessFields[0][6] = "wN";
+    chessFields[0][1] = "wN";
+
+    chessFields[7][4] = "bK";
+    chessFields[7][3] = "bQ";
+    chessFields[7][0] = "bR";
+    chessFields[7][7] = "bR";
+    chessFields[7][2] = "bB";
+    chessFields[7][5] = "bB";
+    chessFields[7][6] = "bN";
+    chessFields[7][1] = "bN";
+
+    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+        chessFields[1][i] = "wP";
+        chessFields[6][i] = "bP";
+    }
+}
+
 const QString &SomeConstans::getConfigFile() const
 {
     return m_configFile;

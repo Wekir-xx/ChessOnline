@@ -26,7 +26,7 @@ public:
     void untransformPawn();
 
     void setField(QString field, qint8 i, qint8 j);
-    void setChessParams(ChessParams chess);
+    void setChessParams(ChessBoardParams &boardParams, ChessPosParams &posParams);
 
     bool getCheck();
     bool getColorMove();
@@ -46,7 +46,8 @@ private:
     void addMovesBishop();
 
 private:
-    ChessParams m_chess;
+    ChessBoardParams m_boardParams;
+    ChessPosParams m_posParams;
 
     std::vector<QString> m_savePiece;
     std::pair<qint8, qint8> m_takenPiece;

@@ -20,6 +20,7 @@ public:
     void setExitButton(bool flag);
 
 signals:
+    void hideAll();
     void turnBoard();
     void turnSecondPlayer();
     void autoQueen();
@@ -38,6 +39,7 @@ private:
     QPushButton *m_turnChessBut;
     QPushButton *m_exitGame;
 
+    QCheckBox *m_hideAllBut;
     QCheckBox *m_autoQueenBut;
     QCheckBox *m_autoRotateBut;
     QCheckBox *m_premoveBut;

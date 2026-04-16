@@ -1,8 +1,9 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
-#include "start_game_window.h"
+#include "board_setup_window.h"
 #include "game_window.h"
+#include "start_game_window.h"
 
 #include <QMainWindow>
 #include <QSettings>
@@ -17,10 +18,14 @@ public:
     ~MainWindow();
 
 private:
+    void switchStartGameWindow();
+
     void writeSettingsParams();
     void writeStartParams();
+    void writeChessBoardParams();
     void readSettingsParams();
     void readStartParams();
+    void readChessBoardParams();
 
     void setBoard(const QString board);
     const QString getBoard();
@@ -29,6 +34,7 @@ private:
     QStackedWidget *m_stacked;
     StartGameWindow *m_startGameWindow;
     GameWindow *m_gameWindow;
+    BoardSetupWindow *m_boardSetupWindow;
 
     QScopedPointer<QSettings> m_settings;
 

@@ -82,8 +82,8 @@ GameWindow::GameWindow(QWidget *parent)
     m_sideLayout->addWidget(m_downButton, 1);
     m_sideLayout->addWidget(m_players.first, 2);
 
-    m_mainLayout->addWidget(m_board);
-    m_mainLayout->addLayout(m_sideLayout);
+    m_mainLayout->addWidget(m_board, 10);
+    m_mainLayout->addLayout(m_sideLayout, 1);
 
     this->setLayout(m_mainLayout);
 
@@ -112,9 +112,7 @@ GameWindow::GameWindow(QWidget *parent)
         this->setTime(0, white);
         m_startMove = QDateTime::currentDateTime();
     });
-    connect(m_board, &ChessBoard::endGame, this, [this](ResultGame result) {
-        this->endGame(result);
-    });
+    connect(m_board, &ChessBoard::endGame, this, [this](ResultGame result) { this->endGame(result); });
 
     connect(m_leftChessHistory, &QPushButton::clicked, this, [this]() {
         m_board->historyBack();
@@ -132,6 +130,10 @@ GameWindow::GameWindow(QWidget *parent)
         }
     });
 
+    connect(m_settings, &SettingsWindow::hideAll, this, [this]() {
+        m_settingsParams.hideAll ^= true;
+        this->hideAll();
+    });
     connect(m_settings, &SettingsWindow::turnBoard, this, &GameWindow::turnBoard);
     connect(m_settings, &SettingsWindow::turnSecondPlayer, this, &GameWindow::turnSecondPlayer);
     connect(m_settings, &SettingsWindow::autoQueen, this, [this]() {
@@ -188,6 +190,7 @@ void GameWindow::startGame(GameParams &params)
 {
     m_startParams = params.startParams;
     m_settingsParams = params.settingsParams;
+    m_boardParams = params.boardParams;
 
     m_nicknames = {"name1", "name2"};
     m_ratings = {0, 0};
@@ -205,6 +208,8 @@ void GameWindow::startGame(GameParams &params)
 
     m_board->setAutoQueen(m_settingsParams.checkAutoQueen);
     m_board->setPremove(m_settingsParams.checkPremove);
+
+    this->hideAll();
 
     m_settings->hide();
     m_endGame->hide();
@@ -246,14 +251,14 @@ void GameWindow::showSettingWindow()
 {
     const qint16 width = m_board->width() - MINIMUM_PIECE_SIZE;
     const qint16 height = m_board->height();
-    m_settings->setGeometry(width / 4 + MINIMUM_PIECE_SIZE, height / 4, width / 2, height / 2);
+    m_settings->setGeometry(width / 5 + MINIMUM_PIECE_SIZE, height / 5, width * 3 / 5, height * 3 / 5);
 }
 
 void GameWindow::showEndGameWindow()
 {
     const qint16 width = m_board->width() - MINIMUM_PIECE_SIZE;
     const qint16 height = m_board->height();
-    m_endGame->setGeometry(width / 6 + MINIMUM_PIECE_SIZE, height / 6, width / 3 * 2, height / 3 * 2);
+    m_endGame->setGeometry(width / 6 + MINIMUM_PIECE_SIZE, height / 6, width * 2 / 3, height * 2 / 3);
 }
 
 void GameWindow::resizeEvent(QResizeEvent *event)
@@ -277,11 +282,10 @@ void GameWindow::startGameInner()
 
     if (m_startParams.chessType == TypeChess::STANDART)
         m_board->fillStandartChessBoard();
-    else if (m_startParams.chessType == TypeChess::STANDART960)
-        m_board->fillStandart960ChessBoard();
+    else if (m_startParams.chessType == TypeChess::_960)
+        m_board->fill960ChessBoard();
     else
-        m_board->fillUserChessBoard(m_startParams.chessFields, m_startParams.chessType == TypeChess::USER ? false : true,
-                                    m_startParams.whiteMove, m_startParams.castling);
+        m_board->fillUserChessBoard(m_boardParams);
 
     if (m_connection) {
         disconnect(m_upButtonCon);
@@ -341,6 +345,25 @@ void GameWindow::endGame(ResultGame result)
 void GameWindow::newGame() {}
 
 void GameWindow::rematch() {}
+
+void GameWindow::hideAll()
+{
+    if (m_settingsParams.hideAll) {
+        m_players.first->hide();
+        m_players.second->hide();
+        m_upButton->hide();
+        m_downButton->hide();
+        m_leftChessHistory->hide();
+        m_rightChessHistory->hide();
+    } else {
+        m_players.first->show();
+        m_players.second->show();
+        m_upButton->show();
+        m_downButton->show();
+        m_leftChessHistory->show();
+        m_rightChessHistory->show();
+    }
+}
 
 void GameWindow::turnBoard()
 {

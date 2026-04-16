@@ -97,17 +97,17 @@ EndGameWindow::EndGameWindow(QWidget *parent)
     m_newRatingsBlack->setAlignment(Qt::AlignCenter);
     m_result->setAlignment(Qt::AlignCenter);
 
-    m_whitePlayerLayout->addWidget(m_iconPlayerWhite, 1);
-    m_whitePlayerLayout->addWidget(m_playerWhiteInfo, 0);
+    m_whitePlayerLayout->addWidget(m_iconPlayerWhite);
+    m_whitePlayerLayout->addWidget(m_playerWhiteInfo);
 
-    m_blackPlayerLayout->addWidget(m_iconPlayerBlack, 1);
-    m_blackPlayerLayout->addWidget(m_playerBlackInfo, 0);
+    m_blackPlayerLayout->addWidget(m_iconPlayerBlack);
+    m_blackPlayerLayout->addWidget(m_playerBlackInfo);
 
     m_whitePlayer->setLayout(m_whitePlayerLayout);
     m_blackPlayer->setLayout(m_blackPlayerLayout);
 
-    m_playerInfo->addWidget(m_whitePlayer, 1);
-    m_playerInfo->addWidget(m_blackPlayer, 1);
+    m_playerInfo->addWidget(m_whitePlayer);
+    m_playerInfo->addWidget(m_blackPlayer);
 
     m_topLayout->addSpacing(20);
     m_topLayout->addWidget(m_result, 20);
@@ -123,7 +123,6 @@ EndGameWindow::EndGameWindow(QWidget *parent)
 
     m_mainLayout->addLayout(m_topLayout, 1);
     m_mainLayout->addLayout(m_playerInfo, 4);
-    m_mainLayout->addSpacing(15);
     m_mainLayout->addLayout(m_resultLayout, 1);
     m_mainLayout->addWidget(m_gameReview, 1);
     m_mainLayout->addLayout(m_buttonsLayout, 1);

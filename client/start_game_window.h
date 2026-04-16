@@ -18,14 +18,23 @@ class StartGameWindow : public QWidget
 public:
     explicit StartGameWindow(StartParams &params, QWidget *parent = nullptr);
 
+    void hideAllWidget();
+    void showAllWidget();
+
+    void setChessBoard();
     StartParams &getStartParams();
 
 signals:
     void startGame();
+    void boardSetup();
+
+private:
+    void lookBoardSetupButton();
 
 private:
     QVBoxLayout *m_mainLayout;
     QStackedWidget *m_stackedTime;
+    QHBoxLayout *m_buttonLayout;
 
     ButtonComplex *m_gameTypeButtons;
     ButtonComplex *m_chessTypeButtons;
@@ -33,7 +42,8 @@ private:
     ButtonComplex *m_timeChessButtons;
     TimeChess *m_timeChessSpins;
     QLabel *m_errorLabel;
-    QPushButton *m_startGame;
+    QPushButton *m_boardSetupButton;
+    QPushButton *m_startGameButton;
 
     StartParams m_params;
     SomeConstans *m_constans;

@@ -15,8 +15,8 @@ ChessBoard::ChessBoard(QWidget *parent)
     this->setMouseTracking(true);
 
     m_imagesOfPieces.reserve(40);
-    m_chessBoardBut.resize(8, std::vector<EventButton *>(8, nullptr));
-    m_otherBoardLab.resize(2, std::vector<QLabel *>(8, nullptr));
+    m_chessBoardBut.resize(SIDE_SIZE, std::vector<EventButton *>(SIDE_SIZE, nullptr));
+    m_otherBoardLab.resize(2, std::vector<QLabel *>(SIDE_SIZE, nullptr));
 
 #ifdef MOVE_PIECE
     m_movePiece = new QLabel(this);
@@ -33,15 +33,15 @@ ChessBoard::ChessBoard(QWidget *parent)
     QLabel *empty = new QLabel();
     empty->setSizePolicy(sizePolicy);
     empty->setFixedHeight(FIXED_SIZE_NUMBERS);
-    m_board->addWidget(empty, 8, 0);
+    m_board->addWidget(empty, SIDE_SIZE, 0);
 
-    for (qint8 i = 0; i < 8; ++i) {
+    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
         QLabel *label = new QLabel();
         label->setMinimumHeight(MINIMUM_PIECE_SIZE);
         label->setFixedWidth(FIXED_SIZE_NUMBERS);
         label->setSizePolicy(sizePolicy);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        label->setText(QString::number(8 - i));
+        label->setText(QString::number(SIDE_SIZE - i));
         m_otherBoardLab[0][i] = label;
 
         label = new QLabel();
@@ -52,7 +52,7 @@ ChessBoard::ChessBoard(QWidget *parent)
         label->setText(QString(QChar('a' + i)));
         m_otherBoardLab[1][i] = label;
 
-        for (qint8 j = 0; j < 8; ++j) {
+        for (qint8 j = 0; j < SIDE_SIZE; ++j) {
             EventButton *button = new EventButton();
             button->setObjectName(QString(QChar('a' + j)) + QString::number(i + 1));
             button->setSizePolicy(sizePolicy);
@@ -76,55 +76,37 @@ ChessBoard::ChessBoard(QWidget *parent)
 void ChessBoard::resetBoard()
 {
     this->updateChessScene();
-    for (qint8 i = 0; i < 8; ++i)
-        for (qint8 j = 0; j < 8; ++j)
+    for (qint8 i = 0; i < SIDE_SIZE; ++i)
+        for (qint8 j = 0; j < SIDE_SIZE; ++j)
             this->baseField(i, j);
 }
 
 void ChessBoard::fillStandartChessBoard()
 {
-    ChessParams chess;
-    chess.chessFields.resize(8, std::vector<QString>(8));
-    chess.posKings = {{0, 4}, {7, 4}};
-    chess.posRooksWhite = {{0, 0}, {0, 7}};
-    chess.posRooksBlack = {{7, 0}, {7, 7}};
-    chess.castling = {{true, true}, {true, true}};
-    chess.chess960 = false;
-    chess.whiteMove = true;
+    ChessPosParams posParams;
+    posParams.posKings = {{0, 4}, {7, 4}};
+    posParams.posRooksWhite = {{0, 0}, {0, 7}};
+    posParams.posRooksBlack = {{7, 0}, {7, 7}};
 
-    chess.chessFields[chess.posKings.first.first][chess.posKings.first.second] = "wK";
-    chess.chessFields[0][3] = "wQ";
-    chess.chessFields[chess.posRooksWhite.first.first][chess.posRooksWhite.first.second] = "wR";
-    chess.chessFields[chess.posRooksWhite.second.first][chess.posRooksWhite.second.second] = "wR";
-    chess.chessFields[0][2] = "wB";
-    chess.chessFields[0][5] = "wB";
-    chess.chessFields[0][6] = "wN";
-    chess.chessFields[0][1] = "wN";
+    ChessBoardParams boardParams;
+    boardParams.chessFields.resize(SIDE_SIZE, std::vector<QString>(SIDE_SIZE));
+    boardParams.castling = {{true, true}, {true, true}};
+    boardParams.chess960 = false;
+    boardParams.whiteMove = true;
 
-    chess.chessFields[chess.posKings.second.first][chess.posKings.second.second] = "bK";
-    chess.chessFields[7][3] = "bQ";
-    chess.chessFields[chess.posRooksBlack.first.first][chess.posRooksBlack.first.second] = "bR";
-    chess.chessFields[chess.posRooksBlack.second.first][chess.posRooksBlack.second.second] = "bR";
-    chess.chessFields[7][2] = "bB";
-    chess.chessFields[7][5] = "bB";
-    chess.chessFields[7][6] = "bN";
-    chess.chessFields[7][1] = "bN";
+    SomeConstans::fillStandartChessField(boardParams.chessFields);
 
-    for (qint8 i = 0; i < 8; ++i) {
-        chess.chessFields[1][i] = "wP";
-        chess.chessFields[6][i] = "bP";
-    }
-
-    m_game.setChessParams(chess);
+    m_game.setChessParams(boardParams, posParams);
 }
 
-void ChessBoard::fillStandart960ChessBoard()
+void ChessBoard::fill960ChessBoard()
 {
-    ChessParams chess;
-    chess.chessFields.resize(8, std::vector<QString>(8));
-    chess.castling = {{true, true}, {true, true}};
-    chess.chess960 = true;
-    chess.whiteMove = true;
+    ChessPosParams posParams;
+    ChessBoardParams boardParams;
+    boardParams.chessFields.resize(SIDE_SIZE, std::vector<QString>(SIDE_SIZE));
+    boardParams.castling = {{true, true}, {true, true}};
+    boardParams.chess960 = true;
+    boardParams.whiteMove = true;
 
     std::vector<qint8> numPos{0, 1, 2, 3, 4, 5, 6, 7};
     std::random_device rd;
@@ -136,87 +118,81 @@ void ChessBoard::fillStandart960ChessBoard()
     std::uniform_int_distribution<> randomKnight2(0, 3);
 
     qint8 pos = randomBishop(gen) * 2 - 2;
-    chess.chessFields[0][pos] = "wB";
-    chess.chessFields[7][pos] = "bB";
+    boardParams.chessFields[0][pos] = "wB";
+    boardParams.chessFields[7][pos] = "bB";
     auto it = std::find(numPos.begin(), numPos.end(), pos);
     numPos.erase(it);
 
     pos = randomBishop(gen) * 2 - 1;
-    chess.chessFields[0][pos] = "wB";
-    chess.chessFields[7][pos] = "bB";
+    boardParams.chessFields[0][pos] = "wB";
+    boardParams.chessFields[7][pos] = "bB";
     it = std::find(numPos.begin(), numPos.end(), pos);
     numPos.erase(it);
 
     pos = randomQueen(gen);
-    chess.chessFields[0][numPos[pos]] = "wQ";
-    chess.chessFields[7][numPos[pos]] = "bQ";
+    boardParams.chessFields[0][numPos[pos]] = "wQ";
+    boardParams.chessFields[7][numPos[pos]] = "bQ";
     it = std::find(numPos.begin(), numPos.end(), numPos[pos]);
     numPos.erase(it);
 
     pos = randomKnight1(gen);
-    chess.chessFields[0][numPos[pos]] = "wN";
-    chess.chessFields[7][numPos[pos]] = "bN";
+    boardParams.chessFields[0][numPos[pos]] = "wN";
+    boardParams.chessFields[7][numPos[pos]] = "bN";
     it = std::find(numPos.begin(), numPos.end(), numPos[pos]);
     numPos.erase(it);
 
     pos = randomKnight2(gen);
-    chess.chessFields[0][numPos[pos]] = "wN";
-    chess.chessFields[7][numPos[pos]] = "bN";
+    boardParams.chessFields[0][numPos[pos]] = "wN";
+    boardParams.chessFields[7][numPos[pos]] = "bN";
     it = std::find(numPos.begin(), numPos.end(), numPos[pos]);
     numPos.erase(it);
 
-    for (qint8 i = 0; i < 8; ++i) {
-        chess.chessFields[1][i] = "wP";
-        chess.chessFields[6][i] = "bP";
+    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+        boardParams.chessFields[1][i] = "wP";
+        boardParams.chessFields[6][i] = "bP";
     }
 
-    chess.posKings = {{0, numPos[1]}, {7, numPos[1]}};
-    chess.posRooksWhite = {{0, numPos[0]}, {0, numPos[2]}};
-    chess.posRooksBlack = {{7, numPos[0]}, {7, numPos[2]}};
+    posParams.posKings = {{0, numPos[1]}, {7, numPos[1]}};
+    posParams.posRooksWhite = {{0, numPos[0]}, {0, numPos[2]}};
+    posParams.posRooksBlack = {{7, numPos[0]}, {7, numPos[2]}};
 
-    chess.chessFields[chess.posKings.first.first][chess.posKings.first.second] = "wK";
-    chess.chessFields[chess.posRooksWhite.first.first][chess.posRooksWhite.first.second] = "wR";
-    chess.chessFields[chess.posRooksWhite.second.first][chess.posRooksWhite.second.second] = "wR";
-    chess.chessFields[chess.posKings.second.first][chess.posKings.second.second] = "bK";
-    chess.chessFields[chess.posRooksBlack.first.first][chess.posRooksBlack.first.second] = "bR";
-    chess.chessFields[chess.posRooksBlack.second.first][chess.posRooksBlack.second.second] = "bR";
+    boardParams.chessFields[posParams.posKings.first.first][posParams.posKings.first.second] = "wK";
+    boardParams.chessFields[posParams.posRooksWhite.first.first][posParams.posRooksWhite.first.second] = "wR";
+    boardParams.chessFields[posParams.posRooksWhite.second.first][posParams.posRooksWhite.second.second] = "wR";
+    boardParams.chessFields[posParams.posKings.second.first][posParams.posKings.second.second] = "bK";
+    boardParams.chessFields[posParams.posRooksBlack.first.first][posParams.posRooksBlack.first.second] = "bR";
+    boardParams.chessFields[posParams.posRooksBlack.second.first][posParams.posRooksBlack.second.second] = "bR";
 
-    m_game.setChessParams(chess);
+    m_game.setChessParams(boardParams, posParams);
 }
 
-void ChessBoard::fillUserChessBoard(std::vector<std::vector<QString>> chessFields,
-                                    bool chess960, bool whiteMove,
-                                    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling)
+void ChessBoard::fillUserChessBoard(ChessBoardParams &boardParams)
 {
-    ChessParams chess;
-    chess.chessFields = chessFields;
-    chess.posRooksWhite = {{EMPTY, EMPTY}, {EMPTY, EMPTY}};
-    chess.posRooksBlack = {{EMPTY, EMPTY}, {EMPTY, EMPTY}};
-    chess.castling = castling;
-    chess.chess960 = chess960;
-    chess.whiteMove = whiteMove;
+    ChessPosParams posParams;
+    posParams.posRooksWhite = {{SIDE_SIZE, SIDE_SIZE}, {SIDE_SIZE, SIDE_SIZE}};
+    posParams.posRooksBlack = {{SIDE_SIZE, SIDE_SIZE}, {SIDE_SIZE, SIDE_SIZE}};
 
-    for (size_t i = 0; i < 8; ++i) {
-        for (size_t j = 0; j < 8; ++j) {
-            if (chessFields[i][j] == "wK") {
-                chess.posKings.first = {i, j};
-            } else if (chessFields[i][j] == "bK") {
-                chess.posKings.second = {i, j};
-            } else if (chessFields[i][j] == "bK") {
-                if (chess.posRooksWhite.first.first == EMPTY)
-                    chess.posRooksWhite.first = {i, j};
+    for (size_t i = 0; i < SIDE_SIZE; ++i) {
+        for (size_t j = 0; j < SIDE_SIZE; ++j) {
+            if (boardParams.chessFields[i][j] == "wK") {
+                posParams.posKings.first = {i, j};
+            } else if (boardParams.chessFields[i][j] == "bK") {
+                posParams.posKings.second = {i, j};
+            } else if (boardParams.chessFields[i][j] == "wR") {
+                if (posParams.posRooksWhite.first.first == SIDE_SIZE)
+                    posParams.posRooksWhite.first = {i, j};
                 else
-                    chess.posRooksWhite.second = {i, j};
-            } else if (chessFields[i][j] == "bK") {
-                if (chess.posRooksBlack.first.first == EMPTY)
-                    chess.posRooksBlack.first = {i, j};
+                    posParams.posRooksWhite.second = {i, j};
+            } else if (boardParams.chessFields[i][j] == "bR") {
+                if (posParams.posRooksBlack.first.first == SIDE_SIZE)
+                    posParams.posRooksBlack.first = {i, j};
                 else
-                    chess.posRooksBlack.second = {i, j};
+                    posParams.posRooksBlack.second = {i, j};
             }
         }
     }
 
-    m_game.setChessParams(chess);
+    m_game.setChessParams(boardParams, posParams);
 }
 
 void ChessBoard::turnBoard()
@@ -303,8 +279,8 @@ void ChessBoard::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
 
-    for (qint8 i = 0; i < 8; ++i)
-        for (qint8 j = 0; j < 8; ++j)
+    for (qint8 i = 0; i < SIDE_SIZE; ++i)
+        for (qint8 j = 0; j < SIDE_SIZE; ++j)
             m_chessBoardBut[i][j]->setIconSize(m_chessBoardBut[i][j]->size());
 
     const auto &beatField = m_game.getBeatFields();
@@ -369,7 +345,7 @@ void ChessBoard::clickField(const QString &nameField)
     const auto &beatFields = m_game.getBeatFields();
     const auto takenPiece = m_game.getTakenPiece();
 
-    if (takenPiece.first != EMPTY) {
+    if (takenPiece.first != SIDE_SIZE) {
         if (std::any_of(beatFields.begin(), beatFields.end(), [ = ](const auto & p) {
         return p.first == i && p.second == j;
     })) {
@@ -424,7 +400,7 @@ void ChessBoard::clickField(const QString &nameField)
                 this->untransformPawnField(beatFields);
             }
 
-            if (chessFields[takenPiece.first][takenPiece.second][1] == 'K')
+            if (chessFields[takenPiece.first][takenPiece.second][1] == 'K' && m_game.getCheck())
                 this->checkKing();
             else
                 this->baseField(takenPiece.first, takenPiece.second);
@@ -468,9 +444,9 @@ void ChessBoard::baseField(qint8 i, qint8 j)
 void ChessBoard::uncheckLastMove()
 {
     const auto lastMove = m_game.getLastMove();
-    if (lastMove.first.first != EMPTY)
+    if (lastMove.first.first != SIDE_SIZE)
         this->baseField(lastMove.first.first, lastMove.first.second);
-    if (lastMove.second.first != EMPTY)
+    if (lastMove.second.first != SIDE_SIZE)
         this->baseField(lastMove.second.first, lastMove.second.second);
 }
 
@@ -604,19 +580,19 @@ void ChessBoard::fillIcan(bool white, bool up)
 void ChessBoard::fillBoard()
 {
     if (m_turnBoard) {
-        for (qint8 i = 0; i < 8; ++i) {
+        for (qint8 i = 0; i < SIDE_SIZE; ++i) {
             m_board->addWidget(m_otherBoardLab[0][7 - i], i, 0);
             m_board->addWidget(m_otherBoardLab[1][7 - i], 8, i + 1);
 
-            for (qint8 j = 0; j < 8; ++j)
+            for (qint8 j = 0; j < SIDE_SIZE; ++j)
                 m_board->addWidget(m_chessBoardBut[i][7 - j], i, j + 1);
         }
     } else {
-        for (qint8 i = 0; i < 8; ++i) {
+        for (qint8 i = 0; i < SIDE_SIZE; ++i) {
             m_board->addWidget(m_otherBoardLab[0][i], i, 0);
             m_board->addWidget(m_otherBoardLab[1][i], 8, i + 1);
 
-            for (qint8 j = 0; j < 8; ++j)
+            for (qint8 j = 0; j < SIDE_SIZE; ++j)
                 m_board->addWidget(m_chessBoardBut[7 - i][j], i, j + 1);
         }
     }
@@ -625,8 +601,8 @@ void ChessBoard::fillBoard()
 void ChessBoard::updateChessScene()
 {
     const auto &chessFields = m_game.getChessFields();
-    for (qint8 i = 0; i < 8; ++i) {
-        for (qint8 j = 0; j < 8; ++j) {
+    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+        for (qint8 j = 0; j < SIDE_SIZE; ++j) {
             m_chessBoardBut[i][j]->setIconSize(m_chessBoardBut[i][j]->size());
 
             if (chessFields[i][j].isEmpty())
@@ -643,9 +619,9 @@ void ChessBoard::updateHistoryScene()
     this->uncheckKing();
     m_game.historyMove();
     const auto lastMove = m_game.getLastMove();
-    if (lastMove.first.first != EMPTY)
+    if (lastMove.first.first != SIDE_SIZE)
         this->moveField(lastMove.first.first, lastMove.first.second);
-    if (lastMove.second.first != EMPTY)
+    if (lastMove.second.first != SIDE_SIZE)
         this->moveField(lastMove.second.first, lastMove.second.second);
     this->checkKing();
     this->updateChessScene();

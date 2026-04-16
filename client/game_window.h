@@ -38,6 +38,7 @@ private:
     void newGame();
     void rematch();
 
+    void hideAll();
     void turnBoard();
     void turnSecondPlayer();
     void turnPlayerLayout(QLabel *iconPlayer, RotatableLabel *infoPlayer,
@@ -48,6 +49,10 @@ private:
     void resetTime();
 
 private:
+    SettingsParams m_settingsParams;
+    StartParams m_startParams;
+    ChessBoardParams m_boardParams;
+
     ChessBoard *m_board;
     SettingsWindow *m_settings;
     EndGameWindow *m_endGame;
@@ -77,15 +82,11 @@ private:
     QMetaObject::Connection m_upButtonCon;
     QMetaObject::Connection m_downButtonCon;
 
-    StartParams m_startParams;
-    SettingsParams m_settingsParams;
     std::pair<QString, QString> m_nicknames;
     std::pair<qint16, qint16> m_ratings;
-
-    bool m_connection;
     QString m_pathGeneral;
     QString m_smallTimeNoticeStyle;
-
+    bool m_connection;
 };
 
 #endif // GAME_WINDOW_H

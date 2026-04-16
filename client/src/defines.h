@@ -1,7 +1,7 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-#define EMPTY 8
+#define SIDE_SIZE 8
 #define BEAT_FIELD_SIZE 0.35
 #define BEAT_FIELD_OPACITY 0.27
 #define MINIMUM_PIECE_SIZE 25
@@ -31,9 +31,8 @@ enum class TypeGame : int {
 enum class TypeChess : int {
     UNDEFINED = -1,
     STANDART = 0,
-    STANDART960,
+    _960,
     USER,
-    USER960,
     NUMBER,
 };
 
@@ -56,43 +55,50 @@ enum class ResultGame : int {
 };
 
 struct SettingsParams {
+    bool hideAll{false};
     bool checkAutoQueen{false};
     bool checkAutoRotate{false};
     bool checkPremove{false};
     bool checkNoticeTime{false};
 };
 
-struct StartParams {
+struct StartParams
+{
     TypeGame gameType{TypeGame::UNDEFINED};
     TypeChess chessType{TypeChess::UNDEFINED};
     TypeTimeChess timeChessType{TypeTimeChess::UNDEFINED};
     qint32 mainTime{0};
     qint8 minorTime{0};
+};
+
+struct ChessBoardParams
+{
     std::vector<std::vector<QString>> chessFields;
-    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling {{true, true}, {true, true}};
+    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling{{true, true}, {true, true}};
+    bool chess960{false};
     bool whiteMove{true};
 };
 
-struct GameParams {
+struct GameParams
+{
     SettingsParams settingsParams;
     StartParams startParams;
+    ChessBoardParams boardParams;
 };
 
-struct PlayerParams {
+struct ChessPosParams
+{
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
+    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
+};
+
+struct PlayerParams
+{
     std::pair<QString, QString> nicknames{"", ""};
     std::pair<QPixmap, QPixmap> icons;
     std::pair<qint16, qint16> ratings{0, 0};
     bool mainPlayerWhite{true};
-};
-
-struct ChessParams {
-    std::vector<std::vector<QString>> chessFields;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
-    std::pair<std::pair<bool, bool>, std::pair<bool, bool>> castling;
-    bool chess960;
-    bool whiteMove;
 };
 
 class SomeConstans
@@ -102,6 +108,8 @@ public:
 
     static void swapWidgetVBox(QVBoxLayout *layout, QWidget *widget1, QWidget *widget2);
     static void swapWidgetHBox(QHBoxLayout *layout, QWidget *widget1, QWidget *widget2);
+
+    static void fillStandartChessField(std::vector<std::vector<QString>> &chessFields);
 
     const QString &getConfigFile() const;
     const QString &getPathGeneral() const;
@@ -133,9 +141,8 @@ private:
 
     const std::vector<std::string> m_typeChessStr = {
         "Standart",
-        "Standart960",
+        "960",
         "User",
-        "User960",
     };
 
     const std::vector<std::string> m_typeTimeChessStr = {
