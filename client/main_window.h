@@ -27,8 +27,8 @@ private:
     void readStartParams();
     void readChessBoardParams();
 
-    void setBoard(QString board);
-    QString getBoard();
+    void setBoard(const QString board);
+    const QString getBoard();
 
 private:
     QStackedWidget *m_stacked;
