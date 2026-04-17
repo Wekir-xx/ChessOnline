@@ -4,9 +4,7 @@
 #include "defines.h"
 
 #include <QCheckBox>
-#include <QHBoxLayout>
 #include <QPushButton>
-#include <QVBoxLayout>
 #include <QWidget>
 
 class SettingsWindow : public QWidget

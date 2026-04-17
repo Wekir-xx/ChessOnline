@@ -6,9 +6,6 @@
 
 #include <QLabel>
 #include <QObject>
-#include <QPixmap>
-#include <QWidget>
-#include <QHBoxLayout>
 #include <QPushButton>
 
 class EndGameWindow : public QWidget
@@ -38,11 +35,11 @@ private:
     QWidget *m_whitePlayer;
     QWidget *m_blackPlayer;
 
-    QPushButton *m_exit;
-    QPushButton *m_gameReview;
-    QPushButton *m_newGame;
-    QPushButton *m_rematch;
-    QPushButton *m_blockUser;
+    QPushButton *m_exitBut;
+    QPushButton *m_gameReviewBut;
+    QPushButton *m_newGameBut;
+    QPushButton *m_rematchBut;
+    QPushButton *m_blockUserBut;
 
     QLabel *m_playerWhiteInfo;
     QLabel *m_playerBlackInfo;

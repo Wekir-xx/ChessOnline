@@ -27,18 +27,18 @@ private:
     void readStartParams();
     void readChessBoardParams();
 
-    void setBoard(const QString board);
-    const QString getBoard();
+    void setBoard(QString board);
+    QString getBoard();
 
 private:
+    GameParams m_params;
+
     QStackedWidget *m_stacked;
     StartGameWindow *m_startGameWindow;
     GameWindow *m_gameWindow;
     BoardSetupWindow *m_boardSetupWindow;
 
     QScopedPointer<QSettings> m_settings;
-
-    GameParams m_params;
 };
 
 #endif // MAIN_WINDOW_H

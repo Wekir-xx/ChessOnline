@@ -9,7 +9,6 @@
 #include "src/settings_window.h"
 
 #include <QDateTime>
-#include <QObject>
 #include <QTimer>
 
 class GameWindow : public QWidget
@@ -77,10 +76,10 @@ private:
     QDateTime m_startMove;
     qint32 m_saveTime;
 
-    QPushButton *m_upButton;
-    QPushButton *m_downButton;
-    QMetaObject::Connection m_upButtonCon;
-    QMetaObject::Connection m_downButtonCon;
+    QPushButton *m_upBut;
+    QPushButton *m_downBut;
+    QMetaObject::Connection m_upConnectBut;
+    QMetaObject::Connection m_downConnectBut;
 
     std::pair<QString, QString> m_nicknames;
     std::pair<qint16, qint16> m_ratings;

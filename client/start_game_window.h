@@ -6,10 +6,7 @@
 #include "src/time_chess.h"
 
 #include <QLabel>
-#include <QObject>
 #include <QStackedWidget>
-#include <QVBoxLayout>
-#include <QWidget>
 
 class StartGameWindow : public QWidget
 {
@@ -29,24 +26,24 @@ signals:
     void boardSetup();
 
 private:
-    void lookBoardSetupButton();
+    void lookBoardSetupBut();
 
 private:
+    StartParams m_params;
+    SomeConstans *m_constans;
+
     QVBoxLayout *m_mainLayout;
     QStackedWidget *m_stackedTime;
     QHBoxLayout *m_buttonLayout;
 
-    ButtonComplex *m_gameTypeButtons;
-    ButtonComplex *m_chessTypeButtons;
-    ButtonComplex *m_timeChessTypeButtons;
-    ButtonComplex *m_timeChessButtons;
+    ButtonComplex *m_gameTypeButs;
+    ButtonComplex *m_chessTypeButs;
+    ButtonComplex *m_timeChessTypeButs;
+    ButtonComplex *m_timeChessButs;
+    QPushButton *m_boardSetupBut;
+    QPushButton *m_startGameBut;
     TimeChess *m_timeChessSpins;
     QLabel *m_errorLabel;
-    QPushButton *m_boardSetupButton;
-    QPushButton *m_startGameButton;
-
-    StartParams m_params;
-    SomeConstans *m_constans;
 
     std::pair<qint8, qint8> m_saveIdTime;
 };

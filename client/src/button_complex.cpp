@@ -32,21 +32,21 @@ void ButtonComplex::setButtons(std::vector<std::string> nameButtons)
 
     for (; i < m_buttons.size(); ++i)
         m_buttons[i]->hide();
-
-    m_idUseButton = i;
+    
+    m_idUseBut = i;
 }
 
 void ButtonComplex::useButton(qint8 id)
 {
-    m_idUseButton = id;
+    m_idUseBut = id;
     m_buttons[id]->setChecked(true);
     m_buttons[id]->setEnabled(false);
 }
 
 void ButtonComplex::unUseButton()
 {
-    if (m_idUseButton < m_buttons.size()) {
-        m_buttons[m_idUseButton]->setChecked(false);
-        m_buttons[m_idUseButton]->setEnabled(true);
+    if (m_idUseBut < m_buttons.size()) {
+        m_buttons[m_idUseBut]->setChecked(false);
+        m_buttons[m_idUseBut]->setEnabled(true);
     }
 }

@@ -20,8 +20,8 @@ GameWindow::GameWindow(QWidget *parent)
     m_leftChessHistory = new QPushButton();
     m_rightChessHistory = new QPushButton();
     m_settingsButton = new QPushButton();
-    m_upButton = new QPushButton();
-    m_downButton = new QPushButton();
+    m_upBut = new QPushButton();
+    m_downBut = new QPushButton();
 
     m_players = std::pair{new QWidget(), new QWidget()};
     m_playersLayout = std::pair{new PlayerInfoLayout3(), new PlayerInfoLayout3()};
@@ -77,9 +77,9 @@ GameWindow::GameWindow(QWidget *parent)
     m_helperLayout->addWidget(m_settingsButton);
 
     m_sideLayout->addWidget(m_players.second, 2);
-    m_sideLayout->addWidget(m_upButton, 1);
+    m_sideLayout->addWidget(m_upBut, 1);
     m_sideLayout->addLayout(m_helperLayout, 1);
-    m_sideLayout->addWidget(m_downButton, 1);
+    m_sideLayout->addWidget(m_downBut, 1);
     m_sideLayout->addWidget(m_players.first, 2);
 
     m_mainLayout->addWidget(m_board, 10);
@@ -288,23 +288,23 @@ void GameWindow::startGameInner()
         m_board->fillUserChessBoard(m_boardParams);
 
     if (m_connection) {
-        disconnect(m_upButtonCon);
-        disconnect(m_downButtonCon);
+        disconnect(m_upConnectBut);
+        disconnect(m_downConnectBut);
         m_board->resetBoard();
     }
-
-    m_upButton->setText("Draw");
-    m_downButton->setText("Resign");
+    
+    m_upBut->setText("Draw");
+    m_downBut->setText("Resign");
 
     m_connection = true;
-    m_upButtonCon = connect(m_upButton, &QPushButton::clicked, this, [this]() {
+    m_upConnectBut = connect(m_upBut, &QPushButton::clicked, this, [this]() {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this, "Draw", "Are you sure?", QMessageBox::Yes | QMessageBox::No);
 
         if (reply == QMessageBox::Yes)
             this->endGame(ResultGame::STALE_MATE);
     });
-    m_downButtonCon = connect(m_downButton, &QPushButton::clicked, this, [this]() {
+    m_downConnectBut = connect(m_downBut, &QPushButton::clicked, this, [this]() {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this, "Resign", "Are you sure?", QMessageBox::Yes | QMessageBox::No);
 
@@ -326,17 +326,17 @@ void GameWindow::endGame(ResultGame result)
     m_endGame->show();
 
     this->showEndGameWindow();
-
-    m_upButton->setText("New Game");
-    m_downButton->setText("Rematch");
-
-    disconnect(m_upButtonCon);
-    disconnect(m_downButtonCon);
-
-    m_upButtonCon = connect(m_upButton, &QPushButton::clicked, this, [this]() {
+    
+    m_upBut->setText("New Game");
+    m_downBut->setText("Rematch");
+    
+    disconnect(m_upConnectBut);
+    disconnect(m_downConnectBut);
+    
+    m_upConnectBut = connect(m_upBut, &QPushButton::clicked, this, [this]() {
         this->startGameInner();
     });
-    m_downButtonCon = connect(m_downButton, &QPushButton::clicked, this, [this]() {
+    m_downConnectBut = connect(m_downBut, &QPushButton::clicked, this, [this]() {
         this->startGameInner();
         this->turnBoard();
     });
@@ -351,15 +351,15 @@ void GameWindow::hideAll()
     if (m_settingsParams.hideAll) {
         m_players.first->hide();
         m_players.second->hide();
-        m_upButton->hide();
-        m_downButton->hide();
+        m_upBut->hide();
+        m_downBut->hide();
         m_leftChessHistory->hide();
         m_rightChessHistory->hide();
     } else {
         m_players.first->show();
         m_players.second->show();
-        m_upButton->show();
-        m_downButton->show();
+        m_upBut->show();
+        m_downBut->show();
         m_leftChessHistory->show();
         m_rightChessHistory->show();
     }

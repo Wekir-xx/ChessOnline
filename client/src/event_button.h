@@ -7,8 +7,10 @@
 class EventButton : public QPushButton
 {
     Q_OBJECT
+
 public:
     using QPushButton::QPushButton;
+
 signals:
     void pressMouseSignal(QMouseEvent *event);
 

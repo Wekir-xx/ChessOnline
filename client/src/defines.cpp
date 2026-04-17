@@ -83,7 +83,12 @@ const QString &SomeConstans::getPathStyle1() const
 
 const QString &SomeConstans::getSmallTimeNoticeStyle() const
 {
-    return m_smallTimeNotice;
+    return m_smallTimeNoticeStyle;
+}
+
+const QString &SomeConstans::getFontSizeStyle() const
+{
+    return m_fontSizeStyle;
 }
 
 const std::vector<std::string> &SomeConstans::getTypeGameStr() const

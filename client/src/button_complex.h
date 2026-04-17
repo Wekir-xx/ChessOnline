@@ -27,7 +27,7 @@ private:
     QHBoxLayout *m_layout;
 
     std::vector<QPushButton *> m_buttons;
-    size_t m_idUseButton;
+    size_t m_idUseBut;
 };
 
 #endif // BUTTON_COMPLEX_H

@@ -7,7 +7,6 @@
 #include "src/event_button.h"
 
 #include <QLabel>
-#include <QObject>
 #include <QResizeEvent>
 #include <QShowEvent>
 #include <QGridLayout>

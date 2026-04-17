@@ -115,6 +115,7 @@ public:
     const QString &getPathGeneral() const;
     const QString &getPathStyle1() const;
     const QString &getSmallTimeNoticeStyle() const;
+    const QString &getFontSizeStyle() const;
 
     const std::vector<std::string> &getTypeGameStr() const;
     const std::vector<std::string> &getTypeChessStr() const;
@@ -132,7 +133,8 @@ private:
     const QString m_configFile = "config.ini";
     const QString m_pathGeneral = ":/src/images/";
     const QString m_pathStyle1 = m_pathGeneral + "style1/";
-    const QString m_smallTimeNotice = "background-color: red; color: black; font-size:24px; padding:10px;";
+    const QString m_smallTimeNoticeStyle = "background-color: red; color: black; font-size:24px; padding:10px;";
+    const QString m_fontSizeStyle = "font-size: 14px;";
 
     const std::vector<std::string> m_typeGameStr = {
         "Online",

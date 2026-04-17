@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
         m_params.startParams = m_startGameWindow->getStartParams();
         m_gameWindow->startGame(m_params);
         m_stacked->setCurrentWidget(m_gameWindow);
-        m_startGameWindow->hideAllWidget();        
+        m_startGameWindow->hideAllWidget();
     });
 
     connect(m_startGameWindow, &StartGameWindow::boardSetup, this, [this]() {
@@ -39,15 +39,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_gameWindow, &GameWindow::exitGame, this, [this]() {
         m_params.settingsParams = m_gameWindow->getSettingsParams();
-        this->switchStartGameWindow();      
+        this->switchStartGameWindow();
     });
 
-    connect(m_boardSetupWindow, &BoardSetupWindow::saveBoardParams, this, [this]() {
+    connect(m_boardSetupWindow, &BoardSetupWindow::saveParams, this, [this]() {
         m_params.boardParams = m_boardSetupWindow->getBoardParams();
         this->switchStartGameWindow();
     });
 
-    connect(m_boardSetupWindow, &BoardSetupWindow::notSaveBoardParams, this, [this]() { this->switchStartGameWindow(); });
+    connect(m_boardSetupWindow, &BoardSetupWindow::exit, this, [this]() {
+        this->switchStartGameWindow();
+    });
 }
 
 MainWindow::~MainWindow()
@@ -101,6 +103,7 @@ void MainWindow::writeChessBoardParams()
     m_settings->setValue("castling2", m_params.boardParams.castling.first.second);
     m_settings->setValue("castling3", m_params.boardParams.castling.second.first);
     m_settings->setValue("castling4", m_params.boardParams.castling.second.second);
+    m_settings->setValue("chess960", m_params.boardParams.chess960);
     m_settings->setValue("whiteMove", m_params.boardParams.whiteMove);
 
     m_settings->endGroup();
@@ -144,6 +147,7 @@ void MainWindow::readChessBoardParams()
     m_params.boardParams.castling.first.second = m_settings->value("castling2", m_params.boardParams.castling.first.second).toBool();
     m_params.boardParams.castling.second.first = m_settings->value("castling3", m_params.boardParams.castling.second.first).toBool();
     m_params.boardParams.castling.second.second = m_settings->value("castling4", m_params.boardParams.castling.second.second).toBool();
+    m_params.boardParams.chess960 = m_settings->value("chess960", m_params.boardParams.chess960).toBool();
     m_params.boardParams.whiteMove = m_settings->value("whiteMove", m_params.boardParams.whiteMove).toBool();
 
     m_settings->endGroup();
@@ -173,8 +177,8 @@ void MainWindow::setBoard(QString board)
 QString MainWindow::getBoard()
 {
     QString board;
-    for (const auto& rows : m_params.boardParams.chessFields) {
-        for (const auto& field : rows) {
+    for (const auto &rows : m_params.boardParams.chessFields) {
+        for (const auto &field : rows) {
             if (field.isEmpty())
                 board += ".";
             else
