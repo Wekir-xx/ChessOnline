@@ -1,10 +1,10 @@
-#ifndef PLAYER_INFO_LAYOUT2_H
-#define PLAYER_INFO_LAYOUT2_H
+#ifndef PLAYER_VLAYOUT2_H
+#define PLAYER_VLAYOUT2_H
 
 #include <QVBoxLayout>
 #include <QWidget>
 
-class PlayerInfoLayout2 : public QVBoxLayout
+class PlayerVLayout2 : public QVBoxLayout
 {
 public:
     using QVBoxLayout::QVBoxLayout;
@@ -18,6 +18,7 @@ public:
 
         QLayoutItem* firstItem = itemAt(0);
         QLayoutItem* secondItem = itemAt(1);
+
         QWidget* mainWidget = firstItem->widget();
         QWidget* otherWidget = secondItem->widget();
 
@@ -35,8 +36,8 @@ public:
         int y = adjustedRect.y();
 
         mainWidget->setGeometry(QRect(x, y, newSide, newSide));
-        otherWidget->setGeometry(QRect(x, y + newSide, newSide, fixedHeight));
+        otherWidget->setGeometry(QRect(x, y + newSide, width, fixedHeight));
     }
 };
 
-#endif // PLAYER_INFO_LAYOUT2_H
+#endif // PLAYER_VLAYOUT2_H

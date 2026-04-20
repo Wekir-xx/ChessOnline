@@ -2,7 +2,6 @@
 #define STARTGAMEWINDOW_H
 
 #include "src/button_complex.h"
-#include "src/defines.h"
 #include "src/time_chess.h"
 
 #include <QLabel>
@@ -13,10 +12,10 @@ class StartGameWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit StartGameWindow(StartParams &params, QWidget *parent = nullptr);
+    explicit StartGameWindow(StyleLib *styleLib, StartParams &startParams, QWidget *parent = nullptr);
 
-    void hideAllWidget();
     void showAllWidget();
+    void hideAllWidget();
 
     void setChessBoard();
     StartParams &getStartParams();
@@ -29,6 +28,8 @@ private:
     void lookBoardSetupBut();
 
 private:
+    StyleLib *m_styleLib;
+
     StartParams m_params;
     SomeConstans *m_constans;
 

@@ -17,46 +17,44 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
         m_boardParams.chessFields[m_takenPiece.first][m_takenPiece.second].clear();
 
         if (m_whiteMove) {
-            if (m_boardParams.castling.first.first && (newPos.second == 2 || newPos.second == m_posParams.posRooksWhite.first.second)) {
-                m_boardParams.chessFields[0][m_posParams.posRooksWhite.first.second].clear();
+            if (m_boardParams.castling.first.first && (newPos.second == 2 || newPos.second == posRooksWhite.first.second)) {
+                m_boardParams.chessFields[0][posRooksWhite.first.second].clear();
                 m_boardParams.chessFields[0][2] = "wK";
                 m_boardParams.chessFields[0][3] = "wR";
-                m_posParams.posKings.first = {0, 2};
-                m_lastMove = std::pair{m_takenPiece, m_posParams.posKings.first};
+                posKings.first = {0, 2};
+                m_lastMove = std::pair{m_takenPiece, posKings.first};
                 endMove = "00";
-            } else if (m_boardParams.castling.first.second
-                       && (newPos.second == 6 || newPos.second == m_posParams.posRooksWhite.second.second)) {
-                m_boardParams.chessFields[0][m_posParams.posRooksWhite.second.second].clear();
+            } else if (m_boardParams.castling.first.second && (newPos.second == 6 || newPos.second == posRooksWhite.second.second)) {
+                m_boardParams.chessFields[0][posRooksWhite.second.second].clear();
                 m_boardParams.chessFields[0][6] = "wK";
                 m_boardParams.chessFields[0][5] = "wR";
-                m_posParams.posKings.first = {0, 6};
-                m_lastMove = std::pair{m_takenPiece, m_posParams.posKings.first};
+                posKings.first = {0, 6};
+                m_lastMove = std::pair{m_takenPiece, posKings.first};
                 endMove = "0";
             } else {
                 m_boardParams.chessFields[newPos.first][newPos.second] = "wK";
-                m_posParams.posKings.first = {newPos.first, newPos.second};
+                posKings.first = {newPos.first, newPos.second};
                 m_lastMove = std::pair{m_takenPiece, newPos};
             }
             m_boardParams.castling.first = {false, false};
         } else {
-            if (m_boardParams.castling.second.first && (newPos.second == 2 || newPos.second == m_posParams.posRooksBlack.first.second)) {
-                m_boardParams.chessFields[7][m_posParams.posRooksBlack.first.second].clear();
+            if (m_boardParams.castling.second.first && (newPos.second == 2 || newPos.second == posRooksBlack.first.second)) {
+                m_boardParams.chessFields[7][posRooksBlack.first.second].clear();
                 m_boardParams.chessFields[7][2] = "bK";
                 m_boardParams.chessFields[7][3] = "bR";
-                m_posParams.posKings.second = {7, 2};
-                m_lastMove = std::pair{m_takenPiece, m_posParams.posKings.second};
+                posKings.second = {7, 2};
+                m_lastMove = std::pair{m_takenPiece, posKings.second};
                 endMove = "00";
-            } else if (m_boardParams.castling.second.second
-                       && (newPos.second == 6 || newPos.second == m_posParams.posRooksBlack.second.second)) {
-                m_boardParams.chessFields[7][m_posParams.posRooksBlack.second.second].clear();
+            } else if (m_boardParams.castling.second.second && (newPos.second == 6 || newPos.second == posRooksBlack.second.second)) {
+                m_boardParams.chessFields[7][posRooksBlack.second.second].clear();
                 m_boardParams.chessFields[7][6] = "bK";
                 m_boardParams.chessFields[7][5] = "bR";
-                m_posParams.posKings.second = {7, 6};
-                m_lastMove = std::pair{m_takenPiece, m_posParams.posKings.second};
+                posKings.second = {7, 6};
+                m_lastMove = std::pair{m_takenPiece, posKings.second};
                 endMove = "0";
             } else {
                 m_boardParams.chessFields[newPos.first][newPos.second] = "bK";
-                m_posParams.posKings.second = {newPos.first, newPos.second};
+                posKings.second = {newPos.first, newPos.second};
                 m_lastMove = std::pair{m_takenPiece, newPos};
             }
             if (m_boardParams.castling.second.first || m_boardParams.castling.second.second)
@@ -66,25 +64,21 @@ void ChessGame::movePiece(std::pair<qint8, qint8> newPos)
     } else {
         if (m_boardParams.chessFields[m_takenPiece.first][m_takenPiece.second][1] == 'R') {
             if (m_whiteMove) {
-                if (m_takenPiece.first == m_posParams.posRooksWhite.first.first
-                    && m_takenPiece.second == m_posParams.posRooksWhite.first.second) {
+                if (m_takenPiece.first == posRooksWhite.first.first && m_takenPiece.second == posRooksWhite.first.second) {
                     if (m_boardParams.castling.first.first)
                         m_movesHistory = 0;
                     m_boardParams.castling.first.first = false;
-                } else if (m_takenPiece.first == m_posParams.posRooksWhite.second.first
-                           && m_takenPiece.second == m_posParams.posRooksWhite.second.second) {
+                } else if (m_takenPiece.first == posRooksWhite.second.first && m_takenPiece.second == posRooksWhite.second.second) {
                     if (m_boardParams.castling.first.second)
                         m_movesHistory = 0;
                     m_boardParams.castling.first.second = false;
                 }
             } else {
-                if (m_takenPiece.first == m_posParams.posRooksBlack.first.first
-                    && m_takenPiece.second == m_posParams.posRooksBlack.first.second) {
+                if (m_takenPiece.first == posRooksBlack.first.first && m_takenPiece.second == posRooksBlack.first.second) {
                     if (m_boardParams.castling.second.first)
                         m_movesHistory = 0;
                     m_boardParams.castling.second.first = false;
-                } else if (m_takenPiece.first == m_posParams.posRooksBlack.second.first
-                           && m_takenPiece.second == m_posParams.posRooksBlack.second.second) {
+                } else if (m_takenPiece.first == posRooksBlack.second.first && m_takenPiece.second == posRooksBlack.second.second) {
                     if (m_boardParams.castling.second.second)
                         m_movesHistory = 0;
                     m_boardParams.castling.second.second = false;
@@ -204,6 +198,7 @@ void ChessGame::takePiece(qint8 i, qint8 j)
 void ChessGame::untakePiece()
 {
     m_takenPiece.first = SIDE_SIZE;
+    m_beatFields.clear();
 }
 
 bool ChessGame::isPossibleMove()
@@ -284,9 +279,9 @@ void ChessGame::historyMove()
     for (size_t i = 0; i < SIDE_SIZE; ++i) {
         for (size_t j = 0; j < SIDE_SIZE; ++j) {
             if (m_boardParams.chessFields[i][j] == "wK")
-                m_posParams.posKings.first = {i, j};
+                posKings.first = {i, j};
             else if (m_boardParams.chessFields[i][j] == "bK")
-                m_posParams.posKings.second = {i, j};
+                posKings.second = {i, j};
         }
     }
 
@@ -341,11 +336,33 @@ void ChessGame::setField(QString field, qint8 i, qint8 j)
     m_boardParams.chessFields[i][j] = field;
 }
 
-void ChessGame::setChessParams(ChessBoardParams &boardParams, ChessPosParams &posParams)
+void ChessGame::setChessParams(ChessBoardParams &boardParams)
 {
     m_boardParams = boardParams;
-    m_posParams = posParams;
     m_whiteMove = boardParams.whiteMove;
+
+    posRooksWhite = {{SIDE_SIZE, SIDE_SIZE}, {SIDE_SIZE, SIDE_SIZE}};
+    posRooksBlack = {{SIDE_SIZE, SIDE_SIZE}, {SIDE_SIZE, SIDE_SIZE}};
+
+    for (size_t i = 0; i < SIDE_SIZE; ++i) {
+        for (size_t j = 0; j < SIDE_SIZE; ++j) {
+            if (boardParams.chessFields[i][j] == "wK") {
+                posKings.first = {i, j};
+            } else if (boardParams.chessFields[i][j] == "bK") {
+                posKings.second = {i, j};
+            } else if (boardParams.chessFields[i][j] == "wR") {
+                if (posRooksWhite.first.first == SIDE_SIZE)
+                    posRooksWhite.first = {i, j};
+                else
+                    posRooksWhite.second = {i, j};
+            } else if (boardParams.chessFields[i][j] == "bR") {
+                if (posRooksBlack.first.first == SIDE_SIZE)
+                    posRooksBlack.first = {i, j};
+                else
+                    posRooksBlack.second = {i, j};
+            }
+        }
+    }
 
     m_beatFields.clear();
     m_chessMoveHistory.clear();
@@ -393,7 +410,7 @@ std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> ChessGame::getLastMo
 
 std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> ChessGame::getPosKings()
 {
-    return m_posParams.posKings;
+    return posKings;
 }
 
 bool ChessGame::isCheck()
@@ -401,11 +418,11 @@ bool ChessGame::isCheck()
     qint8 i, j;
 
     if (m_whiteMove) {
-        i = m_posParams.posKings.first.first;
-        j = m_posParams.posKings.first.second;
+        i = posKings.first.first;
+        j = posKings.first.second;
     } else {
-        i = m_posParams.posKings.second.first;
-        j = m_posParams.posKings.second.second;
+        i = posKings.second.first;
+        j = posKings.second.second;
     }
 
     if (((i + 1) < SIDE_SIZE && !m_boardParams.chessFields[i + 1][j].isEmpty() && m_boardParams.chessFields[i + 1][j][1] == 'K')
@@ -627,9 +644,9 @@ bool ChessGame::checkMove(qint8 i, qint8 j, bool isKing)
 
         if (isKing) {
             if (m_whiteMove)
-                m_posParams.posKings.first = {i, j};
+                posKings.first = {i, j};
             else
-                m_posParams.posKings.second = {i, j};
+                posKings.second = {i, j};
         }
 
         bool possibleMove = !this->isCheck();
@@ -639,9 +656,9 @@ bool ChessGame::checkMove(qint8 i, qint8 j, bool isKing)
 
         if (isKing) {
             if (m_whiteMove)
-                m_posParams.posKings.first = {m_takenPiece.first, m_takenPiece.second};
+                posKings.first = {m_takenPiece.first, m_takenPiece.second};
             else
-                m_posParams.posKings.second = {m_takenPiece.first, m_takenPiece.second};
+                posKings.second = {m_takenPiece.first, m_takenPiece.second};
         }
 
         return possibleMove;
@@ -678,13 +695,13 @@ void ChessGame::addCastling()
         || m_check)
         return;
 
-    auto posKingCol = m_posParams.posKings.first.second;
-    auto posRooks = m_posParams.posRooksWhite;
+    auto posKingCol = posKings.first.second;
+    auto posRooks = posRooksWhite;
     auto castling = m_boardParams.castling.first;
 
     if (!m_whiteMove) {
-        posKingCol = m_posParams.posKings.second.second;
-        posRooks = m_posParams.posRooksBlack;
+        posKingCol = posKings.second.second;
+        posRooks = posRooksBlack;
         castling = m_boardParams.castling.second;
     }
 

@@ -2,19 +2,21 @@
 
 #include <algorithm>
 
-StartGameWindow::StartGameWindow(StartParams &params, QWidget *parent)
-    : QWidget{parent}, m_params{params}
+StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, QWidget *parent)
+    : QWidget{parent}
+    , m_params{startParams}
 {
+    m_styleLib = styleLib;
     m_saveIdTime = {SIDE_SIZE, SIDE_SIZE};
 
     m_mainLayout = new QVBoxLayout();
     m_stackedTime = new QStackedWidget();
     m_buttonLayout = new QHBoxLayout();
 
-    m_gameTypeButs = new ButtonComplex();
-    m_chessTypeButs = new ButtonComplex();
-    m_timeChessTypeButs = new ButtonComplex();
-    m_timeChessButs = new ButtonComplex();
+    m_gameTypeButs = new ButtonComplex(m_styleLib);
+    m_chessTypeButs = new ButtonComplex(m_styleLib);
+    m_timeChessTypeButs = new ButtonComplex(m_styleLib);
+    m_timeChessButs = new ButtonComplex(m_styleLib);
     m_boardSetupBut = new QPushButton("Board setup");
     m_startGameBut = new QPushButton("Start Game");
     m_timeChessSpins = new TimeChess();
@@ -38,14 +40,14 @@ StartGameWindow::StartGameWindow(StartParams &params, QWidget *parent)
     m_buttonLayout->addStretch(1);
 
     m_mainLayout->setSpacing(0);
-    m_mainLayout->addStretch(1);
+    m_mainLayout->addStretch();
     m_mainLayout->addWidget(m_gameTypeButs);
     m_mainLayout->addWidget(m_chessTypeButs);
     m_mainLayout->addLayout(m_buttonLayout);
-    m_mainLayout->addStretch(1);
+    m_mainLayout->addStretch();
     m_mainLayout->addWidget(m_timeChessTypeButs);
     m_mainLayout->addWidget(m_stackedTime);
-    m_mainLayout->addStretch(1);
+    m_mainLayout->addStretch();
     m_mainLayout->addWidget(m_errorLabel);
     m_mainLayout->addWidget(m_startGameBut);
 
@@ -86,16 +88,16 @@ StartGameWindow::StartGameWindow(StartParams &params, QWidget *parent)
 
     this->lookBoardSetupBut();
 
-    connect(m_gameTypeButs, &ButtonComplex::selectButtonSignals, this, [this](qint8 id) {
+    connect(m_gameTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
         m_errorLabel->clear();
         m_params.gameType = static_cast<TypeGame>(id);
     });
-    connect(m_chessTypeButs, &ButtonComplex::selectButtonSignals, this, [this](qint8 id) {
+    connect(m_chessTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
         m_errorLabel->clear();
         m_params.chessType = static_cast<TypeChess>(id);
         this->lookBoardSetupBut();
     });
-    connect(m_timeChessTypeButs, &ButtonComplex::selectButtonSignals, this, [this](qint8 id) {
+    connect(m_timeChessTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
         m_errorLabel->clear();
         m_params.timeChessType = static_cast<TypeTimeChess>(id);
 
@@ -125,7 +127,7 @@ StartGameWindow::StartGameWindow(StartParams &params, QWidget *parent)
         }
     });
     connect(m_boardSetupBut, &QPushButton::clicked, this, &StartGameWindow::boardSetup);
-    connect(m_timeChessButs, &ButtonComplex::selectButtonSignals, this, [this](qint8 id) {
+    connect(m_timeChessButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
         m_errorLabel->clear();
 
         m_saveIdTime = {static_cast<qint8>(m_params.timeChessType), id};
@@ -134,7 +136,7 @@ StartGameWindow::StartGameWindow(StartParams &params, QWidget *parent)
         m_params.minorTime = time.second;
         m_timeChessSpins->setTime(m_params.mainTime, m_params.minorTime);
     });
-    connect(m_timeChessSpins, &TimeChess::changeTimeSignal, this, [this]() {
+    connect(m_timeChessSpins, &TimeChess::changeTime, this, [this]() {
         m_errorLabel->clear();
 
         m_saveIdTime = {SIDE_SIZE, SIDE_SIZE};
@@ -167,17 +169,6 @@ StartGameWindow::StartGameWindow(StartParams &params, QWidget *parent)
     this->setLayout(m_mainLayout);
 }
 
-void StartGameWindow::hideAllWidget()
-{
-    m_gameTypeButs->hide();
-    m_chessTypeButs->hide();
-    m_boardSetupBut->hide();
-    m_timeChessTypeButs->hide();
-    m_stackedTime->hide();
-    m_errorLabel->hide();
-    m_startGameBut->hide();
-}
-
 void StartGameWindow::showAllWidget()
 {
     m_gameTypeButs->show();
@@ -190,6 +181,17 @@ void StartGameWindow::showAllWidget()
         m_boardSetupBut->show();
     if (m_params.timeChessType != TypeTimeChess::NO_TIME)
         m_stackedTime->show();
+}
+
+void StartGameWindow::hideAllWidget()
+{
+    m_gameTypeButs->hide();
+    m_chessTypeButs->hide();
+    m_boardSetupBut->hide();
+    m_timeChessTypeButs->hide();
+    m_stackedTime->hide();
+    m_errorLabel->hide();
+    m_startGameBut->hide();
 }
 
 StartParams &StartGameWindow::getStartParams()

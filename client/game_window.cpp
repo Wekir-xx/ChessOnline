@@ -2,18 +2,20 @@
 
 #include <QMessageBox>
 
-GameWindow::GameWindow(QWidget *parent)
+GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidget *parent)
     : QWidget{parent}
+    , m_settingsParams{settingsParams}
 {
+    m_styleLib = styleLib;
     m_connection = false;
-    m_pathGeneral = SomeConstans::getInstance().getPathGeneral();
 
-    m_board = new ChessBoard();
-    m_settings = new SettingsWindow(this);
-    m_endGame = new EndGameWindow(this);
+    m_board = new ChessBoard(m_styleLib);
+    m_settings = new SettingsWindow(m_styleLib, this);
+    m_endGame = new EndGameWindow(m_styleLib, this);
+    m_sideWidget = new QWidget();
     m_timer = new QTimer(this);
 
-    m_mainLayout = new BoardLayout();
+    m_mainLayout = new BoardHLayout2();
     m_sideLayout = new QVBoxLayout();
     m_helperLayout = new QHBoxLayout();
 
@@ -24,7 +26,7 @@ GameWindow::GameWindow(QWidget *parent)
     m_downBut = new QPushButton();
 
     m_players = std::pair{new QWidget(), new QWidget()};
-    m_playersLayout = std::pair{new PlayerInfoLayout3(), new PlayerInfoLayout3()};
+    m_playersLayout = std::pair{new PlayerVLayout3(), new PlayerVLayout3()};
 
     m_iconPlayers = std::pair{new QLabel(), new QLabel()};
     m_infoPlayers = std::pair{new RotatableLabel(), new RotatableLabel()};
@@ -34,9 +36,9 @@ GameWindow::GameWindow(QWidget *parent)
     m_rightChessHistory->setFixedSize(FIXED_SIZE_BUTTON, FIXED_SIZE_BUTTON);
     m_settingsButton->setFixedSize(FIXED_SIZE_BUTTON, FIXED_SIZE_BUTTON);
 
-    m_leftChessHistory->setIcon(QIcon(m_pathGeneral + "leftArrow.png"));
-    m_rightChessHistory->setIcon(QIcon(m_pathGeneral + "rightArrow.png"));
-    m_settingsButton->setIcon(QIcon(m_pathGeneral + "settings.png"));
+    m_leftChessHistory->setIcon(QIcon(QString(GENERAL_PATH) + "leftArrow.png"));
+    m_rightChessHistory->setIcon(QIcon(QString(GENERAL_PATH) + "rightArrow.png"));
+    m_settingsButton->setIcon(QIcon(QString(GENERAL_PATH) + "settings.png"));
 
     m_leftChessHistory->setIconSize(QSize(FIXED_SIZE_BUTTON_ICON, FIXED_SIZE_BUTTON_ICON));
     m_rightChessHistory->setIconSize(QSize(FIXED_SIZE_BUTTON_ICON, FIXED_SIZE_BUTTON_ICON));
@@ -61,6 +63,12 @@ GameWindow::GameWindow(QWidget *parent)
     m_timePlayers.first->setFixedHeight(FIXED_SIZE_TYPE_GAME);
     m_timePlayers.second->setFixedHeight(FIXED_SIZE_TYPE_GAME);
 
+    m_settings->hide();
+    m_endGame->hide();
+
+    m_board->setAutoQueen(m_settingsParams.checkAutoQueen);
+    m_board->setPremove(m_settingsParams.checkPremove);
+
     m_players.first->setLayout(m_playersLayout.first);
     m_players.second->setLayout(m_playersLayout.second);
 
@@ -82,14 +90,18 @@ GameWindow::GameWindow(QWidget *parent)
     m_sideLayout->addWidget(m_downBut, 1);
     m_sideLayout->addWidget(m_players.first, 2);
 
+    m_sideWidget->setLayout(m_sideLayout);
+
     m_mainLayout->addWidget(m_board, 10);
-    m_mainLayout->addLayout(m_sideLayout, 1);
+    m_mainLayout->addWidget(m_sideWidget, 1);
 
     this->setLayout(m_mainLayout);
 
     connect(m_board, &ChessBoard::didMove, this, [this]() {
         if (m_settingsParams.checkAutoRotate)
             this->turnBoard();
+
+        m_settings->setExitButton(false);
 
         if (m_startParams.timeChessType == TypeTimeChess::NO_TIME)
             return;
@@ -114,12 +126,8 @@ GameWindow::GameWindow(QWidget *parent)
     });
     connect(m_board, &ChessBoard::endGame, this, [this](ResultGame result) { this->endGame(result); });
 
-    connect(m_leftChessHistory, &QPushButton::clicked, this, [this]() {
-        m_board->historyBack();
-    });
-    connect(m_rightChessHistory, &QPushButton::clicked, this, [this]() {
-        m_board->historyForward();
-    });
+    connect(m_leftChessHistory, &QPushButton::clicked, this, [this]() { m_board->historyBack(); });
+    connect(m_rightChessHistory, &QPushButton::clicked, this, [this]() { m_board->historyForward(); });
     connect(m_settingsButton, &QPushButton::clicked, this, [this]() {
         if (!m_settings->isVisible()) {
             m_settings->raise();
@@ -140,20 +148,18 @@ GameWindow::GameWindow(QWidget *parent)
         m_settingsParams.checkAutoQueen ^= true;
         m_board->setAutoQueen(m_settingsParams.checkAutoQueen);
     });
-    connect(m_settings, &SettingsWindow::autoRotate, this, [this]() {
-        m_settingsParams.checkAutoRotate ^= true;
-    });
+    connect(m_settings, &SettingsWindow::autoRotate, this, [this]() { m_settingsParams.checkAutoRotate ^= true; });
     connect(m_settings, &SettingsWindow::premove, this, [this]() {
         m_settingsParams.checkPremove ^= true;
         m_board->setPremove(m_settingsParams.checkPremove);
     });
-    connect(m_settings, &SettingsWindow::noticeTime, this, [this]() {
-        m_settingsParams.checkNoticeTime ^= true;
-    });
-    connect(m_settings, &SettingsWindow::exit, this, [this]() {
+    connect(m_settings, &SettingsWindow::noticeTime, this, [this]() { m_settingsParams.checkNoticeTime ^= true; });
+    connect(m_settings, &SettingsWindow::exit, this, [this]() { m_settings->hide(); });
+    connect(m_settings, &SettingsWindow::exitGame, this, [this]() {
         m_settings->hide();
+        m_endGame->hide();
+        emit exitGame();
     });
-    connect(m_settings, &SettingsWindow::exitGame, this, &GameWindow::exitGame);
 
     connect(m_endGame, &EndGameWindow::newGameSignal, this, [this]() {
         this->startGameInner();
@@ -172,29 +178,21 @@ GameWindow::GameWindow(QWidget *parent)
         m_endGame->hide();
         // TODO
     });
-    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() {
-        m_endGame->hide();
-    });
+    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() { m_endGame->hide(); });
 
     connect(m_timer, &QTimer::timeout, this, [this]() {
         this->setTime(m_startMove.secsTo(QDateTime::currentDateTime()), m_board->getColorMove());
     });
 }
 
-SettingsParams &GameWindow::getSettingsParams()
+void GameWindow::startGame(StartParams &startParams, ChessBoardParams &boardParams)
 {
-    return m_settingsParams;
-}
-
-void GameWindow::startGame(GameParams &params)
-{
-    m_startParams = params.startParams;
-    m_settingsParams = params.settingsParams;
-    m_boardParams = params.boardParams;
+    m_startParams = startParams;
+    m_boardParams = boardParams;
 
     m_nicknames = {"name1", "name2"};
     m_ratings = {0, 0};
-    m_pixmapPlayers = std::pair{QPixmap(m_pathGeneral + "player.png"), QPixmap(m_pathGeneral + "player.png")};
+    m_pixmapPlayers = std::pair{QPixmap(QString(GENERAL_PATH) + "player.png"), QPixmap(QString(GENERAL_PATH) + "player.png")};
     bool mainPlayerWhite = true;
 
     PlayerParams playerParams;
@@ -206,13 +204,7 @@ void GameWindow::startGame(GameParams &params)
     m_settings->setParams(m_settingsParams, m_startParams.gameType, m_startParams.timeChessType);
     m_endGame->setParams(playerParams, m_startParams.timeChessType);
 
-    m_board->setAutoQueen(m_settingsParams.checkAutoQueen);
-    m_board->setPremove(m_settingsParams.checkPremove);
-
     this->hideAll();
-
-    m_settings->hide();
-    m_endGame->hide();
 
     if (m_startParams.timeChessType == TypeTimeChess::NO_TIME) {
         m_timePlayers.first->hide();
@@ -220,13 +212,13 @@ void GameWindow::startGame(GameParams &params)
     } else {
         m_timePlayers.first->show();
         m_timePlayers.second->show();
+
+        m_timePlayers.first->setStyleSheet("background-color: white; color: black; font-size:24px; padding:10px;");
+        m_timePlayers.second->setStyleSheet("background-color: black; color: white; font-size:24px; padding:10px;");
     }
 
     m_iconPlayers.first->setPixmap(m_pixmapPlayers.first);
     m_iconPlayers.second->setPixmap(m_pixmapPlayers.second);
-
-    m_timePlayers.first->setStyleSheet("background-color: white; color: black; font-size:24px; padding:10px;");
-    m_timePlayers.second->setStyleSheet("background-color: black; color: white; font-size:24px; padding:10px;");
 
     if (m_ratings.first != 0) {
         m_infoPlayers.first->setText(m_nicknames.first + QString::number(m_ratings.first));
@@ -247,6 +239,22 @@ void GameWindow::startGame(GameParams &params)
     startGameInner();
 }
 
+SettingsParams &GameWindow::getSettingsParams()
+{
+    return m_settingsParams;
+}
+
+void GameWindow::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+
+    if (m_endGame->isVisible())
+        this->showEndGameWindow();
+
+    if (m_settings->isVisible())
+        this->showSettingWindow();
+}
+
 void GameWindow::showSettingWindow()
 {
     const qint16 width = m_board->width() - MINIMUM_PIECE_SIZE;
@@ -261,38 +269,26 @@ void GameWindow::showEndGameWindow()
     m_endGame->setGeometry(width / 6 + MINIMUM_PIECE_SIZE, height / 6, width * 2 / 3, height * 2 / 3);
 }
 
-void GameWindow::resizeEvent(QResizeEvent *event)
-{
-    if (m_endGame->isVisible())
-        this->showEndGameWindow();
-
-    if (m_settings->isVisible())
-        this->showSettingWindow();
-
-    QWidget::resizeEvent(event);
-}
-
 void GameWindow::startGameInner()
 {
     if (m_startParams.timeChessType != TypeTimeChess::NO_TIME)
         this->resetTime();
 
-    m_settings->setExitButton(false);
     m_board->setBlockBoard(false);
 
     if (m_startParams.chessType == TypeChess::STANDART)
-        m_board->fillStandartChessBoard();
+        m_board->fillChessBoard(false);
     else if (m_startParams.chessType == TypeChess::_960)
-        m_board->fill960ChessBoard();
+        m_board->fillChessBoard(true);
     else
         m_board->fillUserChessBoard(m_boardParams);
 
     if (m_connection) {
         disconnect(m_upConnectBut);
         disconnect(m_downConnectBut);
-        m_board->resetBoard();
+        m_board->updateBoard();
     }
-    
+
     m_upBut->setText("Draw");
     m_downBut->setText("Resign");
 

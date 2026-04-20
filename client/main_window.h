@@ -18,8 +18,6 @@ public:
     ~MainWindow();
 
 private:
-    void switchStartGameWindow();
-
     void writeSettingsParams();
     void writeStartParams();
     void writeChessBoardParams();
@@ -31,7 +29,11 @@ private:
     QString getBoard();
 
 private:
-    GameParams m_params;
+    StyleLib *m_styleLib;
+
+    SettingsParams m_settingsParams;
+    StartParams m_startParams;
+    ChessBoardParams m_boardParams;
 
     QStackedWidget *m_stacked;
     StartGameWindow *m_startGameWindow;

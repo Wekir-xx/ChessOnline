@@ -17,7 +17,7 @@ public:
     std::pair<qint32, qint8> getTime();
 
 signals:
-    void changeTimeSignal();
+    void changeTime();
 
 private:
     QHBoxLayout *m_mainLayout;

@@ -13,6 +13,8 @@
 #define MAX_TIME_SECONDS 259200
 #define TICK 100
 #define MIN 60
+#define GENERAL_PATH ":/src/images/"
+#define CONFIG_FILE "config.ini"
 
 #include <QHBoxLayout>
 #include <QPixmap>
@@ -79,20 +81,6 @@ struct ChessBoardParams
     bool whiteMove{true};
 };
 
-struct GameParams
-{
-    SettingsParams settingsParams;
-    StartParams startParams;
-    ChessBoardParams boardParams;
-};
-
-struct ChessPosParams
-{
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posKings;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksWhite;
-    std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> posRooksBlack;
-};
-
 struct PlayerParams
 {
     std::pair<QString, QString> nicknames{"", ""};
@@ -110,12 +98,10 @@ public:
     static void swapWidgetHBox(QHBoxLayout *layout, QWidget *widget1, QWidget *widget2);
 
     static void fillStandartChessField(std::vector<std::vector<QString>> &chessFields);
+    static void fill960ChessField(std::vector<std::vector<QString>> &chessFields);
 
-    const QString &getConfigFile() const;
-    const QString &getPathGeneral() const;
-    const QString &getPathStyle1() const;
-    const QString &getSmallTimeNoticeStyle() const;
-    const QString &getFontSizeStyle() const;
+    const std::vector<QString> &getPieceKeysWhite() const;
+    const std::vector<QString> &getPieceKeysBlack() const;
 
     const std::vector<std::string> &getTypeGameStr() const;
     const std::vector<std::string> &getTypeChessStr() const;
@@ -130,11 +116,8 @@ private:
     SomeConstans &operator=(const SomeConstans &) = delete;
     SomeConstans &operator=(const SomeConstans &&) = delete;
 
-    const QString m_configFile = "config.ini";
-    const QString m_pathGeneral = ":/src/images/";
-    const QString m_pathStyle1 = m_pathGeneral + "style1/";
-    const QString m_smallTimeNoticeStyle = "background-color: red; color: black; font-size:24px; padding:10px;";
-    const QString m_fontSizeStyle = "font-size: 14px;";
+    const std::vector<QString> m_pieceKeysWhite = {"wK", "wQ", "wR", "wB", "wN", "wP"};
+    const std::vector<QString> m_pieceKeysBlack = {"bK", "bQ", "bR", "bB", "bN", "bP"};
 
     const std::vector<std::string> m_typeGameStr = {
         "Online",

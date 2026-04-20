@@ -29,19 +29,19 @@ TimeChess::TimeChess(QWidget *parent)
 
     connect(m_timeH, &QSpinBox::valueChanged, this, [this]() {
         if (!m_block)
-            emit changeTimeSignal();
+            emit changeTime();
     });
     connect(m_timeM, &QSpinBox::valueChanged, this, [this]() {
         if (!m_block)
-            emit changeTimeSignal();
+            emit changeTime();
     });
     connect(m_timeS, &QSpinBox::valueChanged, this, [this]() {
         if (!m_block)
-            emit changeTimeSignal();
+            emit changeTime();
     });
     connect(m_timeMinorS, &QSpinBox::valueChanged, this, [this]() {
         if (!m_block)
-            emit changeTimeSignal();
+            emit changeTime();
     });
 
     this->setLayout(m_mainLayout);

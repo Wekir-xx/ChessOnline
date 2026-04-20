@@ -1,7 +1,7 @@
 #ifndef SETTINGS_WINDOW_H
 #define SETTINGS_WINDOW_H
 
-#include "defines.h"
+#include "src/style_lib.h"
 
 #include <QCheckBox>
 #include <QPushButton>
@@ -12,7 +12,7 @@ class SettingsWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit SettingsWindow(QWidget *parent = nullptr);
+    explicit SettingsWindow(StyleLib *styleLib, QWidget *parent = nullptr);
 
     void setParams(SettingsParams params, TypeGame gameType, TypeTimeChess timeChessType);
     void setExitButton(bool flag);
@@ -29,6 +29,8 @@ signals:
     void exitGame();
 
 private:
+    StyleLib *m_styleLib;
+
     QVBoxLayout *m_layoutV;
     QHBoxLayout *m_layoutH;
 

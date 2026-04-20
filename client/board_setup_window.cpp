@@ -3,26 +3,31 @@
 #include <QPainter>
 #include <QPixmap>
 
-BoardSetupWindow::BoardSetupWindow(ChessBoardParams &boardParams, QWidget *parent)
+BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardParams, QWidget *parent)
     : QWidget{parent}
     , m_boardParams{boardParams}
+    , m_copyBoardParams{boardParams}
 {
-    QString path = SomeConstans::getInstance().getPathGeneral();
-    QString fontSize = SomeConstans::getInstance().getFontSizeStyle();
+    QString fontSize = styleLib->getFontSizeStyle();
 
-    m_mainLayout = new QVBoxLayout();
-    m_topLayout = new QHBoxLayout();
+    m_chessBoard = new ChessBoardWidget(styleLib);
+    m_chooseChess = new ChooseChess(styleLib);
+
+    m_mainLayout = new BoardVLayout2();
+    m_boardPieceLayout = new BoardHLayout2();
+    m_topLayout = new QVBoxLayout();
+    m_topLayoutPart = new QHBoxLayout();
     m_colorLayout = new QVBoxLayout();
-    m_helperLayout = new QVBoxLayout();
-    m_960Layout = new QVBoxLayout();
-    m_saveLayout = new QVBoxLayout();
+    m_turnLayout = new QVBoxLayout();
+    m_resetLayout = new QVBoxLayout();
     m_castlingLayout = new QGridLayout();
 
     m_exitBut = new QPushButton();
     m_saveBut = new QPushButton("Save");
-    m_resetBut = new QPushButton("Reset");
-    m_reverseBut = new QPushButton("Reverse");
-    m_update960But = new QPushButton("New pos");
+    m_turnBoardBut = new QPushButton("Turn board");
+    m_turnPlayerBut = new QPushButton("Turn player");
+    m_resetBoardBut = new QPushButton("Reset update");
+    m_resetPosBut = new QPushButton();
     m_whiteCastlingBut1 = new QCheckBox("0-0-0");
     m_whiteCastlingBut2 = new QCheckBox("0-0");
     m_blackCastlingBut1 = new QCheckBox("0-0-0");
@@ -35,13 +40,15 @@ BoardSetupWindow::BoardSetupWindow(ChessBoardParams &boardParams, QWidget *paren
     m_errorLabel = new QLabel();
 
     m_saveBut->setStyleSheet(fontSize);
-    m_resetBut->setStyleSheet(fontSize);
-    m_reverseBut->setStyleSheet(fontSize);
-    m_update960But->setStyleSheet(fontSize);
+    m_turnBoardBut->setStyleSheet(fontSize);
+    m_turnPlayerBut->setStyleSheet(fontSize);
+    m_resetBoardBut->setStyleSheet(fontSize);
+    m_resetPosBut->setStyleSheet(fontSize);
     m_960But->setStyleSheet(fontSize);
     m_whiteCastlingLabel->setStyleSheet(fontSize);
     m_blackCastlingLabel->setStyleSheet(fontSize);
     m_errorLabel->setStyleSheet("color: red; font-size: 18px;");
+    m_errorLabel->setAlignment(Qt::AlignCenter);
 
     m_whiteBut->setFixedWidth(50);
     m_blackBut->setFixedWidth(50);
@@ -51,10 +58,10 @@ BoardSetupWindow::BoardSetupWindow(ChessBoardParams &boardParams, QWidget *paren
     else
         m_blackBut->setChecked(true);
 
-    if (!m_boardParams.chess960) {
-        m_update960But->setChecked(true);
-        m_update960But->setEnabled(false);
-    }
+    if (m_boardParams.chess960)
+        m_resetPosBut->setText("New pos");
+    else
+        m_resetPosBut->setText("Reset pos");
 
     m_960But->setChecked(m_boardParams.chess960);
     m_whiteCastlingBut1->setChecked(m_boardParams.castling.first.first);
@@ -85,7 +92,7 @@ BoardSetupWindow::BoardSetupWindow(ChessBoardParams &boardParams, QWidget *paren
 
     m_whiteBut->setIcon(QIcon(pixmapWhite));
     m_blackBut->setIcon(QIcon(pixmapBlack));
-    m_exitBut->setIcon(QIcon(path + "exit.png"));
+    m_exitBut->setIcon(QIcon(QString(GENERAL_PATH) + "exit.png"));
 
     m_whiteBut->setIconSize(pixmapWhite.size());
     m_blackBut->setIconSize(pixmapBlack.size());
@@ -94,11 +101,11 @@ BoardSetupWindow::BoardSetupWindow(ChessBoardParams &boardParams, QWidget *paren
     m_colorLayout->addWidget(m_whiteBut);
     m_colorLayout->addWidget(m_blackBut);
 
-    m_helperLayout->addWidget(m_reverseBut);
-    m_helperLayout->addWidget(m_resetBut);
+    m_turnLayout->addWidget(m_turnBoardBut);
+    m_turnLayout->addWidget(m_turnPlayerBut);
 
-    m_960Layout->addWidget(m_960But);
-    m_960Layout->addWidget(m_update960But);
+    m_resetLayout->addWidget(m_resetBoardBut);
+    m_resetLayout->addWidget(m_resetPosBut);
 
     m_castlingLayout->setSpacing(0);
     m_castlingLayout->addWidget(m_whiteCastlingLabel, 0, 0);
@@ -108,79 +115,194 @@ BoardSetupWindow::BoardSetupWindow(ChessBoardParams &boardParams, QWidget *paren
     m_castlingLayout->addWidget(m_blackCastlingBut1, 1, 1);
     m_castlingLayout->addWidget(m_blackCastlingBut2, 1, 2);
 
-    m_saveLayout->addWidget(m_saveBut);
-    m_saveLayout->addWidget(m_errorLabel);
+    m_topLayoutPart->addWidget(m_exitBut);
+    m_topLayoutPart->addStretch();
+    m_topLayoutPart->addLayout(m_colorLayout);
+    m_topLayoutPart->addStretch();
+    m_topLayoutPart->addWidget(m_960But);
+    m_topLayoutPart->addStretch();
+    m_topLayoutPart->addLayout(m_turnLayout);
+    m_topLayoutPart->addStretch();
+    m_topLayoutPart->addLayout(m_resetLayout);
+    m_topLayoutPart->addStretch();
+    m_topLayoutPart->addLayout(m_castlingLayout);
+    m_topLayoutPart->addStretch();
+    m_topLayoutPart->addWidget(m_saveBut);
 
-    m_topLayout->addWidget(m_exitBut);
-    m_topLayout->addStretch();
-    m_topLayout->addLayout(m_colorLayout);
-    m_topLayout->addStretch();
-    m_topLayout->addLayout(m_helperLayout);
-    m_topLayout->addStretch();
-    m_topLayout->addLayout(m_960Layout);
-    m_topLayout->addStretch();
-    m_topLayout->addLayout(m_castlingLayout);
-    m_topLayout->addStretch();
-    m_topLayout->addLayout(m_saveLayout);
+    m_topLayout->addLayout(m_topLayoutPart);
+    m_topLayout->addWidget(m_errorLabel);
 
-    m_mainLayout->addStretch(10);
+    m_boardPieceLayout->addWidget(m_chessBoard);
+    m_boardPieceLayout->addWidget(m_chooseChess);
+
     m_mainLayout->addLayout(m_topLayout);
-    m_mainLayout->addStretch(10);
+    m_mainLayout->addLayout(m_boardPieceLayout);
 
     this->setLayout(m_mainLayout);
 
-    connect(m_exitBut, &QPushButton::clicked, this, [this]() {
-        emit exit();
-    });
+    this->updateBoardIcon();
+
+    connect(m_exitBut, &QPushButton::clicked, this, [this]() { emit exit(); });
     connect(m_saveBut, &QPushButton::clicked, this, [this]() {
         if (!m_whiteBut->isChecked() && !m_blackBut->isChecked()) {
             m_errorLabel->setText("First move color not selected");
             return;
         }
 
+        m_boardParams = m_copyBoardParams;
         emit saveParams();
     });
-    connect(m_update960But, &QPushButton::clicked, this, [this]() { m_errorLabel->clear(); });
-    connect(m_resetBut, &QPushButton::clicked, this, [this]() { m_errorLabel->clear(); });
-    connect(m_reverseBut, &QPushButton::clicked, this, [this]() {});
+    connect(m_turnBoardBut, &QPushButton::clicked, this, [this]() {
+        m_chessBoard->turnBoard();
+
+        if (m_chessBoard->getTurnSecondPlayer())
+            this->updateBoardIcon();
+    });
+    connect(m_turnPlayerBut, &QPushButton::clicked, this, [this]() {
+        m_chessBoard->turnSecondPlayer();
+        this->updateBoardIcon();
+    });
+    connect(m_resetBoardBut, &QPushButton::clicked, this, [this]() {
+        m_errorLabel->clear();
+
+        m_copyBoardParams.chessFields = m_boardParams.chessFields;
+        this->updateBoardIcon();
+    });
+    connect(m_resetPosBut, &QPushButton::clicked, this, [this]() {
+        m_errorLabel->clear();
+
+        if (m_copyBoardParams.chess960)
+            SomeConstans::fill960ChessField(m_copyBoardParams.chessFields);
+        else
+            SomeConstans::fillStandartChessField(m_copyBoardParams.chessFields);
+
+        this->updateBoardIcon();        
+    });
     connect(m_whiteCastlingBut1, &QCheckBox::checkStateChanged, this, [this]() {
         m_errorLabel->clear();
-        m_boardParams.castling.first.first ^= true;
+        m_copyBoardParams.castling.first.first ^= true;
     });
     connect(m_whiteCastlingBut2, &QCheckBox::checkStateChanged, this, [this]() {
         m_errorLabel->clear();
-        m_boardParams.castling.first.second ^= true;
+        m_copyBoardParams.castling.first.second ^= true;
     });
     connect(m_blackCastlingBut1, &QCheckBox::checkStateChanged, this, [this]() {
         m_errorLabel->clear();
-        m_boardParams.castling.second.first ^= true;
+        m_copyBoardParams.castling.second.first ^= true;
     });
     connect(m_blackCastlingBut2, &QCheckBox::checkStateChanged, this, [this]() {
         m_errorLabel->clear();
-        m_boardParams.castling.second.second ^= true;
+        m_copyBoardParams.castling.second.second ^= true;
     });
     connect(m_960But, &QCheckBox::checkStateChanged, this, [this]() {
         m_errorLabel->clear();
-        m_boardParams.chess960 ^= true;
-        if (!m_boardParams.chess960) {
-            m_update960But->setChecked(true);
-            m_update960But->setEnabled(false);
-        } else {
-            m_update960But->setChecked(false);
-            m_update960But->setEnabled(true);
-        }
+
+        m_copyBoardParams.chess960 ^= true;
+        if (m_copyBoardParams.chess960)
+            m_resetPosBut->setText("New pos");
+        else
+            m_resetPosBut->setText("Reset pos");
     });
     connect(m_whiteBut, &QRadioButton::clicked, this, [this]() {
         m_errorLabel->clear();
-        m_boardParams.whiteMove = true;
+        m_copyBoardParams.whiteMove = true;
     });
     connect(m_blackBut, &QRadioButton::clicked, this, [this]() {
         m_errorLabel->clear();
-        m_boardParams.whiteMove = false;
+        m_copyBoardParams.whiteMove = false;
     });
+    connect(m_chessBoard, &ChessBoardWidget::clickField, this, [this](QString field) {
+        qint8 i = field[1].digitValue() - 1;
+        qint8 j = field[0].unicode() - 'a';
+
+        if (m_copyBoardParams.chessFields[i][j] == m_piece)
+            m_copyBoardParams.chessFields[i][j].clear();
+        else
+            m_copyBoardParams.chessFields[i][j] = m_piece;
+
+        m_chessBoard->setIcon(i, j, m_copyBoardParams.chessFields[i][j]);
+    });
+    connect(m_chooseChess, &ChooseChess::selectPiece, this, [this](QString piece) {
+        if (m_piece == piece)
+            m_piece.clear();
+        else
+            m_piece = piece;
+    });
+}
+
+void BoardSetupWindow::showAllWidget()
+{
+    m_chessBoard->show();
+    m_chooseChess->show();
+    m_exitBut->show();
+    m_saveBut->show();
+    m_turnBoardBut->show();
+    m_turnPlayerBut->show();
+    m_resetBoardBut->show();
+    m_resetPosBut->show();
+    m_whiteCastlingBut1->show();
+    m_whiteCastlingBut2->show();
+    m_blackCastlingBut1->show();
+    m_blackCastlingBut2->show();
+    m_960But->show();
+    m_whiteBut->show();
+    m_blackBut->show();
+    m_whiteCastlingLabel->show();
+    m_blackCastlingLabel->show();
+    m_errorLabel->show();
+
+    this->updateBoardSize();
+}
+
+void BoardSetupWindow::hideAllWidget()
+{
+    m_chessBoard->hide();
+    m_chooseChess->hide();
+    m_exitBut->hide();
+    m_saveBut->hide();
+    m_turnBoardBut->hide();
+    m_turnPlayerBut->hide();
+    m_resetBoardBut->hide();
+    m_resetPosBut->hide();
+    m_whiteCastlingBut1->hide();
+    m_whiteCastlingBut2->hide();
+    m_blackCastlingBut1->hide();
+    m_blackCastlingBut2->hide();
+    m_960But->hide();
+    m_whiteBut->hide();
+    m_blackBut->hide();
+    m_whiteCastlingLabel->hide();
+    m_blackCastlingLabel->hide();
+    m_errorLabel->hide();
 }
 
 ChessBoardParams &BoardSetupWindow::getBoardParams()
 {
     return m_boardParams;
+}
+
+void BoardSetupWindow::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    this->updateBoardSize();
+}
+
+void BoardSetupWindow::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    this->updateBoardSize();
+}
+
+void BoardSetupWindow::updateBoardIcon()
+{
+    for (qint8 i = 0; i < SIDE_SIZE; ++i)
+        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+            m_chessBoard->setIcon(i, j, m_copyBoardParams.chessFields[i][j]);
+}
+
+void BoardSetupWindow::updateBoardSize()
+{
+    for (qint8 i = 0; i < SIDE_SIZE; ++i)
+        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+            m_chessBoard->setIconSize(i, j);
 }

@@ -4,12 +4,11 @@
 //#define MOVE_PIECE
 
 #include "chess_game.h"
-#include "src/event_button.h"
+#include "src/chess_board_widget.h"
 
 #include <QLabel>
 #include <QResizeEvent>
 #include <QShowEvent>
-#include <QGridLayout>
 #include <QWidget>
 
 #ifdef MOVE_PIECE
@@ -23,12 +22,11 @@ class ChessBoard : public QWidget
     Q_OBJECT
 
 public:
-    explicit ChessBoard(QWidget *parent = nullptr);
+    explicit ChessBoard(StyleLib *styleLib, QWidget *parent = nullptr);
 
-    void resetBoard();
+    void updateBoard();
 
-    void fillStandartChessBoard();
-    void fill960ChessBoard();
+    void fillChessBoard(bool chess960);
     void fillUserChessBoard(ChessBoardParams &boardParams);
 
     void turnBoard();
@@ -59,13 +57,8 @@ protected:
 #endif
 
 private:
-    void clickField(const QString &nameField);
+    void clickField(QString nameField);
 
-    void checkField(qint8 i, qint8 j);
-    void moveField(qint8 i, qint8 j);
-    void baseField(qint8 i, qint8 j);
-
-    void checkLastMove();
     void uncheckLastMove();
     void checkKing();
     void uncheckKing();
@@ -76,31 +69,26 @@ private:
     void transformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields);
     void untransformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields);
 
-    void fillFullIcans();
-    void fillIcan(bool white, bool up);
-    void fillBoard();
-
-    void updateChessScene();
+    void updateBoardIcon();
+    void updateBoardSize();
     void updateHistoryScene();
 
 private:
     ChessGame m_game;
 
-    QGridLayout *m_board;
+    ChessBoardWidget *m_chessBoard;
+
+    QVBoxLayout *m_mainLayout;
+
 #ifdef MOVE_PIECE
     QLabel *m_movePiece;
 #endif
-    std::unordered_map<QString, QIcon> m_imagesOfPieces;
-    std::vector<std::vector<EventButton *>> m_chessBoardBut;
-    std::vector<std::vector<QLabel *>> m_otherBoardLab;
 
     bool m_blockBoard{false};
     bool m_blockBoardHistory{false};
     bool m_transformPawn{false};
     bool m_autoQueen{false};
     bool m_premove{false};
-    bool m_turnBoard{false};
-    bool m_turnSecondPlayer{false};
     bool m_takenPiece{false};
     bool m_whiteMove{false};
 };

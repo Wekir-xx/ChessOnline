@@ -1,10 +1,10 @@
-#ifndef PLAYER_INFO_LAYOUT3_H
-#define PLAYER_INFO_LAYOUT3_H
+#ifndef PLAYER_VLAYOUT3_H
+#define PLAYER_VLAYOUT3_H
 
 #include <QVBoxLayout>
 #include <QWidget>
 
-class PlayerInfoLayout3 : public QVBoxLayout
+class PlayerVLayout3 : public QVBoxLayout
 {
 public:
     using QVBoxLayout::QVBoxLayout;
@@ -24,6 +24,7 @@ public:
         QLayoutItem *firstItem = itemAt(0);
         QLayoutItem *secondItem = itemAt(1);
         QLayoutItem *thirdItem = itemAt(2);
+
         QWidget *mainWidget;
         QWidget *otherWidget1 = secondItem->widget();
         QWidget *otherWidget2;
@@ -43,6 +44,7 @@ public:
 
         int fixedHeight1 = otherWidget1->sizeHint().height();
         int fixedHeight2 = otherWidget2->sizeHint().height();
+
         int width = adjustedRect.width();
         int height = adjustedRect.height();
         int newSide = qMin(width, height - fixedHeight1 - fixedHeight2);
@@ -52,11 +54,11 @@ public:
 
         if (m_orientationUp) {
             mainWidget->setGeometry(QRect(x, y, newSide, newSide));
-            otherWidget1->setGeometry(QRect(x, y + newSide, newSide, fixedHeight1));
+            otherWidget1->setGeometry(QRect(x, y + newSide, width, fixedHeight1));
             otherWidget2->setGeometry(QRect(x, y + newSide + fixedHeight1, width, fixedHeight2));
         } else {
             otherWidget2->setGeometry(QRect(x, height - newSide - fixedHeight1 - fixedHeight2, width, fixedHeight2));
-            otherWidget1->setGeometry(QRect(x, height - newSide - fixedHeight1, newSide, fixedHeight1));
+            otherWidget1->setGeometry(QRect(x, height - newSide - fixedHeight1, width, fixedHeight1));
             mainWidget->setGeometry(QRect(x, height - newSide, newSide, newSide));
         }
     }
@@ -65,4 +67,4 @@ private:
     bool m_orientationUp{true};
 };
 
-#endif // PLAYER_INFO_LAYOUT3_H
+#endif // PLAYER_VLAYOUT3_H

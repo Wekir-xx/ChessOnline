@@ -1,8 +1,8 @@
 #ifndef END_GAME_WINDOW_H
 #define END_GAME_WINDOW_H
 
-#include "defines.h"
-#include "src/player_info_layout2.h"
+#include "src/player_vlayout2.h"
+#include "src/style_lib.h"
 
 #include <QLabel>
 #include <QObject>
@@ -11,8 +11,9 @@
 class EndGameWindow : public QWidget
 {
     Q_OBJECT
+
 public:
-    explicit EndGameWindow(QWidget *parent = nullptr);
+    explicit EndGameWindow(StyleLib *styleLib, QWidget *parent = nullptr);
 
     void setParams(PlayerParams params, TypeTimeChess timeChessType);
     void setResult(ResultGame result, std::pair<qint16, qint16> newRatings = {0, 0});
@@ -25,13 +26,15 @@ signals:
     void exitSignal();
 
 private:
+    StyleLib *m_styleLib;
+
     QVBoxLayout *m_mainLayout;
     QHBoxLayout *m_playerInfo;
     QHBoxLayout *m_resultLayout;
     QHBoxLayout *m_topLayout;
     QHBoxLayout *m_buttonsLayout;
-    PlayerInfoLayout2 *m_whitePlayerLayout;
-    PlayerInfoLayout2 *m_blackPlayerLayout;
+    PlayerVLayout2 *m_whitePlayerLayout;
+    PlayerVLayout2 *m_blackPlayerLayout;
     QWidget *m_whitePlayer;
     QWidget *m_blackPlayer;
 
@@ -51,7 +54,6 @@ private:
     QLabel *m_iconGame;
 
     bool m_whiteTurn;
-    QString m_path;
 };
 
 #endif // END_GAME_WINDOW_H

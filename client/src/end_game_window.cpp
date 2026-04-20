@@ -2,9 +2,11 @@
 
 #include <QFont>
 
-EndGameWindow::EndGameWindow(QWidget *parent)
+EndGameWindow::EndGameWindow(StyleLib *styleLib, QWidget *parent)
     : QWidget{parent}
 {
+    m_styleLib = styleLib;
+
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setAutoFillBackground(true);
     this->setStyleSheet("EndGameWindow {"
@@ -33,15 +35,14 @@ EndGameWindow::EndGameWindow(QWidget *parent)
                         "}");
 
     m_whiteTurn = true;
-    m_path = SomeConstans::getInstance().getPathGeneral();
 
     m_mainLayout = new QVBoxLayout();
     m_playerInfo = new QHBoxLayout();
     m_topLayout = new QHBoxLayout();
     m_resultLayout = new QHBoxLayout();
     m_buttonsLayout = new QHBoxLayout();
-    m_whitePlayerLayout = new PlayerInfoLayout2();
-    m_blackPlayerLayout = new PlayerInfoLayout2();
+    m_whitePlayerLayout = new PlayerVLayout2();
+    m_blackPlayerLayout = new PlayerVLayout2();
     m_whitePlayer = new QWidget();
     m_blackPlayer = new QWidget();
 
@@ -65,7 +66,7 @@ EndGameWindow::EndGameWindow(QWidget *parent)
     font.setBold(true);
     m_result->setFont(font);
 
-    m_exitBut->setIcon(QIcon(m_path + "exit.png"));
+    m_exitBut->setIcon(QIcon(QString(GENERAL_PATH) + "exit.png"));
     m_exitBut->setFixedSize(FIXED_SIZE_EXIT_BUTTON, FIXED_SIZE_EXIT_BUTTON);
     m_exitBut->setIconSize(m_exitBut->size());
     m_exitBut->setStyleSheet("padding: 0px;");
@@ -141,15 +142,15 @@ EndGameWindow::EndGameWindow(QWidget *parent)
 void EndGameWindow::setParams(PlayerParams params, TypeTimeChess timeChessType)
 {
     if (timeChessType == TypeTimeChess::BULLET)
-        m_iconGame->setPixmap(QPixmap(m_path + "bullet.png"));
+        m_iconGame->setPixmap(QPixmap(QString(GENERAL_PATH) + "bullet.png"));
     else if (timeChessType == TypeTimeChess::BLITZ)
-        m_iconGame->setPixmap(QPixmap(m_path + "blitz.png"));
+        m_iconGame->setPixmap(QPixmap(QString(GENERAL_PATH) + "blitz.png"));
     else if (timeChessType == TypeTimeChess::RAPID)
-        m_iconGame->setPixmap(QPixmap(m_path + "rapid.png"));
+        m_iconGame->setPixmap(QPixmap(QString(GENERAL_PATH) + "rapid.png"));
     else if (timeChessType == TypeTimeChess::CLASSIC)
-        m_iconGame->setPixmap(QPixmap(m_path + "classic.png"));
+        m_iconGame->setPixmap(QPixmap(QString(GENERAL_PATH) + "classic.png"));
     else if (timeChessType == TypeTimeChess::OTHER)
-        m_iconGame->setPixmap(QPixmap(m_path + "other.png"));
+        m_iconGame->setPixmap(QPixmap(QString(GENERAL_PATH) + "other.png"));
 
     m_iconPlayerWhite->setPixmap(params.icons.first);
     m_iconPlayerBlack->setPixmap(params.icons.second);

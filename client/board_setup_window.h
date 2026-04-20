@@ -1,7 +1,10 @@
 #ifndef BOARD_SETUP_WINDOW_H
 #define BOARD_SETUP_WINDOW_H
 
-#include "src/defines.h"
+#include "src/board_hlayout2.h"
+#include "src/board_vlayout2.h"
+#include "src/chess_board_widget.h"
+#include "src/choose_chess.h"
 
 #include <QButtonGroup>
 #include <QCheckBox>
@@ -10,13 +13,19 @@
 #include <QObject>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QResizeEvent>
+#include <QShowEvent>
 #include <QWidget>
 
 class BoardSetupWindow : public QWidget
 {
     Q_OBJECT
+
 public:
-    explicit BoardSetupWindow(ChessBoardParams &boardParams, QWidget *parent = nullptr);
+    explicit BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardParams, QWidget *parent = nullptr);
+
+    void showAllWidget();
+    void hideAllWidget();
 
     ChessBoardParams &getBoardParams();
 
@@ -24,22 +33,38 @@ signals:
     void saveParams();
     void exit();
 
+protected:
+    void showEvent(QShowEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+
+private:
+    void updateBoardIcon();
+    void updateBoardSize();
+
 private:
     ChessBoardParams m_boardParams;
+    ChessBoardParams m_copyBoardParams;
+    QString m_piece;
 
-    QVBoxLayout *m_mainLayout;
-    QHBoxLayout *m_topLayout;
+    ChessBoardWidget *m_chessBoard;
+    ChooseChess *m_chooseChess;
+
+    BoardVLayout2 *m_mainLayout;
+    BoardHLayout2 *m_boardPieceLayout;
+    QVBoxLayout *m_topLayout;
+    QHBoxLayout *m_topLayoutPart;
     QVBoxLayout *m_colorLayout;
-    QVBoxLayout *m_helperLayout;
-    QVBoxLayout *m_960Layout;
+    QVBoxLayout *m_turnLayout;
+    QVBoxLayout *m_resetLayout;
     QVBoxLayout *m_saveLayout;
     QGridLayout *m_castlingLayout;
 
     QPushButton *m_exitBut;
     QPushButton *m_saveBut;
-    QPushButton *m_resetBut;
-    QPushButton *m_reverseBut;
-    QPushButton *m_update960But;
+    QPushButton *m_turnBoardBut;
+    QPushButton *m_turnPlayerBut;
+    QPushButton *m_resetBoardBut;
+    QPushButton *m_resetPosBut;
     QCheckBox *m_whiteCastlingBut1;
     QCheckBox *m_whiteCastlingBut2;
     QCheckBox *m_blackCastlingBut1;

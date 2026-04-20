@@ -1,6 +1,8 @@
 #ifndef BUTTON_COMPLEX_H
 #define BUTTON_COMPLEX_H
 
+#include "src/style_lib.h"
+
 #include <QHBoxLayout>
 #include <QObject>
 #include <QPushButton>
@@ -11,19 +13,22 @@
 class ButtonComplex : public QWidget
 {
     Q_OBJECT
+
 public:
-    explicit ButtonComplex(QWidget *parent = nullptr);
+    explicit ButtonComplex(StyleLib *styleLib, QWidget *parent = nullptr);
 
     void setButtons(std::vector<std::string> nameButtons);
     void useButton(qint8 id);
 
 signals:
-    void selectButtonSignals(qint8 id);
+    void selectButton(qint8 id);
 
 private:
     void unUseButton();
 
 private:
+    StyleLib *m_styleLib;
+
     QHBoxLayout *m_layout;
 
     std::vector<QPushButton *> m_buttons;

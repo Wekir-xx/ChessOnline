@@ -1,8 +1,9 @@
 #include "button_complex.h"
 
-ButtonComplex::ButtonComplex(QWidget *parent)
+ButtonComplex::ButtonComplex(StyleLib *styleLib, QWidget *parent)
     : QWidget{parent}
 {
+    m_styleLib = styleLib;
     m_buttons.reserve(10);
 
     m_layout = new QHBoxLayout();
@@ -26,7 +27,7 @@ void ButtonComplex::setButtons(std::vector<std::string> nameButtons)
         connect(m_buttons[i], &QPushButton::clicked, this, [ = ]() {
             unUseButton();
             useButton(i);
-            emit selectButtonSignals(i);
+            emit selectButton(i);
         });
     }
 
@@ -39,14 +40,11 @@ void ButtonComplex::setButtons(std::vector<std::string> nameButtons)
 void ButtonComplex::useButton(qint8 id)
 {
     m_idUseBut = id;
-    m_buttons[id]->setChecked(true);
     m_buttons[id]->setEnabled(false);
 }
 
 void ButtonComplex::unUseButton()
 {
-    if (m_idUseBut < m_buttons.size()) {
-        m_buttons[m_idUseBut]->setChecked(false);
+    if (m_idUseBut < m_buttons.size())
         m_buttons[m_idUseBut]->setEnabled(true);
-    }
 }

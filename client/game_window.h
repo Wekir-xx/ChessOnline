@@ -2,9 +2,9 @@
 #define GAME_WINDOW_H
 
 #include "chess_board.h"
-#include "src/board_layout.h"
+#include "src/board_hlayout2.h"
 #include "src/end_game_window.h"
-#include "src/player_info_layout3.h"
+#include "src/player_vlayout3.h"
 #include "src/rotatable_label.h"
 #include "src/settings_window.h"
 
@@ -16,14 +16,11 @@ class GameWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit GameWindow(QWidget *parent = nullptr);
+    explicit GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidget *parent = nullptr);
+
+    void startGame(StartParams &startParams, ChessBoardParams &boardParams);
 
     SettingsParams &getSettingsParams();
-
-    void startGame(GameParams &params);
-
-    void showSettingWindow();
-    void showEndGameWindow();
 
 signals:
     void exitGame();
@@ -32,6 +29,9 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
+    void showSettingWindow();
+    void showEndGameWindow();
+
     void startGameInner();
     void endGame(ResultGame result);
     void newGame();
@@ -48,6 +48,8 @@ private:
     void resetTime();
 
 private:
+    StyleLib *m_styleLib;
+
     SettingsParams m_settingsParams;
     StartParams m_startParams;
     ChessBoardParams m_boardParams;
@@ -55,8 +57,9 @@ private:
     ChessBoard *m_board;
     SettingsWindow *m_settings;
     EndGameWindow *m_endGame;
+    QWidget *m_sideWidget;
 
-    BoardLayout *m_mainLayout;
+    BoardHLayout2 *m_mainLayout;
     QVBoxLayout *m_sideLayout;
     QHBoxLayout *m_helperLayout;
 
@@ -65,7 +68,7 @@ private:
     QPushButton *m_settingsButton;
 
     std::pair<QWidget *, QWidget *> m_players;
-    std::pair<PlayerInfoLayout3 *, PlayerInfoLayout3 *> m_playersLayout;
+    std::pair<PlayerVLayout3 *, PlayerVLayout3 *> m_playersLayout;
     std::pair<QPixmap, QPixmap> m_pixmapPlayers;
     std::pair<QLabel *, QLabel *> m_iconPlayers;
     std::pair<RotatableLabel *, RotatableLabel *> m_infoPlayers;
@@ -83,7 +86,6 @@ private:
 
     std::pair<QString, QString> m_nicknames;
     std::pair<qint16, qint16> m_ratings;
-    QString m_pathGeneral;
     QString m_smallTimeNoticeStyle;
     bool m_connection;
 };
