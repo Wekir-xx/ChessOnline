@@ -14,9 +14,6 @@ class StartGameWindow : public QWidget
 public:
     explicit StartGameWindow(StyleLib *styleLib, StartParams &startParams, QWidget *parent = nullptr);
 
-    void showAllWidget();
-    void hideAllWidget();
-
     void setChessBoard();
     StartParams &getStartParams();
 

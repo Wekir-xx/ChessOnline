@@ -16,6 +16,7 @@ public:
 
     bool isPossibleMove();
     bool isStaleMate();
+    bool isCheck();
 
     bool isPossibleHistoryBack();
     bool isPossibleHistoryForward();
@@ -37,7 +38,6 @@ public:
     std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> getPosKings();
 
 private:
-    bool isCheck();
     bool checkMove(qint8 i, qint8 j, bool isKing = false);
     bool isPossibleMoveInner();
 

@@ -24,41 +24,48 @@ MainWindow::MainWindow(QWidget *parent)
     m_stacked->addWidget(m_boardSetupWindow);
     m_stacked->setCurrentWidget(m_startGameWindow);
 
-    m_boardSetupWindow->hideAllWidget();
-
+    m_gameWindow->setFixedSize(0, 0);
+    m_boardSetupWindow->setFixedSize(0, 0);
     this->setCentralWidget(m_stacked);
 
     connect(m_startGameWindow, &StartGameWindow::startGame, this, [this]() {
         m_startParams = m_startGameWindow->getStartParams();
-
-        m_startGameWindow->hideAllWidget();
         m_gameWindow->startGame(m_startParams, m_boardParams);
+
+        m_startGameWindow->setFixedSize(0, 0);
         m_stacked->setCurrentWidget(m_gameWindow);
+        m_gameWindow->setMinimumSize(0, 0);
+        m_gameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
 
     connect(m_startGameWindow, &StartGameWindow::boardSetup, this, [this]() {
-        m_startGameWindow->hideAllWidget();
-        m_boardSetupWindow->showAllWidget();
+        m_startGameWindow->setFixedSize(0, 0);
         m_stacked->setCurrentWidget(m_boardSetupWindow);
+        m_boardSetupWindow->setMinimumSize(0, 0);
+        m_boardSetupWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
 
     connect(m_gameWindow, &GameWindow::exitGame, this, [this]() {
-        m_startGameWindow->showAllWidget();
+        m_gameWindow->setFixedSize(0, 0);
         m_stacked->setCurrentWidget(m_startGameWindow);
+        m_startGameWindow->setMinimumSize(0, 0);
+        m_startGameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
 
     connect(m_boardSetupWindow, &BoardSetupWindow::saveParams, this, [this]() {
         m_boardParams = m_boardSetupWindow->getBoardParams();
 
-        m_boardSetupWindow->hideAllWidget();
-        m_startGameWindow->showAllWidget();
+        m_boardSetupWindow->setFixedSize(0, 0);
         m_stacked->setCurrentWidget(m_startGameWindow);
+        m_startGameWindow->setMinimumSize(0, 0);
+        m_startGameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
 
     connect(m_boardSetupWindow, &BoardSetupWindow::exit, this, [this]() {
-        m_boardSetupWindow->hideAllWidget();
-        m_startGameWindow->showAllWidget();
+        m_boardSetupWindow->setFixedSize(0, 0);
         m_stacked->setCurrentWidget(m_startGameWindow);
+        m_startGameWindow->setMinimumSize(0, 0);
+        m_startGameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
 }
 
@@ -163,8 +170,8 @@ void MainWindow::setBoard(QString board)
         SomeConstans::fillStandartChessField(m_boardParams.chessFields);
     } else {
         auto it = board.begin();
-        for (size_t i = 0; i < SIDE_SIZE; ++i) {
-            for (size_t j = 0; j < SIDE_SIZE; ++j) {
+        for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+            for (qint8 j = 0; j < SIDE_SIZE; ++j) {
                 if (*it == '.') {
                     ++it;
                 } else {

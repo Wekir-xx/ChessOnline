@@ -55,13 +55,13 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
     m_mainLayout->setAlignment(m_errorLabel, Qt::AlignCenter);
 
     if (m_params.gameType != TypeGame::UNDEFINED)
-        m_gameTypeButs->useButton(static_cast<size_t>(m_params.gameType));
+        m_gameTypeButs->useButton(static_cast<qint8>(m_params.gameType));
 
     if (m_params.chessType != TypeChess::UNDEFINED)
-        m_chessTypeButs->useButton(static_cast<size_t>(m_params.chessType));
+        m_chessTypeButs->useButton(static_cast<qint8>(m_params.chessType));
 
     if (m_params.timeChessType != TypeTimeChess::UNDEFINED) {
-        m_timeChessTypeButs->useButton(static_cast<size_t>(m_params.timeChessType));
+        m_timeChessTypeButs->useButton(static_cast<qint8>(m_params.timeChessType));
 
         if (m_params.timeChessType != TypeTimeChess::NO_TIME) {
             if (m_params.timeChessType == TypeTimeChess::OTHER) {
@@ -69,7 +69,7 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
             } else {
                 m_stackedTime->setCurrentWidget(m_timeChessButs);
 
-                size_t id = static_cast<size_t>(m_params.timeChessType);
+                qint8 id = static_cast<qint8>(m_params.timeChessType);
                 m_timeChessButs->setButtons(m_constans->getTimeChessStr()[id]);
 
                 if (m_params.mainTime != 0) {
@@ -167,31 +167,6 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
     });
 
     this->setLayout(m_mainLayout);
-}
-
-void StartGameWindow::showAllWidget()
-{
-    m_gameTypeButs->show();
-    m_chessTypeButs->show();
-    m_timeChessTypeButs->show();
-    m_errorLabel->show();
-    m_startGameBut->show();
-
-    if (m_params.chessType == TypeChess::USER)
-        m_boardSetupBut->show();
-    if (m_params.timeChessType != TypeTimeChess::NO_TIME)
-        m_stackedTime->show();
-}
-
-void StartGameWindow::hideAllWidget()
-{
-    m_gameTypeButs->hide();
-    m_chessTypeButs->hide();
-    m_boardSetupBut->hide();
-    m_timeChessTypeButs->hide();
-    m_stackedTime->hide();
-    m_errorLabel->hide();
-    m_startGameBut->hide();
 }
 
 StartParams &StartGameWindow::getStartParams()

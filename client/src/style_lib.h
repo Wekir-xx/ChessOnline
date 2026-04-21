@@ -12,7 +12,7 @@ class StyleLib : public QObject
 public:
     explicit StyleLib(QObject *parent = nullptr);
 
-    void setStyleIcon(size_t id);
+    void setStyleIcon(qint8 id);
 
     const std::vector<QString> &getStylesIcon();
 
@@ -29,8 +29,8 @@ private:
     const QString m_smallTimeNoticeStyle = "background-color: red; color: black; font-size:24px; padding:10px;";
     const QString m_fontSizeStyle = "font-size: 14px;";
 
-    size_t m_idStyleIcon{0};
-    size_t m_idStyleWindow{0};
+    qint8 m_idStyleIcon{0};
+    qint8 m_idStyleWindow{0};
 };
 
 #endif // STYLE_LIB_H

@@ -14,7 +14,6 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QResizeEvent>
-#include <QShowEvent>
 #include <QWidget>
 
 class BoardSetupWindow : public QWidget
@@ -23,9 +22,6 @@ class BoardSetupWindow : public QWidget
 
 public:
     explicit BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardParams, QWidget *parent = nullptr);
-
-    void showAllWidget();
-    void hideAllWidget();
 
     ChessBoardParams &getBoardParams();
 
@@ -41,6 +37,8 @@ private:
     void updateBoardIcon();
     void updateBoardSize();
 
+    void checkSave();
+
 private:
     ChessBoardParams m_boardParams;
     ChessBoardParams m_copyBoardParams;
@@ -55,8 +53,8 @@ private:
     QHBoxLayout *m_topLayoutPart;
     QVBoxLayout *m_colorLayout;
     QVBoxLayout *m_turnLayout;
-    QVBoxLayout *m_resetLayout;
-    QVBoxLayout *m_saveLayout;
+    QVBoxLayout *m_clearResetLayout;
+    QVBoxLayout *m_saveResetLayout;
     QGridLayout *m_castlingLayout;
 
     QPushButton *m_exitBut;
@@ -65,6 +63,7 @@ private:
     QPushButton *m_turnPlayerBut;
     QPushButton *m_resetBoardBut;
     QPushButton *m_resetPosBut;
+    QPushButton *m_clearBut;
     QCheckBox *m_whiteCastlingBut1;
     QCheckBox *m_whiteCastlingBut2;
     QCheckBox *m_blackCastlingBut1;

@@ -4,7 +4,7 @@ StyleLib::StyleLib(QObject *parent)
     : QObject{parent}
 {}
 
-void StyleLib::setStyleIcon(size_t id)
+void StyleLib::setStyleIcon(qint8 id)
 {
     m_idStyleIcon = id;
     emit changeIconStyle();

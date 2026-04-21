@@ -19,7 +19,8 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     m_topLayoutPart = new QHBoxLayout();
     m_colorLayout = new QVBoxLayout();
     m_turnLayout = new QVBoxLayout();
-    m_resetLayout = new QVBoxLayout();
+    m_clearResetLayout = new QVBoxLayout();
+    m_saveResetLayout = new QVBoxLayout();
     m_castlingLayout = new QGridLayout();
 
     m_exitBut = new QPushButton();
@@ -28,6 +29,7 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     m_turnPlayerBut = new QPushButton("Turn player");
     m_resetBoardBut = new QPushButton("Reset update");
     m_resetPosBut = new QPushButton();
+    m_clearBut = new QPushButton("Clear board");
     m_whiteCastlingBut1 = new QCheckBox("0-0-0");
     m_whiteCastlingBut2 = new QCheckBox("0-0");
     m_blackCastlingBut1 = new QCheckBox("0-0-0");
@@ -44,6 +46,7 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     m_turnPlayerBut->setStyleSheet(fontSize);
     m_resetBoardBut->setStyleSheet(fontSize);
     m_resetPosBut->setStyleSheet(fontSize);
+    m_clearBut->setStyleSheet(fontSize);
     m_960But->setStyleSheet(fontSize);
     m_whiteCastlingLabel->setStyleSheet(fontSize);
     m_blackCastlingLabel->setStyleSheet(fontSize);
@@ -104,8 +107,8 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     m_turnLayout->addWidget(m_turnBoardBut);
     m_turnLayout->addWidget(m_turnPlayerBut);
 
-    m_resetLayout->addWidget(m_resetBoardBut);
-    m_resetLayout->addWidget(m_resetPosBut);
+    m_clearResetLayout->addWidget(m_clearBut);
+    m_clearResetLayout->addWidget(m_resetPosBut);
 
     m_castlingLayout->setSpacing(0);
     m_castlingLayout->addWidget(m_whiteCastlingLabel, 0, 0);
@@ -115,6 +118,9 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     m_castlingLayout->addWidget(m_blackCastlingBut1, 1, 1);
     m_castlingLayout->addWidget(m_blackCastlingBut2, 1, 2);
 
+    m_saveResetLayout->addWidget(m_saveBut);
+    m_saveResetLayout->addWidget(m_resetBoardBut);
+
     m_topLayoutPart->addWidget(m_exitBut);
     m_topLayoutPart->addStretch();
     m_topLayoutPart->addLayout(m_colorLayout);
@@ -123,11 +129,11 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     m_topLayoutPart->addStretch();
     m_topLayoutPart->addLayout(m_turnLayout);
     m_topLayoutPart->addStretch();
-    m_topLayoutPart->addLayout(m_resetLayout);
+    m_topLayoutPart->addLayout(m_clearResetLayout);
     m_topLayoutPart->addStretch();
     m_topLayoutPart->addLayout(m_castlingLayout);
     m_topLayoutPart->addStretch();
-    m_topLayoutPart->addWidget(m_saveBut);
+    m_topLayoutPart->addLayout(m_saveResetLayout);
 
     m_topLayout->addLayout(m_topLayoutPart);
     m_topLayout->addWidget(m_errorLabel);
@@ -143,15 +149,7 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     this->updateBoardIcon();
 
     connect(m_exitBut, &QPushButton::clicked, this, [this]() { emit exit(); });
-    connect(m_saveBut, &QPushButton::clicked, this, [this]() {
-        if (!m_whiteBut->isChecked() && !m_blackBut->isChecked()) {
-            m_errorLabel->setText("First move color not selected");
-            return;
-        }
-
-        m_boardParams = m_copyBoardParams;
-        emit saveParams();
-    });
+    connect(m_saveBut, &QPushButton::clicked, this, &BoardSetupWindow::checkSave);
     connect(m_turnBoardBut, &QPushButton::clicked, this, [this]() {
         m_chessBoard->turnBoard();
 
@@ -176,7 +174,16 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
         else
             SomeConstans::fillStandartChessField(m_copyBoardParams.chessFields);
 
-        this->updateBoardIcon();        
+        this->updateBoardIcon();
+    });
+    connect(m_clearBut, &QPushButton::clicked, this, [this]() {
+        m_errorLabel->clear();
+
+        for (qint8 i = 0; i < SIDE_SIZE; ++i)
+            for (qint8 j = 0; j < SIDE_SIZE; ++j)
+                m_copyBoardParams.chessFields[i][j] = "";
+
+        this->updateBoardIcon();
     });
     connect(m_whiteCastlingBut1, &QCheckBox::checkStateChanged, this, [this]() {
         m_errorLabel->clear();
@@ -212,6 +219,8 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
         m_copyBoardParams.whiteMove = false;
     });
     connect(m_chessBoard, &ChessBoardWidget::clickField, this, [this](QString field) {
+        m_errorLabel->clear();
+
         qint8 i = field[1].digitValue() - 1;
         qint8 j = field[0].unicode() - 'a';
 
@@ -228,52 +237,6 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
         else
             m_piece = piece;
     });
-}
-
-void BoardSetupWindow::showAllWidget()
-{
-    m_chessBoard->show();
-    m_chooseChess->show();
-    m_exitBut->show();
-    m_saveBut->show();
-    m_turnBoardBut->show();
-    m_turnPlayerBut->show();
-    m_resetBoardBut->show();
-    m_resetPosBut->show();
-    m_whiteCastlingBut1->show();
-    m_whiteCastlingBut2->show();
-    m_blackCastlingBut1->show();
-    m_blackCastlingBut2->show();
-    m_960But->show();
-    m_whiteBut->show();
-    m_blackBut->show();
-    m_whiteCastlingLabel->show();
-    m_blackCastlingLabel->show();
-    m_errorLabel->show();
-
-    this->updateBoardSize();
-}
-
-void BoardSetupWindow::hideAllWidget()
-{
-    m_chessBoard->hide();
-    m_chooseChess->hide();
-    m_exitBut->hide();
-    m_saveBut->hide();
-    m_turnBoardBut->hide();
-    m_turnPlayerBut->hide();
-    m_resetBoardBut->hide();
-    m_resetPosBut->hide();
-    m_whiteCastlingBut1->hide();
-    m_whiteCastlingBut2->hide();
-    m_blackCastlingBut1->hide();
-    m_blackCastlingBut2->hide();
-    m_960But->hide();
-    m_whiteBut->hide();
-    m_blackBut->hide();
-    m_whiteCastlingLabel->hide();
-    m_blackCastlingLabel->hide();
-    m_errorLabel->hide();
 }
 
 ChessBoardParams &BoardSetupWindow::getBoardParams()
@@ -305,4 +268,122 @@ void BoardSetupWindow::updateBoardSize()
     for (qint8 i = 0; i < SIDE_SIZE; ++i)
         for (qint8 j = 0; j < SIDE_SIZE; ++j)
             m_chessBoard->setIconSize(i, j);
+}
+
+void BoardSetupWindow::checkSave()
+{
+    if (!m_whiteBut->isChecked() && !m_blackBut->isChecked()) {
+        m_errorLabel->setText("First move color not selected");
+        return;
+    }
+
+    std::vector<std::pair<qint8, qint8>> whiteKings;
+    std::vector<std::pair<qint8, qint8>> blackKings;
+    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+        for (qint8 j = 0; j < SIDE_SIZE; ++j) {
+            if (m_copyBoardParams.chessFields[i][j] == "wK")
+                whiteKings.push_back({i, j});
+            else if (m_copyBoardParams.chessFields[i][j] == "bK")
+                blackKings.push_back({i, j});
+        }
+    }
+
+    if (whiteKings.size() != 1) {
+        m_errorLabel->setText("Must be one white king");
+        return;
+    }
+    if (blackKings.size() != 1) {
+        m_errorLabel->setText("Must be one black king");
+        return;
+    }
+
+    const auto &castling = m_copyBoardParams.castling;
+
+    if (castling.first.first && whiteKings[0].first != 0) {
+        m_errorLabel->setText("White castling 0-0-0 not impossible, king not stay on row 1");
+        return;
+    }
+    if (castling.first.second && whiteKings[0].first != 0) {
+        m_errorLabel->setText("White castling 0-0 not impossible, king not stay on row 1");
+        return;
+    }
+    if (castling.second.first && blackKings[0].first != 7) {
+        m_errorLabel->setText("Black castling 0-0-0 not impossible, king not stay on row 7");
+        return;
+    }
+    if (castling.second.second && blackKings[0].first != 7) {
+        m_errorLabel->setText("Black castling 0-0 not impossible, king not stay on row 7");
+        return;
+    }
+
+    if (m_copyBoardParams.chess960) {
+        if (castling.first.first) {
+            bool flag = true;
+
+            for (qint8 i = 0; i < whiteKings[0].second; ++i)
+                if (m_copyBoardParams.chessFields[0][i] == "wR")
+                    flag = false;
+
+            if (flag) {
+                m_errorLabel->setText("White castling 0-0-0 not impossible, rook not stay on row 1 and left of king");
+                return;
+            }
+        }
+        if (castling.first.second) {
+            bool flag = true;
+
+            for (qint8 i = whiteKings[0].second + 1; i < SIDE_SIZE; ++i)
+                if (m_copyBoardParams.chessFields[0][i] == "wR")
+                    flag = false;
+
+            if (flag) {
+                m_errorLabel->setText("White castling 0-0 not impossible, rook not stay on row 1 and right of king");
+                return;
+            }
+        }
+        if (castling.second.first) {
+            bool flag = true;
+
+            for (qint8 i = 0; i < blackKings[0].second; ++i)
+                if (m_copyBoardParams.chessFields[7][i] == "bR")
+                    flag = false;
+
+            if (flag) {
+                m_errorLabel->setText("Black castling 0-0-0 not impossible, rook not stay on row 7 and left of king");
+                return;
+            }
+        }
+        if (castling.second.second) {
+            bool flag = true;
+
+            for (qint8 i = blackKings[0].second + 1; i < SIDE_SIZE; ++i)
+                if (m_copyBoardParams.chessFields[7][i] == "bR")
+                    flag = false;
+
+            if (flag) {
+                m_errorLabel->setText("Black castling 0-0 not impossible, rook not stay on row 7 and right of king");
+                return;
+            }
+        }
+    } else {
+        if (castling.first.first && m_copyBoardParams.chessFields[0][0] != "wR") {
+            m_errorLabel->setText("White castling 0-0-0 not impossible, rook not stay on row 1 col a");
+            return;
+        }
+        if (castling.first.second && m_copyBoardParams.chessFields[0][7] != "wR") {
+            m_errorLabel->setText("White castling 0-0 not impossible, rook not stay on row 1 col h");
+            return;
+        }
+        if (castling.second.first && m_copyBoardParams.chessFields[7][0] != "bR") {
+            m_errorLabel->setText("Black castling 0-0-0 not impossible, rook not stay on row 7 col a");
+            return;
+        }
+        if (castling.second.second && m_copyBoardParams.chessFields[7][7] != "bR") {
+            m_errorLabel->setText("Black castling 0-0 not impossible, rook not stay on row 7 col h");
+            return;
+        }
+    }
+
+    m_boardParams = m_copyBoardParams;
+    emit saveParams();
 }

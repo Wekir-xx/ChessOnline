@@ -251,168 +251,6 @@ bool ChessGame::isStaleMate()
     return true;
 }
 
-bool ChessGame::isPossibleHistoryBack()
-{
-    if (m_numBoardHistory == 0)
-        return false;
-    --m_numBoardHistory;
-    return true;
-}
-
-bool ChessGame::isPossibleHistoryForward()
-{
-    if (m_numBoardHistory == m_chessFieldsHistory.size() - 1)
-        return false;
-    ++m_numBoardHistory;
-    return true;
-}
-
-void ChessGame::historyMove()
-{
-    m_boardParams.chessFields = m_chessFieldsHistory[m_numBoardHistory];
-    QString lastMove = m_chessMoveHistory[m_numBoardHistory];
-    m_lastMove = std::pair{std::pair{static_cast<qint8>(lastMove[0].digitValue()),
-                                     static_cast<qint8>(lastMove[1].digitValue())},
-                           std::pair{static_cast<qint8>(lastMove[2].digitValue()),
-                                     static_cast<qint8>(lastMove[3].digitValue())}};
-
-    for (size_t i = 0; i < SIDE_SIZE; ++i) {
-        for (size_t j = 0; j < SIDE_SIZE; ++j) {
-            if (m_boardParams.chessFields[i][j] == "wK")
-                posKings.first = {i, j};
-            else if (m_boardParams.chessFields[i][j] == "bK")
-                posKings.second = {i, j};
-        }
-    }
-
-    m_whiteMove ^= true;
-    m_check = this->isCheck();
-}
-
-void ChessGame::chooseTransformPawn(qint8 j)
-{
-    m_beatFields.clear();
-
-    if (m_whiteMove) {
-        for (qint8 row = SIDE_SIZE / 2; row < SIDE_SIZE; ++row) {
-            m_savePiece.push_back(m_boardParams.chessFields[row][j]);
-            m_beatFields.push_back({row, j});
-        }
-
-        m_boardParams.chessFields[7][j] = "wQ";
-        m_boardParams.chessFields[6][j] = "wR";
-        m_boardParams.chessFields[5][j] = "wB";
-        m_boardParams.chessFields[4][j] = "wN";
-    } else {
-        for (qint8 row = 0; row < SIDE_SIZE / 2; ++row) {
-            m_savePiece.push_back(m_boardParams.chessFields[row][j]);
-            m_beatFields.push_back({row, j});
-        }
-
-        m_boardParams.chessFields[0][j] = "bQ";
-        m_boardParams.chessFields[1][j] = "bR";
-        m_boardParams.chessFields[2][j] = "bB";
-        m_boardParams.chessFields[3][j] = "bN";
-    }
-}
-
-void ChessGame::transformPawn(qint8 i, qint8 j)
-{
-    QString choosePiece = m_boardParams.chessFields[i][j];
-    this->untransformPawn();
-    m_boardParams.chessFields[m_takenPiece.first][m_takenPiece.second] = choosePiece;
-}
-
-void ChessGame::untransformPawn()
-{
-    for (qint8 num = 0; num < 4; ++num)
-        m_boardParams.chessFields[m_beatFields[num].first][m_beatFields[num].second] = m_savePiece[num];
-
-    m_savePiece.clear();
-}
-
-void ChessGame::setField(QString field, qint8 i, qint8 j)
-{
-    m_boardParams.chessFields[i][j] = field;
-}
-
-void ChessGame::setChessParams(ChessBoardParams &boardParams)
-{
-    m_boardParams = boardParams;
-    m_whiteMove = boardParams.whiteMove;
-
-    posRooksWhite = {{SIDE_SIZE, SIDE_SIZE}, {SIDE_SIZE, SIDE_SIZE}};
-    posRooksBlack = {{SIDE_SIZE, SIDE_SIZE}, {SIDE_SIZE, SIDE_SIZE}};
-
-    for (size_t i = 0; i < SIDE_SIZE; ++i) {
-        for (size_t j = 0; j < SIDE_SIZE; ++j) {
-            if (boardParams.chessFields[i][j] == "wK") {
-                posKings.first = {i, j};
-            } else if (boardParams.chessFields[i][j] == "bK") {
-                posKings.second = {i, j};
-            } else if (boardParams.chessFields[i][j] == "wR") {
-                if (posRooksWhite.first.first == SIDE_SIZE)
-                    posRooksWhite.first = {i, j};
-                else
-                    posRooksWhite.second = {i, j};
-            } else if (boardParams.chessFields[i][j] == "bR") {
-                if (posRooksBlack.first.first == SIDE_SIZE)
-                    posRooksBlack.first = {i, j};
-                else
-                    posRooksBlack.second = {i, j};
-            }
-        }
-    }
-
-    m_beatFields.clear();
-    m_chessMoveHistory.clear();
-    m_chessFieldsHistory.clear();
-    m_savePiece.clear();
-    m_movesHistory = 1;
-    m_numBoardHistory = 0;
-    m_takenPiece.first = SIDE_SIZE;
-    m_lastMove = std::pair{m_takenPiece, m_takenPiece};
-
-    QString str = QString::number(SIDE_SIZE);
-    m_chessMoveHistory.push_back(str + str + str + str);
-    m_chessFieldsHistory.push_back(m_boardParams.chessFields);
-}
-
-bool ChessGame::getCheck()
-{
-    return m_check;
-}
-
-bool ChessGame::getColorMove()
-{
-    return m_whiteMove;
-}
-
-std::pair<qint8, qint8> ChessGame::getTakenPiece()
-{
-    return m_takenPiece;
-}
-
-const std::vector<std::vector<QString>> &ChessGame::getChessFields()
-{
-    return m_boardParams.chessFields;
-}
-
-const std::vector<std::pair<qint8, qint8>> &ChessGame::getBeatFields()
-{
-    return m_beatFields;
-}
-
-std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> ChessGame::getLastMove()
-{
-    return m_lastMove;
-}
-
-std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> ChessGame::getPosKings()
-{
-    return posKings;
-}
-
 bool ChessGame::isCheck()
 {
     qint8 i, j;
@@ -631,6 +469,168 @@ bool ChessGame::isCheck()
     }
 
     return false;
+}
+
+bool ChessGame::isPossibleHistoryBack()
+{
+    if (m_numBoardHistory == 0)
+        return false;
+    --m_numBoardHistory;
+    return true;
+}
+
+bool ChessGame::isPossibleHistoryForward()
+{
+    if (m_numBoardHistory == m_chessFieldsHistory.size() - 1)
+        return false;
+    ++m_numBoardHistory;
+    return true;
+}
+
+void ChessGame::historyMove()
+{
+    m_boardParams.chessFields = m_chessFieldsHistory[m_numBoardHistory];
+    QString lastMove = m_chessMoveHistory[m_numBoardHistory];
+    m_lastMove = std::pair{std::pair{static_cast<qint8>(lastMove[0].digitValue()),
+                                     static_cast<qint8>(lastMove[1].digitValue())},
+                           std::pair{static_cast<qint8>(lastMove[2].digitValue()),
+                                     static_cast<qint8>(lastMove[3].digitValue())}};
+
+    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+        for (qint8 j = 0; j < SIDE_SIZE; ++j) {
+            if (m_boardParams.chessFields[i][j] == "wK")
+                posKings.first = {i, j};
+            else if (m_boardParams.chessFields[i][j] == "bK")
+                posKings.second = {i, j};
+        }
+    }
+
+    m_whiteMove ^= true;
+    m_check = this->isCheck();
+}
+
+void ChessGame::chooseTransformPawn(qint8 j)
+{
+    m_beatFields.clear();
+
+    if (m_whiteMove) {
+        for (qint8 row = SIDE_SIZE / 2; row < SIDE_SIZE; ++row) {
+            m_savePiece.push_back(m_boardParams.chessFields[row][j]);
+            m_beatFields.push_back({row, j});
+        }
+
+        m_boardParams.chessFields[7][j] = "wQ";
+        m_boardParams.chessFields[6][j] = "wR";
+        m_boardParams.chessFields[5][j] = "wB";
+        m_boardParams.chessFields[4][j] = "wN";
+    } else {
+        for (qint8 row = 0; row < SIDE_SIZE / 2; ++row) {
+            m_savePiece.push_back(m_boardParams.chessFields[row][j]);
+            m_beatFields.push_back({row, j});
+        }
+
+        m_boardParams.chessFields[0][j] = "bQ";
+        m_boardParams.chessFields[1][j] = "bR";
+        m_boardParams.chessFields[2][j] = "bB";
+        m_boardParams.chessFields[3][j] = "bN";
+    }
+}
+
+void ChessGame::transformPawn(qint8 i, qint8 j)
+{
+    QString choosePiece = m_boardParams.chessFields[i][j];
+    this->untransformPawn();
+    m_boardParams.chessFields[m_takenPiece.first][m_takenPiece.second] = choosePiece;
+}
+
+void ChessGame::untransformPawn()
+{
+    for (qint8 num = 0; num < 4; ++num)
+        m_boardParams.chessFields[m_beatFields[num].first][m_beatFields[num].second] = m_savePiece[num];
+
+    m_savePiece.clear();
+}
+
+void ChessGame::setField(QString field, qint8 i, qint8 j)
+{
+    m_boardParams.chessFields[i][j] = field;
+}
+
+void ChessGame::setChessParams(ChessBoardParams &boardParams)
+{
+    m_boardParams = boardParams;
+    m_whiteMove = boardParams.whiteMove;
+
+    posRooksWhite = {{SIDE_SIZE, SIDE_SIZE}, {SIDE_SIZE, SIDE_SIZE}};
+    posRooksBlack = {{SIDE_SIZE, SIDE_SIZE}, {SIDE_SIZE, SIDE_SIZE}};
+
+    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+        for (qint8 j = 0; j < SIDE_SIZE; ++j) {
+            if (boardParams.chessFields[i][j] == "wK") {
+                posKings.first = {i, j};
+            } else if (boardParams.chessFields[i][j] == "bK") {
+                posKings.second = {i, j};
+            } else if (boardParams.chessFields[i][j] == "wR") {
+                if (posRooksWhite.first.first == SIDE_SIZE)
+                    posRooksWhite.first = {i, j};
+                else
+                    posRooksWhite.second = {i, j};
+            } else if (boardParams.chessFields[i][j] == "bR") {
+                if (posRooksBlack.first.first == SIDE_SIZE)
+                    posRooksBlack.first = {i, j};
+                else
+                    posRooksBlack.second = {i, j};
+            }
+        }
+    }
+
+    m_beatFields.clear();
+    m_chessMoveHistory.clear();
+    m_chessFieldsHistory.clear();
+    m_savePiece.clear();
+    m_movesHistory = 1;
+    m_numBoardHistory = 0;
+    m_takenPiece.first = SIDE_SIZE;
+    m_lastMove = std::pair{m_takenPiece, m_takenPiece};
+
+    QString str = QString::number(SIDE_SIZE);
+    m_chessMoveHistory.push_back(str + str + str + str);
+    m_chessFieldsHistory.push_back(m_boardParams.chessFields);
+}
+
+bool ChessGame::getCheck()
+{
+    return m_check;
+}
+
+bool ChessGame::getColorMove()
+{
+    return m_whiteMove;
+}
+
+std::pair<qint8, qint8> ChessGame::getTakenPiece()
+{
+    return m_takenPiece;
+}
+
+const std::vector<std::vector<QString>> &ChessGame::getChessFields()
+{
+    return m_boardParams.chessFields;
+}
+
+const std::vector<std::pair<qint8, qint8>> &ChessGame::getBeatFields()
+{
+    return m_beatFields;
+}
+
+std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> ChessGame::getLastMove()
+{
+    return m_lastMove;
+}
+
+std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> ChessGame::getPosKings()
+{
+    return posKings;
 }
 
 bool ChessGame::checkMove(qint8 i, qint8 j, bool isKing)
