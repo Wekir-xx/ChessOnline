@@ -146,8 +146,6 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
 
     this->setLayout(m_mainLayout);
 
-    this->updateBoardIcon();
-
     connect(m_exitBut, &QPushButton::clicked, this, [this]() { emit exit(); });
     connect(m_saveBut, &QPushButton::clicked, this, &BoardSetupWindow::checkSave);
     connect(m_turnBoardBut, &QPushButton::clicked, this, [this]() {
@@ -235,6 +233,11 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
         else
             m_piece = piece;
     });
+}
+
+void BoardSetupWindow::startGame()
+{
+    this->updateBoardIcon();
 }
 
 ChessBoardParams &BoardSetupWindow::getBoardParams()

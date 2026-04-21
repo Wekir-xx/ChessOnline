@@ -31,39 +31,43 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_startGameWindow, &StartGameWindow::startGame, this, [this]() {
         m_startParams = m_startGameWindow->getStartParams();
         m_gameWindow->startGame(m_startParams, m_boardParams);
+        m_stacked->setCurrentWidget(m_gameWindow);
 
         m_startGameWindow->setFixedSize(0, 0);
-        m_stacked->setCurrentWidget(m_gameWindow);
         m_gameWindow->setMinimumSize(0, 0);
         m_gameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
 
     connect(m_startGameWindow, &StartGameWindow::boardSetup, this, [this]() {
-        m_startGameWindow->setFixedSize(0, 0);
+        m_boardSetupWindow->startGame();
         m_stacked->setCurrentWidget(m_boardSetupWindow);
+
+        m_startGameWindow->setFixedSize(0, 0);
         m_boardSetupWindow->setMinimumSize(0, 0);
         m_boardSetupWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
 
     connect(m_gameWindow, &GameWindow::exitGame, this, [this]() {
-        m_gameWindow->setFixedSize(0, 0);
         m_stacked->setCurrentWidget(m_startGameWindow);
+
+        m_gameWindow->setFixedSize(0, 0);
         m_startGameWindow->setMinimumSize(0, 0);
         m_startGameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
 
     connect(m_boardSetupWindow, &BoardSetupWindow::saveParams, this, [this]() {
         m_boardParams = m_boardSetupWindow->getBoardParams();
+        m_stacked->setCurrentWidget(m_startGameWindow);
 
         m_boardSetupWindow->setFixedSize(0, 0);
-        m_stacked->setCurrentWidget(m_startGameWindow);
         m_startGameWindow->setMinimumSize(0, 0);
         m_startGameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
 
     connect(m_boardSetupWindow, &BoardSetupWindow::exit, this, [this]() {
-        m_boardSetupWindow->setFixedSize(0, 0);
         m_stacked->setCurrentWidget(m_startGameWindow);
+
+        m_boardSetupWindow->setFixedSize(0, 0);
         m_startGameWindow->setMinimumSize(0, 0);
         m_startGameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });

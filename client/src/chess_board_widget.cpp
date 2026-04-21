@@ -9,6 +9,9 @@
 ChessBoardWidget::ChessBoardWidget(StyleLib *styleLib, QWidget *parent)
     : QWidget(parent)
 {
+    m_turnBoard = false;
+    m_turnSecondPlayer = false;
+
     m_styleLib = styleLib;
     m_imagesOfPieces.reserve(40);
     m_chessBoardBut.resize(SIDE_SIZE, std::vector<EventButton *>(SIDE_SIZE, nullptr));
@@ -60,6 +63,21 @@ ChessBoardWidget::ChessBoardWidget(StyleLib *styleLib, QWidget *parent)
     this->fillBoard(false);
     this->fillFullIcans();
     this->setLayout(m_mainLayout);
+
+    connect(m_styleLib, &StyleLib::changeIconStyle, this, [this]() {
+        if (m_turnSecondPlayer) {
+            if (m_turnBoard) {
+                this->fillIcan(true, false);
+                this->fillIcan(false, true);
+            } else {
+                this->fillIcan(true, true);
+                this->fillIcan(false, false);
+            }
+        } else {
+            this->fillIcan(true, true);
+            this->fillIcan(false, true);
+        }
+    });
 }
 
 void ChessBoardWidget::checkField(qint8 i, qint8 j)

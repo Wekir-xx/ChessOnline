@@ -24,6 +24,8 @@ class BoardSetupWindow : public QWidget
 public:
     explicit BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardParams, QWidget *parent = nullptr);
 
+    void startGame();
+
     ChessBoardParams &getBoardParams();
 
 signals:

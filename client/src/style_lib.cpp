@@ -10,22 +10,34 @@ void StyleLib::setStyleIcon(qint8 id)
     emit changeIconStyle();
 }
 
+void StyleLib::setStyleBoard(qint8 id)
+{
+    m_idStyleBoard = id;
+    emit changeBoardStyle();
+}
+
+void StyleLib::setStyleWindow(qint8 id)
+{
+    m_idStyleWindow = id;
+    emit changeWindowStyle();
+}
+
 const std::vector<QString> &StyleLib::getStylesIcon()
 {
     return m_iconStyles;
 }
 
-QString StyleLib::getStyleIcon() const
+QString StyleLib::getStyleIcon()
 {
     return GENERAL_PATH + m_iconStyles[m_idStyleIcon] + "/";
 }
 
-QString StyleLib::getSmallTimeNoticeStyle() const
+QString StyleLib::getSmallTimeNoticeStyle()
 {
     return m_smallTimeNoticeStyle;
 }
 
-QString StyleLib::getFontSizeStyle() const
+QString StyleLib::getFontSizeStyle()
 {
     return m_fontSizeStyle;
 }

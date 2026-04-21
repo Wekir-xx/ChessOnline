@@ -27,5 +27,29 @@
         <file>src/images/classic.png</file>
         <file>src/images/leftArrow.png</file>
         <file>src/images/rightArrow.png</file>
+        <file>src/images/style2/bB.png</file>
+        <file>src/images/style2/bK.png</file>
+        <file>src/images/style2/bN.png</file>
+        <file>src/images/style2/bP.png</file>
+        <file>src/images/style2/bQ.png</file>
+        <file>src/images/style2/bR.png</file>
+        <file>src/images/style2/wB.png</file>
+        <file>src/images/style2/wK.png</file>
+        <file>src/images/style2/wN.png</file>
+        <file>src/images/style2/wP.png</file>
+        <file>src/images/style2/wQ.png</file>
+        <file>src/images/style2/wR.png</file>
+        <file>src/images/style3/bB.png</file>
+        <file>src/images/style3/bK.png</file>
+        <file>src/images/style3/bN.png</file>
+        <file>src/images/style3/bP.png</file>
+        <file>src/images/style3/bQ.png</file>
+        <file>src/images/style3/bR.png</file>
+        <file>src/images/style3/wB.png</file>
+        <file>src/images/style3/wK.png</file>
+        <file>src/images/style3/wN.png</file>
+        <file>src/images/style3/wP.png</file>
+        <file>src/images/style3/wQ.png</file>
+        <file>src/images/style3/wR.png</file>
     </qresource>
 </RCC>
