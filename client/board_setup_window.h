@@ -1,6 +1,7 @@
 #ifndef BOARD_SETUP_WINDOW_H
 #define BOARD_SETUP_WINDOW_H
 
+#include "chess_game.h"
 #include "src/board_hlayout2.h"
 #include "src/board_vlayout2.h"
 #include "src/chess_board_widget.h"
@@ -39,11 +40,14 @@ private:
 
     void checkSave();
 
+    void clearBoard();
+
 private:
     ChessBoardParams m_boardParams;
     ChessBoardParams m_copyBoardParams;
     QString m_piece;
 
+    ChessGame m_game;
     ChessBoardWidget *m_chessBoard;
     ChooseChess *m_chooseChess;
 

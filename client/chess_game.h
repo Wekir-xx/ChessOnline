@@ -27,6 +27,7 @@ public:
     void untransformPawn();
 
     void setField(QString field, qint8 i, qint8 j);
+    void setColorMove(bool whiteMove);
     void setChessParams(ChessBoardParams &boardParams);
 
     bool getCheck();

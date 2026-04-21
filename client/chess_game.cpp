@@ -556,6 +556,11 @@ void ChessGame::setField(QString field, qint8 i, qint8 j)
     m_boardParams.chessFields[i][j] = field;
 }
 
+void ChessGame::setColorMove(bool whiteMove)
+{
+    m_whiteMove = whiteMove;
+}
+
 void ChessGame::setChessParams(ChessBoardParams &boardParams)
 {
     m_boardParams = boardParams;

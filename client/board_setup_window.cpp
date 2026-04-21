@@ -169,6 +169,7 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     connect(m_resetPosBut, &QPushButton::clicked, this, [this]() {
         m_errorLabel->clear();
 
+        this->clearBoard();
         if (m_copyBoardParams.chess960)
             SomeConstans::fill960ChessField(m_copyBoardParams.chessFields);
         else
@@ -179,10 +180,7 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     connect(m_clearBut, &QPushButton::clicked, this, [this]() {
         m_errorLabel->clear();
 
-        for (qint8 i = 0; i < SIDE_SIZE; ++i)
-            for (qint8 j = 0; j < SIDE_SIZE; ++j)
-                m_copyBoardParams.chessFields[i][j] = "";
-
+        this->clearBoard();
         this->updateBoardIcon();
     });
     connect(m_whiteCastlingBut1, &QCheckBox::checkStateChanged, this, [this]() {
@@ -384,6 +382,48 @@ void BoardSetupWindow::checkSave()
         }
     }
 
+    m_game.setChessParams(m_copyBoardParams);
+
+    if (m_game.isStaleMate()) {
+        m_errorLabel->setText("Not enough pieces to play");
+        return;
+    }
+
+    if (!m_game.isPossibleMove()) {
+        if (m_game.isCheck()) {
+            m_errorLabel->setText("Checkmate on board");
+            return;
+        } else {
+            m_errorLabel->setText("Stalemate on board");
+            return;
+        }
+    }
+
+    m_game.setColorMove(m_copyBoardParams.whiteMove ^ true);
+
+    if (m_game.isCheck()) {
+        QString color = m_copyBoardParams.whiteMove ? "White" : "Black";
+        m_errorLabel->setText(color + " move with check on board");
+        return;
+    }
+
+    if (!m_game.isPossibleMove()) {
+        if (m_game.getCheck()) {
+            m_errorLabel->setText("Checkmate on board");
+            return;
+        } else {
+            m_errorLabel->setText("Stalemate on board");
+            return;
+        }
+    }
+
     m_boardParams = m_copyBoardParams;
     emit saveParams();
+}
+
+void BoardSetupWindow::clearBoard()
+{
+    for (qint8 i = 0; i < SIDE_SIZE; ++i)
+        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+            m_copyBoardParams.chessFields[i][j] = "";
 }
