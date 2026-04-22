@@ -17,6 +17,8 @@ class ChessBoardWidget : public QWidget
 public:
     explicit ChessBoardWidget(StyleLib *styleLib, QWidget *parent = nullptr);
 
+    void updateBoard();
+
     void checkField(qint8 i, qint8 j);
     void moveField(qint8 i, qint8 j);
     void baseField(qint8 i, qint8 j);
@@ -39,6 +41,7 @@ signals:
 
 private:
     void fillFullIcans();
+    void fillStyles();
 
 private:
     StyleLib *m_styleLib;
@@ -48,6 +51,13 @@ private:
     std::unordered_map<QString, QIcon> m_imagesOfPieces;
     std::vector<std::vector<EventButton *>> m_chessBoardBut;
     std::vector<std::vector<QLabel *>> m_otherBoardLab;
+
+    QString m_baseLightFieldStyle;
+    QString m_baseDarkFieldStyle;
+    QString m_moveLightFieldStyle;
+    QString m_moveDarkFieldStyle;
+    QString m_checkFieldStyle;
+    QString m_whiteFieldStyle;
 
     bool m_turnBoard;
     bool m_turnSecondPlayer;

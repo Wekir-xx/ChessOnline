@@ -4,15 +4,15 @@
 
 ChooseChess::ChooseChess(StyleLib *styleLib, QWidget *parent)
     : QWidget{parent}
+    , m_styleLib{styleLib}
 {
-    m_styleLib = styleLib;
     m_buttons.resize(12, nullptr);
     m_idUseBut = m_buttons.size();
     m_constans = &SomeConstans::getInstance();
 
     const auto &pieceKeysWhite = m_constans->getPieceKeysWhite();
     const auto &pieceKeysBlack = m_constans->getPieceKeysBlack();
-    const auto &path = m_styleLib->getStyleIcon();
+    const auto &path = m_styleLib->getIconStyle();
 
     m_mainLayout = new QGridLayout();
 

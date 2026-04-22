@@ -24,7 +24,7 @@ class ChessBoard : public QWidget
 public:
     explicit ChessBoard(StyleLib *styleLib, QWidget *parent = nullptr);
 
-    void updateBoard();
+    void updateIconBoard();
 
     void fillChessBoard(bool chess960);
     void fillUserChessBoard(ChessBoardParams &boardParams);
@@ -69,11 +69,15 @@ private:
     void transformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields);
     void untransformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields);
 
-    void updateBoardIcon();
+    void updateIcon();
+    void updateBoard();
     void updateBoardSize();
     void updateHistoryScene();
 
+
 private:
+    StyleLib *m_styleLib;
+
     ChessGame m_game;
 
     ChessBoardWidget *m_chessBoard;

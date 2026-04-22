@@ -37,14 +37,16 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    void updateBoardIcon();
-    void updateBoardSize();
+    void updateIcon();
+    void updateIconSize();
 
     void checkSave();
 
     void clearBoard();
 
 private:
+    StyleLib *m_styleLib;
+
     ChessBoardParams m_boardParams;
     ChessBoardParams m_copyBoardParams;
     QString m_piece;

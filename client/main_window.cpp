@@ -29,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(m_stacked);
 
     connect(m_startGameWindow, &StartGameWindow::startGame, this, [this]() {
+        m_styleLib->setBoardStyle(1);
+
         m_startParams = m_startGameWindow->getStartParams();
         m_gameWindow->startGame(m_startParams, m_boardParams);
         m_stacked->setCurrentWidget(m_gameWindow);
@@ -144,7 +146,7 @@ void MainWindow::readStartParams()
     m_startParams.gameType = static_cast<TypeGame>(m_settings->value("gameType", static_cast<int>(m_startParams.gameType)).toInt());
     m_startParams.chessType = static_cast<TypeChess>(m_settings->value("chessType", static_cast<int>(m_startParams.chessType)).toInt());
     m_startParams.timeChessType = static_cast<TypeTimeChess>(
-        m_settings->value("timeChessType", static_cast<int>(m_startParams.timeChessType)).toInt());
+                                      m_settings->value("timeChessType", static_cast<int>(m_startParams.timeChessType)).toInt());
     m_startParams.mainTime = m_settings->value("mainTime", m_startParams.mainTime).toInt();
     m_startParams.minorTime = m_settings->value("minorTime", m_startParams.minorTime).toInt();
 

@@ -8,11 +8,12 @@
 
 ChessBoardWidget::ChessBoardWidget(StyleLib *styleLib, QWidget *parent)
     : QWidget(parent)
+    , m_styleLib{styleLib}
 {
     m_turnBoard = false;
     m_turnSecondPlayer = false;
+    this->fillStyles();
 
-    m_styleLib = styleLib;
     m_imagesOfPieces.reserve(40);
     m_chessBoardBut.resize(SIDE_SIZE, std::vector<EventButton *>(SIDE_SIZE, nullptr));
     m_otherBoardLab.resize(2, std::vector<QLabel *>(SIDE_SIZE, nullptr));
@@ -78,32 +79,40 @@ ChessBoardWidget::ChessBoardWidget(StyleLib *styleLib, QWidget *parent)
             this->fillIcan(false, true);
         }
     });
+    connect(m_styleLib, &StyleLib::changeBoardStyle, this, &ChessBoardWidget::fillStyles);
+}
+
+void ChessBoardWidget::updateBoard()
+{
+    for (qint8 i = 0; i < SIDE_SIZE; ++i)
+        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+            this->baseField(i, j);
 }
 
 void ChessBoardWidget::checkField(qint8 i, qint8 j)
 {
-    m_chessBoardBut[i][j]->setStyleSheet("background-color: #ff3838; border: none;");
+    m_chessBoardBut[i][j]->setStyleSheet(m_checkFieldStyle);
 }
 
 void ChessBoardWidget::moveField(qint8 i, qint8 j)
 {
     if ((i + j) % 2 == 0)
-        m_chessBoardBut[i][j]->setStyleSheet("background-color: #B9CA43; border: none;");
+        m_chessBoardBut[i][j]->setStyleSheet(m_moveDarkFieldStyle);
     else
-        m_chessBoardBut[i][j]->setStyleSheet("background-color: #F5F682; border: none;");
+        m_chessBoardBut[i][j]->setStyleSheet(m_moveLightFieldStyle);
 }
 
 void ChessBoardWidget::baseField(qint8 i, qint8 j)
 {
     if ((i + j) % 2 == 0)
-        m_chessBoardBut[i][j]->setStyleSheet("background-color: #739552; border: none;");
+        m_chessBoardBut[i][j]->setStyleSheet(m_baseDarkFieldStyle);
     else
-        m_chessBoardBut[i][j]->setStyleSheet("background-color: #EBECD0; border: none;");
+        m_chessBoardBut[i][j]->setStyleSheet(m_baseLightFieldStyle);
 }
 
 void ChessBoardWidget::whiteField(qint8 i, qint8 j)
 {
-    m_chessBoardBut[i][j]->setStyleSheet("background-color: #FFFFFF; border: none;");
+    m_chessBoardBut[i][j]->setStyleSheet(m_whiteFieldStyle);
 }
 
 void ChessBoardWidget::turnBoard()
@@ -156,7 +165,7 @@ void ChessBoardWidget::fillIcan(bool white, bool up)
     QTransform transform;
     transform.rotate(180);
     for (const QString &key : pieceKeys) {
-        QPixmap pix = QPixmap(m_styleLib->getStyleIcon() + QString("%1.png").arg(key));
+        QPixmap pix = QPixmap(m_styleLib->getIconStyle() + QString("%1.png").arg(key));
         if (up)
             pixmapOfPieces[key] = pix;
         else
@@ -217,4 +226,14 @@ void ChessBoardWidget::fillFullIcans()
     painter.end();
 
     m_imagesOfPieces["beatField"] = QIcon(transparentPixmap);
+}
+
+void ChessBoardWidget::fillStyles()
+{
+    m_baseLightFieldStyle = m_styleLib->getBaseLightFieldStyle();
+    m_baseDarkFieldStyle = m_styleLib->getBaseDarkFieldStyle();
+    m_moveLightFieldStyle = m_styleLib->getMoveLightFieldStyle();
+    m_moveDarkFieldStyle = m_styleLib->getMoveDarkFieldStyle();
+    m_checkFieldStyle = m_styleLib->getCheckFieldStyle();
+    m_whiteFieldStyle = m_styleLib->getWhiteFieldStyle();
 }

@@ -288,7 +288,7 @@ void GameWindow::startGameInner()
         disconnect(m_downConnectBut);
     }
 
-    m_board->updateBoard();
+    m_board->updateIconBoard();
 
     m_upBut->setText("Draw");
     m_downBut->setText("Resign");

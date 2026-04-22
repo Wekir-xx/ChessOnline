@@ -167,10 +167,10 @@ void ChessGame::takePiece(qint8 i, qint8 j)
                 m_beatFields.push_back({i + 1, j - 1});
             if (i == 4) {
                 if (this->checkMove(4, j + 1) && m_boardParams.chessFields[4][j + 1] == "bP"
-                    && m_lastMove.first == std::pair<qint8, qint8>{6, j + 1} && m_lastMove.second == std::pair<qint8, qint8>{4, j + 1})
+                        && m_lastMove.first == std::pair<qint8, qint8> {6, j + 1} && m_lastMove.second == std::pair<qint8, qint8> {4, j + 1})
                     m_beatFields.push_back({5, j + 1});
                 if (this->checkMove(4, j - 1) && m_boardParams.chessFields[4][j - 1] == "bP"
-                    && m_lastMove.first == std::pair<qint8, qint8>{6, j - 1} && m_lastMove.second == std::pair<qint8, qint8>{4, j - 1})
+                        && m_lastMove.first == std::pair<qint8, qint8> {6, j - 1} && m_lastMove.second == std::pair<qint8, qint8> {4, j - 1})
                     m_beatFields.push_back({5, j - 1});
             }
         } else {
@@ -184,10 +184,10 @@ void ChessGame::takePiece(qint8 i, qint8 j)
                 m_beatFields.push_back({i - 1, j - 1});
             if (i == 3) {
                 if (this->checkMove(3, j + 1) && m_boardParams.chessFields[3][j + 1] == "wP"
-                    && m_lastMove.first == std::pair<qint8, qint8>{1, j + 1} && m_lastMove.second == std::pair<qint8, qint8>{3, j + 1})
+                        && m_lastMove.first == std::pair<qint8, qint8> {1, j + 1} && m_lastMove.second == std::pair<qint8, qint8> {3, j + 1})
                     m_beatFields.push_back({2, j + 1});
                 if (this->checkMove(3, j - 1) && m_boardParams.chessFields[3][j - 1] == "wP"
-                    && m_lastMove.first == std::pair<qint8, qint8>{1, j - 1} && m_lastMove.second == std::pair<qint8, qint8>{3, j - 1})
+                        && m_lastMove.first == std::pair<qint8, qint8> {1, j - 1} && m_lastMove.second == std::pair<qint8, qint8> {3, j - 1})
                     m_beatFields.push_back({2, j - 1});
             }
         }
@@ -232,7 +232,7 @@ bool ChessGame::isStaleMate()
         for (qint8 j = 0; j < SIDE_SIZE; ++j) {
             if (!m_boardParams.chessFields[i][j].isEmpty()) {
                 if (m_boardParams.chessFields[i][j][1] == 'P' || m_boardParams.chessFields[i][j][1] == 'R'
-                    || m_boardParams.chessFields[i][j][1] == 'Q') {
+                        || m_boardParams.chessFields[i][j][1] == 'Q') {
                     return false;
                 } else if (m_boardParams.chessFields[i][j][1] != 'K') {
                     if (piece.size() > 2)
@@ -264,28 +264,28 @@ bool ChessGame::isCheck()
     }
 
     if (((i + 1) < SIDE_SIZE && !m_boardParams.chessFields[i + 1][j].isEmpty() && m_boardParams.chessFields[i + 1][j][1] == 'K')
-        || ((i - 1) >= 0 && !m_boardParams.chessFields[i - 1][j].isEmpty() && m_boardParams.chessFields[i - 1][j][1] == 'K')
-        || ((j + 1) < SIDE_SIZE && !m_boardParams.chessFields[i][j + 1].isEmpty() && m_boardParams.chessFields[i][j + 1][1] == 'K')
-        || ((j - 1) >= 0 && !m_boardParams.chessFields[i][j - 1].isEmpty() && m_boardParams.chessFields[i][j - 1][1] == 'K')
-        || ((i + 1) < SIDE_SIZE && (j + 1) < SIDE_SIZE && !m_boardParams.chessFields[i + 1][j + 1].isEmpty()
-            && m_boardParams.chessFields[i + 1][j + 1][1] == 'K')
-        || ((i + 1) < SIDE_SIZE && (j - 1) >= 0 && !m_boardParams.chessFields[i + 1][j - 1].isEmpty()
-            && m_boardParams.chessFields[i + 1][j - 1][1] == 'K')
-        || ((i - 1) >= 0 && (j + 1) < SIDE_SIZE && !m_boardParams.chessFields[i - 1][j + 1].isEmpty()
-            && m_boardParams.chessFields[i - 1][j + 1][1] == 'K')
-        || ((i - 1) >= 0 && (j - 1) >= 0 && !m_boardParams.chessFields[i - 1][j - 1].isEmpty()
-            && m_boardParams.chessFields[i - 1][j - 1][1] == 'K'))
+            || ((i - 1) >= 0 && !m_boardParams.chessFields[i - 1][j].isEmpty() && m_boardParams.chessFields[i - 1][j][1] == 'K')
+            || ((j + 1) < SIDE_SIZE && !m_boardParams.chessFields[i][j + 1].isEmpty() && m_boardParams.chessFields[i][j + 1][1] == 'K')
+            || ((j - 1) >= 0 && !m_boardParams.chessFields[i][j - 1].isEmpty() && m_boardParams.chessFields[i][j - 1][1] == 'K')
+            || ((i + 1) < SIDE_SIZE && (j + 1) < SIDE_SIZE && !m_boardParams.chessFields[i + 1][j + 1].isEmpty()
+                && m_boardParams.chessFields[i + 1][j + 1][1] == 'K')
+            || ((i + 1) < SIDE_SIZE && (j - 1) >= 0 && !m_boardParams.chessFields[i + 1][j - 1].isEmpty()
+                && m_boardParams.chessFields[i + 1][j - 1][1] == 'K')
+            || ((i - 1) >= 0 && (j + 1) < SIDE_SIZE && !m_boardParams.chessFields[i - 1][j + 1].isEmpty()
+                && m_boardParams.chessFields[i - 1][j + 1][1] == 'K')
+            || ((i - 1) >= 0 && (j - 1) >= 0 && !m_boardParams.chessFields[i - 1][j - 1].isEmpty()
+                && m_boardParams.chessFields[i - 1][j - 1][1] == 'K'))
         return true;
 
     if (m_whiteMove) {
         if (((i + 1) < SIDE_SIZE && (j + 1) < SIDE_SIZE && m_boardParams.chessFields[i + 1][j + 1] == "bP")
-            || ((i + 1) < SIDE_SIZE && (j - 1) >= 0 && m_boardParams.chessFields[i + 1][j - 1] == "bP"))
+                || ((i + 1) < SIDE_SIZE && (j - 1) >= 0 && m_boardParams.chessFields[i + 1][j - 1] == "bP"))
             return true;
 
         for (qint8 col = j + 1; col < SIDE_SIZE; ++col) {
             if (!m_boardParams.chessFields[i][col].isEmpty()) {
                 if (m_boardParams.chessFields[i][col][0] == 'b'
-                    && (m_boardParams.chessFields[i][col][1] == 'R' || m_boardParams.chessFields[i][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[i][col][1] == 'R' || m_boardParams.chessFields[i][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -295,7 +295,7 @@ bool ChessGame::isCheck()
         for (qint8 col = j - 1; col >= 0; --col) {
             if (!m_boardParams.chessFields[i][col].isEmpty()) {
                 if (m_boardParams.chessFields[i][col][0] == 'b'
-                    && (m_boardParams.chessFields[i][col][1] == 'R' || m_boardParams.chessFields[i][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[i][col][1] == 'R' || m_boardParams.chessFields[i][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -305,7 +305,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i + 1; row < SIDE_SIZE; ++row) {
             if (!m_boardParams.chessFields[row][j].isEmpty()) {
                 if (m_boardParams.chessFields[row][j][0] == 'b'
-                    && (m_boardParams.chessFields[row][j][1] == 'R' || m_boardParams.chessFields[row][j][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][j][1] == 'R' || m_boardParams.chessFields[row][j][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -315,7 +315,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i - 1; row >= 0; --row) {
             if (!m_boardParams.chessFields[row][j].isEmpty()) {
                 if (m_boardParams.chessFields[row][j][0] == 'b'
-                    && (m_boardParams.chessFields[row][j][1] == 'R' || m_boardParams.chessFields[row][j][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][j][1] == 'R' || m_boardParams.chessFields[row][j][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -325,7 +325,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i + 1, col = j + 1; row < SIDE_SIZE && col < SIDE_SIZE; ++row, ++col) {
             if (!m_boardParams.chessFields[row][col].isEmpty()) {
                 if (m_boardParams.chessFields[row][col][0] == 'b'
-                    && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -335,7 +335,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i - 1, col = j - 1; row >= 0 && col >= 0; --row, --col) {
             if (!m_boardParams.chessFields[row][col].isEmpty()) {
                 if (m_boardParams.chessFields[row][col][0] == 'b'
-                    && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -345,7 +345,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i - 1, col = j + 1; row >= 0 && col < SIDE_SIZE; --row, ++col) {
             if (!m_boardParams.chessFields[row][col].isEmpty()) {
                 if (m_boardParams.chessFields[row][col][0] == 'b'
-                    && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -355,7 +355,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i + 1, col = j - 1; row < SIDE_SIZE && col >= 0; ++row, --col) {
             if (!m_boardParams.chessFields[row][col].isEmpty()) {
                 if (m_boardParams.chessFields[row][col][0] == 'b'
-                    && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -363,24 +363,24 @@ bool ChessGame::isCheck()
         }
 
         if (((i + 2) < SIDE_SIZE && (j + 1) < SIDE_SIZE && m_boardParams.chessFields[i + 2][j + 1] == "bN")
-            || ((i + 2) < SIDE_SIZE && (j - 1) >= 0 && m_boardParams.chessFields[i + 2][j - 1] == "bN")
-            || ((i - 2) >= 0 && (j + 1) < SIDE_SIZE && m_boardParams.chessFields[i - 2][j + 1] == "bN")
-            || ((i - 2) >= 0 && (j - 1) >= 0 && m_boardParams.chessFields[i - 2][j - 1] == "bN")
-            || ((i + 1) < SIDE_SIZE && (j + 2) < SIDE_SIZE && m_boardParams.chessFields[i + 1][j + 2] == "bN")
-            || ((i + 1) < SIDE_SIZE && (j - 2) >= 0 && m_boardParams.chessFields[i + 1][j - 2] == "bN")
-            || ((i - 1) >= 0 && (j + 2) < SIDE_SIZE && m_boardParams.chessFields[i - 1][j + 2] == "bN")
-            || ((i - 1) >= 0 && (j - 2) >= 0 && m_boardParams.chessFields[i - 1][j - 2] == "bN"))
+                || ((i + 2) < SIDE_SIZE && (j - 1) >= 0 && m_boardParams.chessFields[i + 2][j - 1] == "bN")
+                || ((i - 2) >= 0 && (j + 1) < SIDE_SIZE && m_boardParams.chessFields[i - 2][j + 1] == "bN")
+                || ((i - 2) >= 0 && (j - 1) >= 0 && m_boardParams.chessFields[i - 2][j - 1] == "bN")
+                || ((i + 1) < SIDE_SIZE && (j + 2) < SIDE_SIZE && m_boardParams.chessFields[i + 1][j + 2] == "bN")
+                || ((i + 1) < SIDE_SIZE && (j - 2) >= 0 && m_boardParams.chessFields[i + 1][j - 2] == "bN")
+                || ((i - 1) >= 0 && (j + 2) < SIDE_SIZE && m_boardParams.chessFields[i - 1][j + 2] == "bN")
+                || ((i - 1) >= 0 && (j - 2) >= 0 && m_boardParams.chessFields[i - 1][j - 2] == "bN"))
             return true;
 
     } else {
         if (((i - 1) >= 0 && (j + 1) < SIDE_SIZE && m_boardParams.chessFields[i - 1][j + 1] == "wP")
-            || ((i - 1) >= 0 && (j - 1) >= 0 && m_boardParams.chessFields[i - 1][j - 1] == "wP"))
+                || ((i - 1) >= 0 && (j - 1) >= 0 && m_boardParams.chessFields[i - 1][j - 1] == "wP"))
             return true;
 
         for (qint8 col = j + 1; col < SIDE_SIZE; ++col) {
             if (!m_boardParams.chessFields[i][col].isEmpty()) {
                 if (m_boardParams.chessFields[i][col][0] == 'w'
-                    && (m_boardParams.chessFields[i][col][1] == 'R' || m_boardParams.chessFields[i][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[i][col][1] == 'R' || m_boardParams.chessFields[i][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -390,7 +390,7 @@ bool ChessGame::isCheck()
         for (qint8 col = j - 1; col >= 0; --col) {
             if (!m_boardParams.chessFields[i][col].isEmpty()) {
                 if (m_boardParams.chessFields[i][col][0] == 'w'
-                    && (m_boardParams.chessFields[i][col][1] == 'R' || m_boardParams.chessFields[i][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[i][col][1] == 'R' || m_boardParams.chessFields[i][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -400,7 +400,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i + 1; row < SIDE_SIZE; ++row) {
             if (!m_boardParams.chessFields[row][j].isEmpty()) {
                 if (m_boardParams.chessFields[row][j][0] == 'w'
-                    && (m_boardParams.chessFields[row][j][1] == 'R' || m_boardParams.chessFields[row][j][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][j][1] == 'R' || m_boardParams.chessFields[row][j][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -410,7 +410,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i - 1; row >= 0; --row) {
             if (!m_boardParams.chessFields[row][j].isEmpty()) {
                 if (m_boardParams.chessFields[row][j][0] == 'w'
-                    && (m_boardParams.chessFields[row][j][1] == 'R' || m_boardParams.chessFields[row][j][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][j][1] == 'R' || m_boardParams.chessFields[row][j][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -420,7 +420,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i + 1, col = j + 1; row < SIDE_SIZE && col < SIDE_SIZE; ++row, ++col) {
             if (!m_boardParams.chessFields[row][col].isEmpty()) {
                 if (m_boardParams.chessFields[row][col][0] == 'w'
-                    && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -430,7 +430,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i - 1, col = j - 1; row >= 0 && col >= 0; --row, --col) {
             if (!m_boardParams.chessFields[row][col].isEmpty()) {
                 if (m_boardParams.chessFields[row][col][0] == 'w'
-                    && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -440,7 +440,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i - 1, col = j + 1; row >= 0 && col < SIDE_SIZE; --row, ++col) {
             if (!m_boardParams.chessFields[row][col].isEmpty()) {
                 if (m_boardParams.chessFields[row][col][0] == 'w'
-                    && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -450,7 +450,7 @@ bool ChessGame::isCheck()
         for (qint8 row = i + 1, col = j - 1; row < SIDE_SIZE && col >= 0; ++row, --col) {
             if (!m_boardParams.chessFields[row][col].isEmpty()) {
                 if (m_boardParams.chessFields[row][col][0] == 'w'
-                    && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
+                        && (m_boardParams.chessFields[row][col][1] == 'B' || m_boardParams.chessFields[row][col][1] == 'Q')) {
                     return true;
                 }
                 break;
@@ -458,13 +458,13 @@ bool ChessGame::isCheck()
         }
 
         if (((i + 2) < SIDE_SIZE && (j + 1) < SIDE_SIZE && m_boardParams.chessFields[i + 2][j + 1] == "wN")
-            || ((i + 2) < SIDE_SIZE && (j - 1) >= 0 && m_boardParams.chessFields[i + 2][j - 1] == "wN")
-            || ((i - 2) >= 0 && (j + 1) < SIDE_SIZE && m_boardParams.chessFields[i - 2][j + 1] == "wN")
-            || ((i - 2) >= 0 && (j - 1) >= 0 && m_boardParams.chessFields[i - 2][j - 1] == "wN")
-            || ((i + 1) < SIDE_SIZE && (j + 2) < SIDE_SIZE && m_boardParams.chessFields[i + 1][j + 2] == "wN")
-            || ((i + 1) < SIDE_SIZE && (j - 2) >= 0 && m_boardParams.chessFields[i + 1][j - 2] == "wN")
-            || ((i - 1) >= 0 && (j + 2) < SIDE_SIZE && m_boardParams.chessFields[i - 1][j + 2] == "wN")
-            || ((i - 1) >= 0 && (j - 2) >= 0 && m_boardParams.chessFields[i - 1][j - 2] == "wN"))
+                || ((i + 2) < SIDE_SIZE && (j - 1) >= 0 && m_boardParams.chessFields[i + 2][j - 1] == "wN")
+                || ((i - 2) >= 0 && (j + 1) < SIDE_SIZE && m_boardParams.chessFields[i - 2][j + 1] == "wN")
+                || ((i - 2) >= 0 && (j - 1) >= 0 && m_boardParams.chessFields[i - 2][j - 1] == "wN")
+                || ((i + 1) < SIDE_SIZE && (j + 2) < SIDE_SIZE && m_boardParams.chessFields[i + 1][j + 2] == "wN")
+                || ((i + 1) < SIDE_SIZE && (j - 2) >= 0 && m_boardParams.chessFields[i + 1][j - 2] == "wN")
+                || ((i - 1) >= 0 && (j + 2) < SIDE_SIZE && m_boardParams.chessFields[i - 1][j + 2] == "wN")
+                || ((i - 1) >= 0 && (j - 2) >= 0 && m_boardParams.chessFields[i - 1][j - 2] == "wN"))
             return true;
     }
 
@@ -561,6 +561,11 @@ void ChessGame::setColorMove(bool whiteMove)
     m_whiteMove = whiteMove;
 }
 
+void ChessGame::setCheck(bool flag)
+{
+    m_check = flag;
+}
+
 void ChessGame::setChessParams(ChessBoardParams &boardParams)
 {
     m_boardParams = boardParams;
@@ -601,6 +606,8 @@ void ChessGame::setChessParams(ChessBoardParams &boardParams)
     QString str = QString::number(SIDE_SIZE);
     m_chessMoveHistory.push_back(str + str + str + str);
     m_chessFieldsHistory.push_back(m_boardParams.chessFields);
+
+    m_check = this->isCheck();
 }
 
 bool ChessGame::getCheck()
@@ -641,8 +648,8 @@ std::pair<std::pair<qint8, qint8>, std::pair<qint8, qint8>> ChessGame::getPosKin
 bool ChessGame::checkMove(qint8 i, qint8 j, bool isKing)
 {
     if (i >= 0 && i < SIDE_SIZE && j >= 0 && j < SIDE_SIZE
-        && (m_boardParams.chessFields[i][j].isEmpty() || (m_whiteMove && m_boardParams.chessFields[i][j][0] == 'b')
-            || (!m_whiteMove && m_boardParams.chessFields[i][j][0] == 'w'))) {
+            && (m_boardParams.chessFields[i][j].isEmpty() || (m_whiteMove && m_boardParams.chessFields[i][j][0] == 'b')
+                || (!m_whiteMove && m_boardParams.chessFields[i][j][0] == 'w'))) {
         QString deletePiece = m_boardParams.chessFields[i][j];
         m_boardParams.chessFields[i][j] = m_boardParams.chessFields[m_takenPiece.first][m_takenPiece.second];
         m_boardParams.chessFields[m_takenPiece.first][m_takenPiece.second].clear();
@@ -696,8 +703,8 @@ bool ChessGame::isPossibleMoveInner()
 void ChessGame::addCastling()
 {
     if ((!(m_whiteMove && (m_boardParams.castling.first.first || m_boardParams.castling.first.second))
-         && !(!m_whiteMove && (m_boardParams.castling.second.first || m_boardParams.castling.second.second)))
-        || m_check)
+            && !(!m_whiteMove && (m_boardParams.castling.second.first || m_boardParams.castling.second.second)))
+            || m_check)
         return;
 
     auto posKingCol = posKings.first.second;
@@ -761,11 +768,11 @@ void ChessGame::addCastling()
         }
     } else {
         if (castling.first && m_boardParams.chessFields[row][1].isEmpty() && m_boardParams.chessFields[row][2].isEmpty()
-            && this->checkMove(row, 2, true) && m_boardParams.chessFields[row][3].isEmpty() && this->checkMove(row, 3, true))
+                && this->checkMove(row, 2, true) && m_boardParams.chessFields[row][3].isEmpty() && this->checkMove(row, 3, true))
             m_beatFields.push_back({row, 2});
 
         if (castling.second && m_boardParams.chessFields[row][5].isEmpty() && this->checkMove(row, 5, true)
-            && m_boardParams.chessFields[row][6].isEmpty() && this->checkMove(row, 6, true))
+                && m_boardParams.chessFields[row][6].isEmpty() && this->checkMove(row, 6, true))
             m_beatFields.push_back({row, 6});
     }
 }

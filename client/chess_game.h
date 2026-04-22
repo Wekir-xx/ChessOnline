@@ -28,6 +28,7 @@ public:
 
     void setField(QString field, qint8 i, qint8 j);
     void setColorMove(bool whiteMove);
+    void setCheck(bool flag);
     void setChessParams(ChessBoardParams &boardParams);
 
     bool getCheck();

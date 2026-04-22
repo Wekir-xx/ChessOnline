@@ -2,8 +2,8 @@
 
 ButtonComplex::ButtonComplex(StyleLib *styleLib, QWidget *parent)
     : QWidget{parent}
+    , m_styleLib{styleLib}
 {
-    m_styleLib = styleLib;
     m_buttons.reserve(10);
 
     m_layout = new QHBoxLayout();
@@ -33,7 +33,7 @@ void ButtonComplex::setButtons(std::vector<std::string> nameButtons)
 
     for (; i < m_buttons.size(); ++i)
         m_buttons[i]->hide();
-    
+
     m_idUseBut = i;
 }
 

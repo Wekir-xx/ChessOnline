@@ -4,9 +4,8 @@
 
 EndGameWindow::EndGameWindow(StyleLib *styleLib, QWidget *parent)
     : QWidget{parent}
+    , m_styleLib{styleLib}
 {
-    m_styleLib = styleLib;
-
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setAutoFillBackground(true);
     this->setStyleSheet("EndGameWindow {"

@@ -5,6 +5,7 @@
 
 ChessBoard::ChessBoard(StyleLib *styleLib, QWidget *parent)
     : QWidget(parent)
+    , m_styleLib{styleLib}
 {
 #ifdef MOVE_PIECE
     this->setMouseTracking(true);
@@ -14,25 +15,24 @@ ChessBoard::ChessBoard(StyleLib *styleLib, QWidget *parent)
     m_movePiece->hide();
 #endif
 
-    m_chessBoard = new ChessBoardWidget(styleLib);
+    m_chessBoard = new ChessBoardWidget(m_styleLib);
 
     m_mainLayout = new QVBoxLayout();
     m_mainLayout->addWidget(m_chessBoard);
+
+    this->setLayout(m_mainLayout);
 
     connect(m_chessBoard, &ChessBoardWidget::clickField, this, [this](QString field) {
         if (!(m_blockBoard || m_blockBoardHistory))
             this->clickField(field);
     });
-
-    this->setLayout(m_mainLayout);
+    connect(m_styleLib, &StyleLib::changeBoardStyle, this, &ChessBoard::updateBoard);
 }
 
-void ChessBoard::updateBoard()
+void ChessBoard::updateIconBoard()
 {
-    this->updateBoardIcon();
-    for (qint8 i = 0; i < SIDE_SIZE; ++i)
-        for (qint8 j = 0; j < SIDE_SIZE; ++j)
-            m_chessBoard->baseField(i, j);
+    this->updateIcon();
+    this->updateBoard();
 }
 
 void ChessBoard::fillChessBoard(bool chess960)
@@ -60,13 +60,13 @@ void ChessBoard::turnBoard()
 {
     m_chessBoard->turnBoard();
     if (m_chessBoard->getTurnSecondPlayer())
-        this->updateBoardIcon();
+        this->updateIcon();
 }
 
 void ChessBoard::turnSecondPlayer()
 {
     m_chessBoard->turnSecondPlayer();
-    this->updateBoardIcon();
+    this->updateIcon();
 }
 
 void ChessBoard::historyBack()
@@ -123,7 +123,7 @@ bool ChessBoard::getTurnSecondPlayer()
 void ChessBoard::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
-    this->updateBoardIcon();
+    this->updateIcon();
     this->updateBoardSize();
 }
 
@@ -197,7 +197,7 @@ void ChessBoard::clickField(QString nameField)
                     m_transformPawn = true;
                     m_game.chooseTransformPawn(j);
                     this->transformPawnField(beatFields);
-                    this->updateBoardIcon();
+                    this->updateIcon();
                     return;
                 }
             } else if (m_transformPawn) {
@@ -230,7 +230,7 @@ void ChessBoard::clickField(QString nameField)
             }
 
             this->untakePiece();
-            this->updateBoardIcon();
+            this->updateIcon();
             if (!m_blockBoard)
                 emit didMove();
         } else {
@@ -335,7 +335,7 @@ void ChessBoard::untransformPawnField(const std::vector<std::pair<qint8, qint8>>
         m_chessBoard->baseField(field.first, field.second);
 }
 
-void ChessBoard::updateBoardIcon()
+void ChessBoard::updateIcon()
 {
     const auto &chessFields = m_game.getChessFields();
     const auto &beatFields = m_game.getBeatFields();
@@ -355,6 +355,19 @@ void ChessBoard::updateBoardIcon()
             m_chessBoard->setIcon(field.first, field.second, chessFields[field.first][field.second] + "beatPiece");
         }
     }
+}
+
+void ChessBoard::updateBoard()
+{
+    m_chessBoard->updateBoard();
+
+    const auto lastMove = m_game.getLastMove();
+    if (lastMove.first.first != SIDE_SIZE)
+        m_chessBoard->moveField(lastMove.first.first, lastMove.first.second);
+    if (lastMove.second.first != SIDE_SIZE)
+        m_chessBoard->moveField(lastMove.second.first, lastMove.second.second);
+
+    this->checkKing();
 }
 
 void ChessBoard::updateBoardSize()
@@ -382,5 +395,5 @@ void ChessBoard::updateHistoryScene()
     if (lastMove.second.first != SIDE_SIZE)
         m_chessBoard->moveField(lastMove.second.first, lastMove.second.second);
     this->checkKing();
-    this->updateBoardIcon();
+    this->updateIcon();
 }
