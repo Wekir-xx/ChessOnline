@@ -10,11 +10,11 @@ ChooseChess::ChooseChess(StyleLib *styleLib, QWidget *parent)
     m_idUseBut = m_buttons.size();
     m_constans = &SomeConstans::getInstance();
 
+    m_mainLayout = new QGridLayout();
+
     const auto &pieceKeysWhite = m_constans->getPieceKeysWhite();
     const auto &pieceKeysBlack = m_constans->getPieceKeysBlack();
     const auto &path = m_styleLib->getIconStyle();
-
-    m_mainLayout = new QGridLayout();
 
     QSizePolicy sizePolicy(QSizePolicy::Policy::Ignored, QSizePolicy::Policy::Ignored);
     for (size_t i = 0; i < 2; ++i) {
@@ -52,6 +52,9 @@ ChooseChess::ChooseChess(StyleLib *styleLib, QWidget *parent)
     }
 
     this->setLayout(m_mainLayout);
+    this->updateIcon();
+
+    connect(m_styleLib, &StyleLib::changeIconStyle, this, &ChooseChess::updateIcon);
 }
 
 void ChooseChess::showEvent(QShowEvent *event)
@@ -64,6 +67,23 @@ void ChooseChess::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
     this->updateSize();
+}
+
+void ChooseChess::updateIcon()
+{
+    const auto &pieceKeysWhite = m_constans->getPieceKeysWhite();
+    const auto &pieceKeysBlack = m_constans->getPieceKeysBlack();
+    const auto &path = m_styleLib->getIconStyle();
+
+    for (size_t i = 0; i < 2; ++i) {
+        for (size_t j = 0; j < pieceKeysWhite.size(); ++j) {
+            size_t id = i * pieceKeysWhite.size() + j;
+            if (i == 0)
+                m_buttons[id]->setIcon(QIcon(path + pieceKeysWhite[j]));
+            else
+                m_buttons[id]->setIcon(QIcon(path + pieceKeysBlack[j]));
+        }
+    }
 }
 
 void ChooseChess::updateSize()

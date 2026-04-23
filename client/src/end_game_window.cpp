@@ -8,30 +8,6 @@ EndGameWindow::EndGameWindow(StyleLib *styleLib, QWidget *parent)
 {
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setAutoFillBackground(true);
-    this->setStyleSheet("EndGameWindow {"
-                        "   background-color: #D1D1D1;"
-                        "   border: 2px solid #808080;"
-                        "   border-radius: 10px;"
-                        "}"
-                        "EndGameWindow QLabel {"
-                        "   color: #000000;"
-                        "}"
-                        "EndGameWindow QPushButton {"
-                        "   color: #000000;"
-                        "   background-color: #e0e0e0;"
-                        "   border: 1px solid #a0a0a0;"
-                        "   border-radius: 5px;"
-                        "   padding: 5px;"
-                        "}"
-                        "EndGameWindow QPushButton:hover {"
-                        "   background-color: #d0d0d0;"
-                        "}"
-                        "EndGameWindow QPushButton#review {"
-                        "   background-color: #30C722;"
-                        "}"
-                        "EndGameWindow QPushButton#review:hover {"
-                        "   background-color: #25A619;"
-                        "}");
 
     m_whiteTurn = true;
 
@@ -69,8 +45,6 @@ EndGameWindow::EndGameWindow(StyleLib *styleLib, QWidget *parent)
     m_exitBut->setFixedSize(FIXED_SIZE_EXIT_BUTTON, FIXED_SIZE_EXIT_BUTTON);
     m_exitBut->setIconSize(m_exitBut->size());
     m_exitBut->setStyleSheet("padding: 0px;");
-
-    m_gameReviewBut->setObjectName("review");
 
     m_iconPlayerWhite->setScaledContents(true);
     m_iconPlayerBlack->setScaledContents(true);
@@ -129,13 +103,16 @@ EndGameWindow::EndGameWindow(StyleLib *styleLib, QWidget *parent)
     m_mainLayout->addWidget(m_gameReviewBut, 1);
     m_mainLayout->addLayout(m_buttonsLayout, 1);
 
+    this->setLayout(m_mainLayout);
+    this->setStyle();
+
     connect(m_exitBut, &QPushButton::clicked, this, &EndGameWindow::exitSignal);
     connect(m_newGameBut, &QPushButton::clicked, this, &EndGameWindow::newGameSignal);
     connect(m_rematchBut, &QPushButton::clicked, this, &EndGameWindow::rematchSignal);
     connect(m_gameReviewBut, &QPushButton::clicked, this, &EndGameWindow::gameReviewSignal);
     connect(m_blockUserBut, &QPushButton::clicked, this, &EndGameWindow::blockUserSignal);
 
-    this->setLayout(m_mainLayout);
+    connect(m_styleLib, &StyleLib::changeWindowStyle, this, &EndGameWindow::setStyle);
 }
 
 void EndGameWindow::setParams(PlayerParams params, TypeTimeChess timeChessType)
@@ -187,4 +164,18 @@ void EndGameWindow::setResult(ResultGame result, std::pair<qint16, qint16> newRa
 
     m_newRatingsWhite->setText(QString::number(newRatings.first));
     m_newRatingsBlack->setText(QString::number(newRatings.second));
+}
+
+void EndGameWindow::setStyle()
+{
+    this->setStyleSheet(m_styleLib->getSecondWindowStyle());
+
+    const auto style = m_styleLib->getButtonStyle();
+    m_exitBut->setStyleSheet(style);
+    m_gameReviewBut->setStyleSheet(style);
+    m_newGameBut->setStyleSheet(style);
+    m_rematchBut->setStyleSheet(style);
+    m_blockUserBut->setStyleSheet(style);
+
+    m_gameReviewBut->setStyleSheet(m_styleLib->getReviewButtonStyle());
 }

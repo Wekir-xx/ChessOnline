@@ -146,6 +146,7 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     m_mainLayout->addLayout(m_boardPieceLayout);
 
     this->setLayout(m_mainLayout);
+    this->setStyle();
 
     connect(m_exitBut, &QPushButton::clicked, this, [this]() {
         emit exit();
@@ -240,6 +241,8 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     connect(m_styleLib, &StyleLib::changeBoardStyle, this, [this]() {
         m_chessBoard->updateBoard();
     });
+
+    connect(m_styleLib, &StyleLib::changeWindowStyle, this, &BoardSetupWindow::setStyle);
 }
 
 void BoardSetupWindow::startGame()
@@ -276,6 +279,13 @@ void BoardSetupWindow::updateIconSize()
     for (qint8 i = 0; i < SIDE_SIZE; ++i)
         for (qint8 j = 0; j < SIDE_SIZE; ++j)
             m_chessBoard->setIconSize(i, j);
+}
+
+void BoardSetupWindow::clearBoard()
+{
+    for (qint8 i = 0; i < SIDE_SIZE; ++i)
+        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+            m_copyBoardParams.chessFields[i][j] = "";
 }
 
 void BoardSetupWindow::checkSave()
@@ -432,9 +442,23 @@ void BoardSetupWindow::checkSave()
     emit saveParams();
 }
 
-void BoardSetupWindow::clearBoard()
+void BoardSetupWindow::setStyle()
 {
-    for (qint8 i = 0; i < SIDE_SIZE; ++i)
-        for (qint8 j = 0; j < SIDE_SIZE; ++j)
-            m_copyBoardParams.chessFields[i][j] = "";
+    this->setStyleSheet(m_styleLib->getColorTextStyle());
+
+    const auto styleBut = m_styleLib->getButtonStyle();
+    m_exitBut->setStyleSheet(styleBut);
+    m_saveBut->setStyleSheet(styleBut);
+    m_turnBoardBut->setStyleSheet(styleBut);
+    m_turnPlayerBut->setStyleSheet(styleBut);
+    m_resetBoardBut->setStyleSheet(styleBut);
+    m_resetPosBut->setStyleSheet(styleBut);
+    m_clearBut->setStyleSheet(styleBut);
+
+    const auto styleBox = m_styleLib->getCheckBoxStyle();
+    m_whiteCastlingBut1->setStyleSheet(styleBox);
+    m_whiteCastlingBut2->setStyleSheet(styleBox);
+    m_blackCastlingBut1->setStyleSheet(styleBox);
+    m_blackCastlingBut2->setStyleSheet(styleBox);
+    m_960But->setStyleSheet(styleBox);
 }

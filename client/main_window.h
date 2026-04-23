@@ -32,17 +32,15 @@ private:
 
 private:
     StyleLib *m_styleLib;
-
-    SettingsParams m_settingsParams;
-    StartParams m_startParams;
-    ChessBoardParams m_boardParams;
-
-    QStackedWidget *m_stacked;
     StartGameWindow *m_startGameWindow;
     GameWindow *m_gameWindow;
     BoardSetupWindow *m_boardSetupWindow;
+    QStackedWidget *m_stacked;
 
     QScopedPointer<QSettings> m_settings;
+    SettingsParams m_settingsParams;
+    StartParams m_startParams;
+    ChessBoardParams m_boardParams;
 };
 
 #endif // MAIN_WINDOW_H

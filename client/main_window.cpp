@@ -43,7 +43,6 @@ MainWindow::MainWindow(QWidget *parent)
         m_gameWindow->setMinimumSize(0, 0);
         m_gameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
-
     connect(m_startGameWindow, &StartGameWindow::boardSetup, this, [this]() {
         m_boardSetupWindow->startGame();
         m_stacked->setCurrentWidget(m_boardSetupWindow);
@@ -69,7 +68,6 @@ MainWindow::MainWindow(QWidget *parent)
         m_startGameWindow->setMinimumSize(0, 0);
         m_startGameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
-
     connect(m_boardSetupWindow, &BoardSetupWindow::exit, this, [this]() {
         m_stacked->setCurrentWidget(m_startGameWindow);
 

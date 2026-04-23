@@ -9,6 +9,7 @@
 #include "src/settings_window.h"
 
 #include <QDateTime>
+#include <QMessageBox>
 #include <QTimer>
 
 class GameWindow : public QWidget
@@ -47,17 +48,15 @@ private:
     void setTime(qint32 seconds, bool white);
     void resetTime();
 
+    void setStyle();
+
 private:
     StyleLib *m_styleLib;
-
-    SettingsParams m_settingsParams;
-    StartParams m_startParams;
-    ChessBoardParams m_boardParams;
-
     ChessBoard *m_board;
     SettingsWindow *m_settings;
     EndGameWindow *m_endGame;
     QWidget *m_sideWidget;
+    QMessageBox *m_messageBox;
 
     BoardHLayout2 *m_mainLayout;
     QVBoxLayout *m_sideLayout;
@@ -66,6 +65,10 @@ private:
     QPushButton *m_leftChessHistory;
     QPushButton *m_rightChessHistory;
     QPushButton *m_settingsButton;
+    QPushButton *m_upBut;
+    QPushButton *m_downBut;
+    QMetaObject::Connection m_upConnectBut;
+    QMetaObject::Connection m_downConnectBut;
 
     std::pair<QWidget *, QWidget *> m_players;
     std::pair<PlayerVLayout3 *, PlayerVLayout3 *> m_playersLayout;
@@ -79,11 +82,9 @@ private:
     QDateTime m_startMove;
     qint32 m_saveTime;
 
-    QPushButton *m_upBut;
-    QPushButton *m_downBut;
-    QMetaObject::Connection m_upConnectBut;
-    QMetaObject::Connection m_downConnectBut;
-
+    SettingsParams m_settingsParams;
+    StartParams m_startParams;
+    ChessBoardParams m_boardParams;
     std::pair<QString, QString> m_nicknames;
     std::pair<qint16, qint16> m_ratings;
     QString m_smallTimeNoticeStyle;

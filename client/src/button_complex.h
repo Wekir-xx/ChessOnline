@@ -15,7 +15,7 @@ class ButtonComplex : public QWidget
     Q_OBJECT
 
 public:
-    explicit ButtonComplex(StyleLib *styleLib, QWidget *parent = nullptr);
+    explicit ButtonComplex(QWidget *parent = nullptr);
 
     void setButtons(std::vector<std::string> nameButtons);
     void useButton(qint8 id);
@@ -25,11 +25,8 @@ signals:
 
 private:
     void unUseButton();
-    void setStyle();
 
 private:
-    StyleLib *m_styleLib;
-
     QHBoxLayout *m_layout;
 
     std::vector<QPushButton *> m_buttons;

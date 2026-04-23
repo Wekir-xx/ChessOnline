@@ -14,6 +14,7 @@ ChessBoard::ChessBoard(StyleLib *styleLib, QWidget *parent)
     m_movePiece->setWindowFlags(Qt::FramelessWindowHint);
     m_movePiece->hide();
 #endif
+    m_transformPawn = false;
 
     m_chessBoard = new ChessBoardWidget(m_styleLib);
 
@@ -37,11 +38,14 @@ void ChessBoard::updateIconBoard()
 
 void ChessBoard::fillChessBoard(bool chess960)
 {
+    m_blockBoardHistory = false;
+    m_whiteMove = true;
+
     ChessBoardParams boardParams;
     boardParams.chessFields.resize(SIDE_SIZE, std::vector<QString>(SIDE_SIZE));
     boardParams.castling = {{true, true}, {true, true}};
     boardParams.chess960 = chess960;
-    boardParams.whiteMove = true;
+    boardParams.whiteMove = m_whiteMove;
 
     if (chess960)
         SomeConstans::fill960ChessField(boardParams.chessFields);
@@ -53,6 +57,9 @@ void ChessBoard::fillChessBoard(bool chess960)
 
 void ChessBoard::fillUserChessBoard(ChessBoardParams &boardParams)
 {
+    m_blockBoardHistory = false;
+    m_whiteMove = boardParams.whiteMove;
+
     m_game.setChessParams(boardParams);
 }
 
@@ -347,12 +354,17 @@ void ChessBoard::updateIcon()
         }
     }
 
-    for (const auto &field : beatFields) {
-        if (chessFields[field.first][field.second].isEmpty()) {
-            m_chessBoard->setIconSize(field.first, field.second, BEAT_FIELD_SIZE);
-            m_chessBoard->setIcon(field.first, field.second, "beatField");
-        } else {
-            m_chessBoard->setIcon(field.first, field.second, chessFields[field.first][field.second] + "beatPiece");
+    if (m_transformPawn) {
+        for (const auto &field : beatFields)
+            m_chessBoard->setIcon(field.first, field.second, chessFields[field.first][field.second]);
+    } else {
+        for (const auto &field : beatFields) {
+            if (chessFields[field.first][field.second].isEmpty()) {
+                m_chessBoard->setIconSize(field.first, field.second, BEAT_FIELD_SIZE);
+                m_chessBoard->setIcon(field.first, field.second, "beatField");
+            } else {
+                m_chessBoard->setIcon(field.first, field.second, chessFields[field.first][field.second] + "beatPiece");
+            }
         }
     }
 }

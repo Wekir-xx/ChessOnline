@@ -32,39 +32,9 @@ const std::vector<QString> &StyleLib::getBoardStyles()
     return m_boardStyles;
 }
 
-const std::vector<QString> &StyleLib::getBaseLightFieldStyles()
-{
-    return m_baseLightFieldStyles;
-}
-
-const std::vector<QString> &StyleLib::getBaseDarkFieldStyles()
-{
-    return m_baseDarkFieldStyles;
-}
-
-const std::vector<QString> &StyleLib::getMoveLightFieldStyles()
-{
-    return m_moveLightFieldStyles;
-}
-
-const std::vector<QString> &StyleLib::getMoveDarkFieldStyles()
-{
-    return m_moveDarkFieldStyles;
-}
-
 const std::vector<QString> &StyleLib::getWindowStyles()
 {
     return m_windowStyles;
-}
-
-const std::vector<QString> &StyleLib::getColorWindowStyles()
-{
-    return m_colorWindowStyles;
-}
-
-const std::vector<QString> &StyleLib::getColorTextStyles()
-{
-    return m_colorTextStyles;
 }
 
 QString StyleLib::getIconStyle()
@@ -79,32 +49,32 @@ const QString &StyleLib::getBoardStyle() const
 
 QString StyleLib::getBaseLightFieldStyle()
 {
-    return m_fieldStyle.arg(m_baseLightFieldStyles[m_idBoardStyle]);
+    return m_backgroundStyle.arg(m_baseLightFieldStyles[m_idBoardStyle]) + m_borderNone;
 }
 
 QString StyleLib::getBaseDarkFieldStyle()
 {
-    return m_fieldStyle.arg(m_baseDarkFieldStyles[m_idBoardStyle]);
+    return m_backgroundStyle.arg(m_baseDarkFieldStyles[m_idBoardStyle]) + m_borderNone;
 }
 
 QString StyleLib::getMoveLightFieldStyle()
 {
-    return m_fieldStyle.arg(m_moveLightFieldStyles[m_idBoardStyle]);
+    return m_backgroundStyle.arg(m_moveLightFieldStyles[m_idBoardStyle]) + m_borderNone;
 }
 
 QString StyleLib::getMoveDarkFieldStyle()
 {
-    return m_fieldStyle.arg(m_moveDarkFieldStyles[m_idBoardStyle]);
+    return m_backgroundStyle.arg(m_moveDarkFieldStyles[m_idBoardStyle]) + m_borderNone;
 }
 
 QString StyleLib::getCheckFieldStyle()
 {
-    return m_fieldStyle.arg(m_checkFieldStyle);
+    return m_backgroundStyle.arg(m_checkFieldStyle) + m_borderNone;
 }
 
 QString StyleLib::getWhiteFieldStyle()
 {
-    return m_fieldStyle.arg(m_whiteFieldStyle);
+    return m_backgroundStyle.arg(m_whiteFieldStyle) + m_borderNone;
 }
 
 const QString &StyleLib::getWindowStyle() const
@@ -114,12 +84,47 @@ const QString &StyleLib::getWindowStyle() const
 
 QString StyleLib::getColorWindowStyle()
 {
-    return m_colorWindowStyle.arg(m_colorWindowStyles[m_idWindowStyle]);
+    return m_backgroundStyle.arg(m_colorWindowStyles[m_idWindowStyle]);
 }
 
 QString StyleLib::getColorTextStyle()
 {
-    return m_colorTextStyle.arg(m_colorTextStyles[m_idWindowStyle]);
+    return m_colorStyle.arg(m_colorTextStyles[m_idWindowStyle]);
+}
+
+QString StyleLib::getButtonStyle()
+{
+    return m_buttonStyle.arg(m_buttonStyles[m_idWindowStyle][0])
+        .arg(m_buttonStyles[m_idWindowStyle][1])
+        .arg(m_buttonStyles[m_idWindowStyle][2]);
+}
+
+QString StyleLib::getSpinBoxStyle()
+{
+    return m_spinBoxStyle.arg(m_buttonStyles[m_idWindowStyle][0]);
+}
+
+QString StyleLib::getCheckBoxStyle()
+{
+    return m_checkBoxStyles[m_idWindowStyle];
+}
+
+QString StyleLib::getMessageBoxStyle()
+{
+    return m_messageBoxStyle.arg(m_colorWindowStyles[m_idWindowStyle])
+        .arg(m_colorTextStyles[m_idWindowStyle])
+        .arg(m_buttonStyles[m_idWindowStyle][0])
+        .arg(m_buttonStyles[m_idWindowStyle][1]);
+}
+
+QString StyleLib::getSecondWindowStyle()
+{
+    return m_secondWindowStyle.arg(m_colorWindowStyles[m_idWindowStyle]).arg(m_colorTextStyles[m_idWindowStyle]);
+}
+
+QString StyleLib::getReviewButtonStyle()
+{
+    return m_reviewButtonStyle;
 }
 
 const QString &StyleLib::getSmallTimeNoticeStyle() const

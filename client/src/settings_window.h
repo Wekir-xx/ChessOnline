@@ -29,15 +29,18 @@ signals:
     void exitGame();
 
 private:
+    void setStyle();
+
+private:
     StyleLib *m_styleLib;
 
     QVBoxLayout *m_layoutV;
     QHBoxLayout *m_layoutH;
 
-    QPushButton *m_exit;
+    QPushButton *m_exitBut;
     QPushButton *m_turnBoardBut;
     QPushButton *m_turnChessBut;
-    QPushButton *m_exitGame;
+    QPushButton *m_exitGameBut;
 
     QCheckBox *m_hideAllBut;
     QCheckBox *m_autoQueenBut;

@@ -39,21 +39,21 @@ protected:
 private:
     void updateIcon();
     void updateIconSize();
+    void clearBoard();
 
     void checkSave();
 
-    void clearBoard();
+    void setStyle();
 
 private:
     StyleLib *m_styleLib;
+    ChessGame m_game;
+    ChessBoardWidget *m_chessBoard;
+    ChooseChess *m_chooseChess;
 
     ChessBoardParams m_boardParams;
     ChessBoardParams m_copyBoardParams;
     QString m_piece;
-
-    ChessGame m_game;
-    ChessBoardWidget *m_chessBoard;
-    ChooseChess *m_chooseChess;
 
     BoardVLayout2 *m_mainLayout;
     BoardHLayout2 *m_boardPieceLayout;

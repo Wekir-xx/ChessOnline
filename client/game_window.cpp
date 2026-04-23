@@ -1,7 +1,5 @@
 #include "game_window.h"
 
-#include <QMessageBox>
-
 GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidget *parent)
     : QWidget{parent}
     , m_settingsParams{settingsParams}
@@ -13,6 +11,7 @@ GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidg
     m_settings = new SettingsWindow(m_styleLib, this);
     m_endGame = new EndGameWindow(m_styleLib, this);
     m_sideWidget = new QWidget();
+    m_messageBox = new QMessageBox(this);
     m_timer = new QTimer(this);
 
     m_mainLayout = new BoardHLayout2();
@@ -31,6 +30,11 @@ GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidg
     m_iconPlayers = std::pair{new QLabel(), new QLabel()};
     m_infoPlayers = std::pair{new RotatableLabel(), new RotatableLabel()};
     m_timePlayers = std::pair{new RotatableLabel(), new RotatableLabel()};
+
+    m_messageBox->setText("Are you sure?");
+    m_messageBox->setIcon(QMessageBox::Question);
+    m_messageBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    m_messageBox->setDefaultButton(QMessageBox::No);
 
     m_leftChessHistory->setFixedSize(FIXED_SIZE_BUTTON, FIXED_SIZE_BUTTON);
     m_rightChessHistory->setFixedSize(FIXED_SIZE_BUTTON, FIXED_SIZE_BUTTON);
@@ -96,6 +100,7 @@ GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidg
     m_mainLayout->addWidget(m_sideWidget, 1);
 
     this->setLayout(m_mainLayout);
+    this->setStyle();
 
     connect(m_board, &ChessBoard::didMove, this, [this]() {
         if (m_settingsParams.checkAutoRotate)
@@ -183,6 +188,8 @@ GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidg
     connect(m_timer, &QTimer::timeout, this, [this]() {
         this->setTime(m_startMove.secsTo(QDateTime::currentDateTime()), m_board->getColorMove());
     });
+
+    connect(m_styleLib, &StyleLib::changeWindowStyle, this, &GameWindow::setStyle);
 }
 
 void GameWindow::startGame(StartParams &startParams, ChessBoardParams &boardParams)
@@ -295,17 +302,13 @@ void GameWindow::startGameInner()
 
     m_connection = true;
     m_upConnectBut = connect(m_upBut, &QPushButton::clicked, this, [this]() {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Draw", "Are you sure?", QMessageBox::Yes | QMessageBox::No);
-
-        if (reply == QMessageBox::Yes)
+        m_messageBox->setWindowTitle("Draw");
+        if (m_messageBox->exec() == QMessageBox::Yes)
             this->endGame(ResultGame::STALE_MATE);
     });
     m_downConnectBut = connect(m_downBut, &QPushButton::clicked, this, [this]() {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Resign", "Are you sure?", QMessageBox::Yes | QMessageBox::No);
-
-        if (reply == QMessageBox::Yes)
+        m_messageBox->setWindowTitle("Resign");
+        if (m_messageBox->exec() == QMessageBox::Yes)
             this->endGame(m_board->getColorMove() ? ResultGame::WIN_BLACK : ResultGame::WIN_WHITE);
     });
 }
@@ -456,4 +459,18 @@ void GameWindow::resetTime()
     m_time = {m_startParams.mainTime, m_startParams.mainTime};
     this->setTime(0, true);
     this->setTime(0, false);
+}
+
+void GameWindow::setStyle()
+{
+    this->setStyleSheet(m_styleLib->getColorTextStyle());
+
+    const auto style = m_styleLib->getButtonStyle();
+    m_leftChessHistory->setStyleSheet(style);
+    m_rightChessHistory->setStyleSheet(style);
+    m_settingsButton->setStyleSheet(style);
+    m_upBut->setStyleSheet(style);
+    m_downBut->setStyleSheet(style);
+
+    m_messageBox->setStyleSheet(m_styleLib->getMessageBoxStyle());
 }

@@ -27,9 +27,10 @@ private:
 
 private:
     StyleLib *m_styleLib;
+    SomeConstans *m_constans;
 
     StartParams m_params;
-    SomeConstans *m_constans;
+    std::pair<qint8, qint8> m_saveIdTime;
 
     QVBoxLayout *m_mainLayout;
     QStackedWidget *m_stackedTime;
@@ -43,8 +44,6 @@ private:
     QPushButton *m_startGameBut;
     TimeChess *m_timeChessSpins;
     QLabel *m_errorLabel;
-
-    std::pair<qint8, qint8> m_saveIdTime;
 };
 
 #endif // STARTGAMEWINDOW_H

@@ -24,6 +24,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
+    void updateIcon();
     void updateSize();
 
 private:

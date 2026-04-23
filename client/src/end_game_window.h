@@ -26,6 +26,9 @@ signals:
     void exitSignal();
 
 private:
+    void setStyle();
+
+private:
     StyleLib *m_styleLib;
 
     QVBoxLayout *m_mainLayout;
@@ -43,7 +46,6 @@ private:
     QPushButton *m_newGameBut;
     QPushButton *m_rematchBut;
     QPushButton *m_blockUserBut;
-
     QLabel *m_playerWhiteInfo;
     QLabel *m_playerBlackInfo;
     QLabel *m_newRatingsWhite;

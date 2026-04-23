@@ -7,16 +7,16 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
     , m_params{startParams}
 {
     m_styleLib = styleLib;
-    m_saveIdTime = {SIDE_SIZE, SIDE_SIZE};
+    m_saveIdTime = {static_cast<qint8>(TypeTimeChess::UNDEFINED), static_cast<qint8>(TypeTimeChess::UNDEFINED)};
 
     m_mainLayout = new QVBoxLayout();
     m_stackedTime = new QStackedWidget();
     m_buttonLayout = new QHBoxLayout();
 
-    m_gameTypeButs = new ButtonComplex(m_styleLib);
-    m_chessTypeButs = new ButtonComplex(m_styleLib);
-    m_timeChessTypeButs = new ButtonComplex(m_styleLib);
-    m_timeChessButs = new ButtonComplex(m_styleLib);
+    m_gameTypeButs = new ButtonComplex();
+    m_chessTypeButs = new ButtonComplex();
+    m_timeChessTypeButs = new ButtonComplex();
+    m_timeChessButs = new ButtonComplex();
     m_boardSetupBut = new QPushButton("Board setup");
     m_startGameBut = new QPushButton("Start Game");
     m_timeChessSpins = new TimeChess();
@@ -63,29 +63,33 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
         m_chessTypeButs->useButton(static_cast<qint8>(m_params.chessType));
 
     if (m_params.timeChessType != TypeTimeChess::UNDEFINED) {
-        m_timeChessTypeButs->useButton(static_cast<qint8>(m_params.timeChessType));
+        qint8 id = static_cast<qint8>(m_params.timeChessType);
+        m_timeChessTypeButs->useButton(id);
 
         if (m_params.timeChessType != TypeTimeChess::NO_TIME) {
             if (m_params.timeChessType == TypeTimeChess::OTHER) {
                 m_stackedTime->setCurrentWidget(m_timeChessSpins);
             } else {
                 m_stackedTime->setCurrentWidget(m_timeChessButs);
-
-                qint8 id = static_cast<qint8>(m_params.timeChessType);
                 m_timeChessButs->setButtons(m_constans->getTimeChessStr()[id]);
+                m_saveIdTime.first = id;
 
                 if (m_params.mainTime != 0) {
                     const auto &vec = m_constans->getTimeChessValue()[id];
-                    m_saveIdTime = {id,
-                                    std::distance(vec.begin(),
-                                                  std::find(vec.begin(), vec.end(), std::pair{m_params.mainTime, m_params.minorTime}))
-                                   };
-                    m_timeChessButs->useButton(m_saveIdTime.second);
+                    size_t idTime = std::distance(vec.begin(),
+                                                  std::find(vec.begin(), vec.end(), std::pair{m_params.mainTime, m_params.minorTime}));
+
+                    if (idTime != vec.size()) {
+                        m_saveIdTime.second = idTime;
+                        m_timeChessButs->useButton(m_saveIdTime.second);
+                    }
                 }
             }
         }
+    } else {
+        m_params.mainTime = 0;
+        m_params.minorTime = 0;
     }
-
     m_timeChessSpins->setTime(m_params.mainTime, m_params.minorTime);
 
     this->lookBoardSetupBut();
@@ -93,17 +97,19 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
 
     connect(m_gameTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
         m_errorLabel->clear();
+        
         m_params.gameType = static_cast<TypeGame>(id);
     });
     connect(m_chessTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
         m_errorLabel->clear();
+        
         m_params.chessType = static_cast<TypeChess>(id);
         this->lookBoardSetupBut();
     });
     connect(m_timeChessTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
         m_errorLabel->clear();
-        m_params.timeChessType = static_cast<TypeTimeChess>(id);
 
+        m_params.timeChessType = static_cast<TypeTimeChess>(id);
         if (m_params.timeChessType == TypeTimeChess::OTHER) {
             m_stackedTime->setCurrentWidget(m_timeChessSpins);
             m_stackedTime->show();
@@ -121,11 +127,14 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
             m_stackedTime->show();
 
             m_timeChessButs->setButtons(m_constans->getTimeChessStr()[id]);
-            if (id == m_saveIdTime.first) {
+            if (id == m_saveIdTime.first && m_saveIdTime.second != static_cast<qint8>(TypeTimeChess::UNDEFINED)) {
                 m_timeChessButs->useButton(m_saveIdTime.second);
                 const auto &time = m_constans->getTimeChessValue()[m_saveIdTime.first][m_saveIdTime.second];
                 m_params.mainTime = time.first;
                 m_params.minorTime = time.second;
+            } else {
+                m_params.mainTime = 0;
+                m_params.minorTime = 0;
             }
         }
     });
@@ -134,7 +143,7 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
         m_errorLabel->clear();
 
         m_saveIdTime = {static_cast<qint8>(m_params.timeChessType), id};
-        const auto &time = m_constans->getTimeChessValue()[m_saveIdTime.first][id];
+        const auto &time = m_constans->getTimeChessValue()[m_saveIdTime.first][m_saveIdTime.second];
         m_params.mainTime = time.first;
         m_params.minorTime = time.second;
         m_timeChessSpins->setTime(m_params.mainTime, m_params.minorTime);
@@ -142,7 +151,7 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
     connect(m_timeChessSpins, &TimeChess::changeTime, this, [this]() {
         m_errorLabel->clear();
 
-        m_saveIdTime = {SIDE_SIZE, SIDE_SIZE};
+        m_saveIdTime = {static_cast<qint8>(TypeTimeChess::UNDEFINED), static_cast<qint8>(TypeTimeChess::UNDEFINED)};
         const auto &time = m_timeChessSpins->getTime();
         m_params.mainTime = time.first;
         m_params.minorTime = time.second;
@@ -180,6 +189,16 @@ StartParams &StartGameWindow::getStartParams()
 void StartGameWindow::setStyle()
 {
     this->setStyleSheet(m_styleLib->getColorTextStyle());
+
+    const auto style = m_styleLib->getButtonStyle();
+    m_gameTypeButs->setStyleSheet(style);
+    m_chessTypeButs->setStyleSheet(style);
+    m_timeChessTypeButs->setStyleSheet(style);
+    m_timeChessButs->setStyleSheet(style);
+    m_boardSetupBut->setStyleSheet(style);
+    m_startGameBut->setStyleSheet(style);
+
+    m_timeChessSpins->setStyleSheet(m_styleLib->getSpinBoxStyle());
 }
 
 void StartGameWindow::lookBoardSetupBut()

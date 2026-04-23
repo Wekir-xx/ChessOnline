@@ -77,24 +77,22 @@ private:
 
 private:
     StyleLib *m_styleLib;
-
     ChessGame m_game;
-
     ChessBoardWidget *m_chessBoard;
 
     QVBoxLayout *m_mainLayout;
 
 #ifdef MOVE_PIECE
     QLabel *m_movePiece;
+    bool m_takenPiece;
 #endif
 
-    bool m_blockBoard{false};
-    bool m_blockBoardHistory{false};
-    bool m_transformPawn{false};
-    bool m_autoQueen{false};
-    bool m_premove{false};
-    bool m_takenPiece{false};
-    bool m_whiteMove{false};
+    bool m_blockBoard;
+    bool m_blockBoardHistory;
+    bool m_transformPawn;
+    bool m_autoQueen;
+    bool m_premove;
+    bool m_whiteMove;
 };
 
 #endif // CHESS_BOARD_H
