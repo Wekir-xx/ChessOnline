@@ -1,1 +1,3 @@
 build/
+.qtcreator/
+server.pro.user
