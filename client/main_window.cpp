@@ -3,8 +3,6 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    m_styleLib = new StyleLib(this);
-
     this->resize(727, 717);
     this->setWindowTitle("Chess Online");
     this->setWindowIcon(QIcon(QString(GENERAL_PATH) + "avatar.png"));
@@ -13,6 +11,11 @@ MainWindow::MainWindow(QWidget *parent)
     this->readSettingsParams();
     this->readStartParams();
     this->readChessBoardParams();
+
+    m_styleLib = new StyleLib(this);
+    m_styleLib->setIconStyle(0);
+    m_styleLib->setBoardStyle(0);
+    m_styleLib->setWindowStyle(0);
 
     m_startGameWindow = new StartGameWindow(m_styleLib, m_startParams);
     m_gameWindow = new GameWindow(m_styleLib, m_settingsParams);
@@ -26,11 +29,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_gameWindow->setFixedSize(0, 0);
     m_boardSetupWindow->setFixedSize(0, 0);
+
     this->setCentralWidget(m_stacked);
 
-    connect(m_startGameWindow, &StartGameWindow::startGame, this, [this]() {
-        m_styleLib->setBoardStyle(1);
+    this->setStyle();
 
+    connect(m_startGameWindow, &StartGameWindow::startGame, this, [this]() {
         m_startParams = m_startGameWindow->getStartParams();
         m_gameWindow->startGame(m_startParams, m_boardParams);
         m_stacked->setCurrentWidget(m_gameWindow);
@@ -73,6 +77,8 @@ MainWindow::MainWindow(QWidget *parent)
         m_startGameWindow->setMinimumSize(0, 0);
         m_startGameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
+
+    connect(m_styleLib, &StyleLib::changeWindowStyle, this, &MainWindow::setStyle);
 }
 
 MainWindow::~MainWindow()
@@ -201,4 +207,9 @@ QString MainWindow::getBoard()
         }
     }
     return board;
+}
+
+void MainWindow::setStyle()
+{
+    this->setStyleSheet("MainWindow {" + m_styleLib->getColorWindowStyle() + "}");
 }

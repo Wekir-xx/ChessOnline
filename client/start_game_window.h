@@ -23,6 +23,7 @@ signals:
 
 private:
     void lookBoardSetupBut();
+    void setStyle();
 
 private:
     StyleLib *m_styleLib;

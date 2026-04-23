@@ -25,6 +25,7 @@ signals:
 
 private:
     void unUseButton();
+    void setStyle();
 
 private:
     StyleLib *m_styleLib;

@@ -54,6 +54,8 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
     m_mainLayout->setAlignment(m_stackedTime, Qt::AlignCenter);
     m_mainLayout->setAlignment(m_errorLabel, Qt::AlignCenter);
 
+    this->setLayout(m_mainLayout);
+
     if (m_params.gameType != TypeGame::UNDEFINED)
         m_gameTypeButs->useButton(static_cast<qint8>(m_params.gameType));
 
@@ -87,6 +89,7 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
     m_timeChessSpins->setTime(m_params.mainTime, m_params.minorTime);
 
     this->lookBoardSetupBut();
+    this->setStyle();
 
     connect(m_gameTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
         m_errorLabel->clear();
@@ -166,12 +169,17 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
         emit startGame();
     });
 
-    this->setLayout(m_mainLayout);
+    connect(m_styleLib, &StyleLib::changeWindowStyle, this, &StartGameWindow::setStyle);
 }
 
 StartParams &StartGameWindow::getStartParams()
 {
     return m_params;
+}
+
+void StartGameWindow::setStyle()
+{
+    this->setStyleSheet(m_styleLib->getColorTextStyle());
 }
 
 void StartGameWindow::lookBoardSetupBut()

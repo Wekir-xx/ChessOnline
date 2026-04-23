@@ -9,6 +9,9 @@ ButtonComplex::ButtonComplex(StyleLib *styleLib, QWidget *parent)
     m_layout = new QHBoxLayout();
     m_layout->setSpacing(0);
     this->setLayout(m_layout);
+
+    this->setStyle();
+    connect(m_styleLib, &StyleLib::changeWindowStyle, this, &ButtonComplex::setStyle);
 }
 
 void ButtonComplex::setButtons(std::vector<std::string> nameButtons)
@@ -47,4 +50,9 @@ void ButtonComplex::unUseButton()
 {
     if (m_idUseBut < m_buttons.size())
         m_buttons[m_idUseBut]->setEnabled(true);
+}
+
+void ButtonComplex::setStyle()
+{
+    this->styleSheet();
 }

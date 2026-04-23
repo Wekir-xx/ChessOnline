@@ -184,23 +184,23 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
         this->clearBoard();
         this->updateIcon();
     });
-    connect(m_whiteCastlingBut1, &QCheckBox::stateChanged, this, [this]() {
+    connect(m_whiteCastlingBut1, &QCheckBox::checkStateChanged, this, [this]() {
         m_errorLabel->clear();
         m_copyBoardParams.castling.first.first ^= true;
     });
-    connect(m_whiteCastlingBut2, &QCheckBox::stateChanged, this, [this]() {
+    connect(m_whiteCastlingBut2, &QCheckBox::checkStateChanged, this, [this]() {
         m_errorLabel->clear();
         m_copyBoardParams.castling.first.second ^= true;
     });
-    connect(m_blackCastlingBut1, &QCheckBox::stateChanged, this, [this]() {
+    connect(m_blackCastlingBut1, &QCheckBox::checkStateChanged, this, [this]() {
         m_errorLabel->clear();
         m_copyBoardParams.castling.second.first ^= true;
     });
-    connect(m_blackCastlingBut2, &QCheckBox::stateChanged, this, [this]() {
+    connect(m_blackCastlingBut2, &QCheckBox::checkStateChanged, this, [this]() {
         m_errorLabel->clear();
         m_copyBoardParams.castling.second.second ^= true;
     });
-    connect(m_960But, &QCheckBox::stateChanged, this, [this]() {
+    connect(m_960But, &QCheckBox::checkStateChanged, this, [this]() {
         m_errorLabel->clear();
 
         m_copyBoardParams.chess960 ^= true;

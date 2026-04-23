@@ -28,6 +28,8 @@ private:
     void setBoard(QString board);
     QString getBoard();
 
+    void setStyle();
+
 private:
     StyleLib *m_styleLib;
 

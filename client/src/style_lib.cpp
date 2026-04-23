@@ -34,22 +34,37 @@ const std::vector<QString> &StyleLib::getBoardStyles()
 
 const std::vector<QString> &StyleLib::getBaseLightFieldStyles()
 {
-    return m_baseLightFieldStyle;
+    return m_baseLightFieldStyles;
 }
 
 const std::vector<QString> &StyleLib::getBaseDarkFieldStyles()
 {
-    return m_baseDarkFieldStyle;
+    return m_baseDarkFieldStyles;
 }
 
 const std::vector<QString> &StyleLib::getMoveLightFieldStyles()
 {
-    return m_moveLightFieldStyle;
+    return m_moveLightFieldStyles;
 }
 
 const std::vector<QString> &StyleLib::getMoveDarkFieldStyles()
 {
-    return m_moveDarkFieldStyle;
+    return m_moveDarkFieldStyles;
+}
+
+const std::vector<QString> &StyleLib::getWindowStyles()
+{
+    return m_windowStyles;
+}
+
+const std::vector<QString> &StyleLib::getColorWindowStyles()
+{
+    return m_colorWindowStyles;
+}
+
+const std::vector<QString> &StyleLib::getColorTextStyles()
+{
+    return m_colorTextStyles;
 }
 
 QString StyleLib::getIconStyle()
@@ -64,22 +79,22 @@ const QString &StyleLib::getBoardStyle() const
 
 QString StyleLib::getBaseLightFieldStyle()
 {
-    return m_fieldStyle.arg(m_baseLightFieldStyle[m_idBoardStyle]);
+    return m_fieldStyle.arg(m_baseLightFieldStyles[m_idBoardStyle]);
 }
 
 QString StyleLib::getBaseDarkFieldStyle()
 {
-    return m_fieldStyle.arg(m_baseDarkFieldStyle[m_idBoardStyle]);
+    return m_fieldStyle.arg(m_baseDarkFieldStyles[m_idBoardStyle]);
 }
 
 QString StyleLib::getMoveLightFieldStyle()
 {
-    return m_fieldStyle.arg(m_moveLightFieldStyle[m_idBoardStyle]);
+    return m_fieldStyle.arg(m_moveLightFieldStyles[m_idBoardStyle]);
 }
 
 QString StyleLib::getMoveDarkFieldStyle()
 {
-    return m_fieldStyle.arg(m_moveDarkFieldStyle[m_idBoardStyle]);
+    return m_fieldStyle.arg(m_moveDarkFieldStyles[m_idBoardStyle]);
 }
 
 QString StyleLib::getCheckFieldStyle()
@@ -90,6 +105,21 @@ QString StyleLib::getCheckFieldStyle()
 QString StyleLib::getWhiteFieldStyle()
 {
     return m_fieldStyle.arg(m_whiteFieldStyle);
+}
+
+const QString &StyleLib::getWindowStyle() const
+{
+    return m_windowStyles[m_idWindowStyle];
+}
+
+QString StyleLib::getColorWindowStyle()
+{
+    return m_colorWindowStyle.arg(m_colorWindowStyles[m_idWindowStyle]);
+}
+
+QString StyleLib::getColorTextStyle()
+{
+    return m_colorTextStyle.arg(m_colorTextStyles[m_idWindowStyle]);
 }
 
 const QString &StyleLib::getSmallTimeNoticeStyle() const
