@@ -7,31 +7,31 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowTitle("Chess Online");
     this->setWindowIcon(QIcon(QString(GENERAL_PATH) + "avatar.png"));
 
+    m_styleLib = new StyleLib(this);
+
     m_settings.reset(new QSettings(CONFIG_FILE, QSettings::IniFormat));
     this->readSettingsParams();
     this->readStartParams();
     this->readChessBoardParams();
-
-    m_styleLib = new StyleLib(this);
-    m_styleLib->setIconStyle(0);
-    m_styleLib->setBoardStyle(0);
-    m_styleLib->setWindowStyle(0);
+    this->readStyleParams();
 
     m_startGameWindow = new StartGameWindow(m_styleLib, m_startParams);
     m_gameWindow = new GameWindow(m_styleLib, m_settingsParams);
     m_boardSetupWindow = new BoardSetupWindow(m_styleLib, m_boardParams);
+    m_stylesWindow = new StylesWindow(m_styleLib);
     m_stacked = new QStackedWidget();
 
     m_stacked->addWidget(m_startGameWindow);
     m_stacked->addWidget(m_gameWindow);
     m_stacked->addWidget(m_boardSetupWindow);
+    m_stacked->addWidget(m_stylesWindow);
     m_stacked->setCurrentWidget(m_startGameWindow);
 
     m_gameWindow->setFixedSize(0, 0);
     m_boardSetupWindow->setFixedSize(0, 0);
+    m_stylesWindow->setFixedSize(0, 0);
 
     this->setCentralWidget(m_stacked);
-
     this->setStyle();
 
     connect(m_startGameWindow, &StartGameWindow::startGame, this, [this]() {
@@ -44,12 +44,19 @@ MainWindow::MainWindow(QWidget *parent)
         m_gameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
     connect(m_startGameWindow, &StartGameWindow::boardSetup, this, [this]() {
-        m_boardSetupWindow->startGame();
+        m_boardSetupWindow->startSetup();
         m_stacked->setCurrentWidget(m_boardSetupWindow);
 
         m_startGameWindow->setFixedSize(0, 0);
         m_boardSetupWindow->setMinimumSize(0, 0);
         m_boardSetupWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    });
+    connect(m_startGameWindow, &StartGameWindow::settingStyles, this, [this]() {
+        m_stacked->setCurrentWidget(m_stylesWindow);
+
+        m_startGameWindow->setFixedSize(0, 0);
+        m_stylesWindow->setMinimumSize(0, 0);
+        m_stylesWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
 
     connect(m_gameWindow, &GameWindow::exitGame, this, [this]() {
@@ -76,6 +83,14 @@ MainWindow::MainWindow(QWidget *parent)
         m_startGameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     });
 
+    connect(m_stylesWindow, &StylesWindow::exit, this, [this]() {
+        m_stacked->setCurrentWidget(m_startGameWindow);
+
+        m_stylesWindow->setFixedSize(0, 0);
+        m_startGameWindow->setMinimumSize(0, 0);
+        m_startGameWindow->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    });
+
     connect(m_styleLib, &StyleLib::changeWindowStyle, this, &MainWindow::setStyle);
 }
 
@@ -84,9 +99,11 @@ MainWindow::~MainWindow()
     m_settingsParams = m_gameWindow->getSettingsParams();
     m_startParams = m_startGameWindow->getStartParams();
     m_boardParams = m_boardSetupWindow->getBoardParams();
+
     this->writeSettingsParams();
     this->writeStartParams();
     this->writeChessBoardParams();
+    this->writeStyleParams();
 }
 
 void MainWindow::writeSettingsParams()
@@ -130,6 +147,17 @@ void MainWindow::writeChessBoardParams()
     m_settings->endGroup();
 }
 
+void MainWindow::writeStyleParams()
+{
+    m_settings->beginGroup("Style");
+
+    m_settings->setValue("idIconStyle", m_styleLib->getIdIconStyle());
+    m_settings->setValue("idBoardStyle", m_styleLib->getIdBoardStyle());
+    m_settings->setValue("idWindowStyle", m_styleLib->getIdWindowStyle());
+
+    m_settings->endGroup();
+}
+
 void MainWindow::readSettingsParams()
 {
     m_settings->beginGroup("Setting");
@@ -168,6 +196,17 @@ void MainWindow::readChessBoardParams()
     m_boardParams.castling.second.second = m_settings->value("castling4", m_boardParams.castling.second.second).toBool();
     m_boardParams.chess960 = m_settings->value("chess960", m_boardParams.chess960).toBool();
     m_boardParams.whiteMove = m_settings->value("whiteMove", m_boardParams.whiteMove).toBool();
+
+    m_settings->endGroup();
+}
+
+void MainWindow::readStyleParams()
+{
+    m_settings->beginGroup("Style");
+
+    m_styleLib->setIdIconStyle(m_settings->value("idIconStyle", m_styleLib->getIdIconStyle()).toInt());
+    m_styleLib->setIdBoardStyle(m_settings->value("idBoardStyle", m_styleLib->getIdBoardStyle()).toInt());
+    m_styleLib->setIdWindowStyle(m_settings->value("idWindowStyle", m_styleLib->getIdWindowStyle()).toInt());
 
     m_settings->endGroup();
 }

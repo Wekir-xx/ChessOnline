@@ -51,5 +51,6 @@
         <file>src/images/style3/wP.png</file>
         <file>src/images/style3/wQ.png</file>
         <file>src/images/style3/wR.png</file>
+        <file>src/images/checkmark.png</file>
     </qresource>
 </RCC>

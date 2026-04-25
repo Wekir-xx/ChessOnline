@@ -1,5 +1,7 @@
 #include "chess_board_widget.h"
 
+#include "defines.h"
+
 #include <QChar>
 #include <QIcon>
 #include <QPainter>

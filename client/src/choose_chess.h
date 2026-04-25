@@ -2,6 +2,7 @@
 #define CHOOSE_CHESS_H
 
 #include "src/style_lib.h"
+#include "src/defines.h"
 
 #include <QGridLayout>
 #include <QPushButton>

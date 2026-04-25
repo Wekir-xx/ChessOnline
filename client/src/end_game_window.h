@@ -3,6 +3,7 @@
 
 #include "src/player_vlayout2.h"
 #include "src/style_lib.h"
+#include "src/defines.h"
 
 #include <QLabel>
 #include <QObject>

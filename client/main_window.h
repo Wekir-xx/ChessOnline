@@ -4,6 +4,7 @@
 #include "board_setup_window.h"
 #include "game_window.h"
 #include "start_game_window.h"
+#include "styles_window.h"
 
 #include <QMainWindow>
 #include <QSettings>
@@ -21,9 +22,12 @@ private:
     void writeSettingsParams();
     void writeStartParams();
     void writeChessBoardParams();
+    void writeStyleParams();
+
     void readSettingsParams();
     void readStartParams();
     void readChessBoardParams();
+    void readStyleParams();
 
     void setBoard(QString board);
     QString getBoard();
@@ -35,6 +39,7 @@ private:
     StartGameWindow *m_startGameWindow;
     GameWindow *m_gameWindow;
     BoardSetupWindow *m_boardSetupWindow;
+    StylesWindow *m_stylesWindow;
     QStackedWidget *m_stacked;
 
     QScopedPointer<QSettings> m_settings;

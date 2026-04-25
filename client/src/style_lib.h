@@ -1,8 +1,6 @@
 #ifndef STYLE_LIB_H
 #define STYLE_LIB_H
 
-#include "defines.h"
-
 #include <QObject>
 
 class StyleLib : public QObject
@@ -12,9 +10,13 @@ class StyleLib : public QObject
 public:
     explicit StyleLib(QObject *parent = nullptr);
 
-    void setIconStyle(qint8 id);
-    void setBoardStyle(qint8 id);
-    void setWindowStyle(qint8 id);
+    void setIdIconStyle(qint8 id);
+    void setIdBoardStyle(qint8 id);
+    void setIdWindowStyle(qint8 id);
+
+    qint8 getIdIconStyle();
+    qint8 getIdBoardStyle();
+    qint8 getIdWindowStyle();
 
     const std::vector<QString> &getIconStyles();
     const std::vector<QString> &getBoardStyles();
@@ -34,6 +36,7 @@ public:
     QString getColorWindowStyle();
     QString getColorTextStyle();
     QString getButtonStyle();
+    QString getComboBoxStyle();
     QString getSpinBoxStyle();
     QString getCheckBoxStyle();
     QString getMessageBoxStyle();
@@ -59,19 +62,22 @@ private:
     const QString m_checkFieldStyle = "ff3838";
     const QString m_whiteFieldStyle = "ffffff";
 
-    const std::vector<QString> m_windowStyles = {"white", "black", "metalic"};
-    const std::vector<QString> m_colorWindowStyles = {"cfcfcf", "-", "-"};
-    const std::vector<QString> m_colorTextStyles = {"000", "black", "metalic"};
-    const std::vector<std::vector<QString>> m_buttonStyles = {{"b0b0b0", "999", "8a8a8a"}, {"-", "-", "-"}, {"-", "-", "-"}};
-    const std::vector<QString> m_checkBoxStyles = {
-        "QCheckBox::indicator { background:#ffffff; border: 1px solid #808080; border-radius: 3px; }"
-        "QCheckBox::indicator:unchecked:hover { border-color: #6f6f6f; background: #f2f2f2; }"
-        "QCheckBox::indicator:checked { border-color: #4CAF50; background: #4CAF50; }"
-        "QCheckBox::indicator:checked:hover { border-color: #3fa043; background: #43A047; }"};
+    const std::vector<QString> m_windowStyles = {"white", "black", "water"};
+    const std::vector<QString> m_colorWindowStyles = {"cfcfcf", "2B2B2B", "66a5ad"};
+    const std::vector<QString> m_colorTextStyles = {"000", "C4C4C4", "cfcfcf"};
+    const std::vector<std::vector<QString>> m_buttonStyles = {
+        {"b0b0b0", "999", "8a8a8a"},
+        {"383838", "636363", "212121"},
+        {"07575b", "097E85", "003b46"}
+    };
+    const std::vector<std::vector<QString>> m_checkBoxStyles = {
+        {"7152FF", "5034C9"},
+        {"6049BF", "7D69D6"},
+        {"749596", "9BC1C2"}
+    };
     QString m_reviewButtonStyle
         = "QPushButton { background: #30C722; border: 1px solid #808080; border-radius: 4px; padding:3px 3px; }"
-          "QPushButton:hover { background: #25A619; border: 1px solid #808080; border-radius: 4px; padding:3px 3px; }"
-          "QPushButton:disabled { background: #8a8a8a; border: 1px solid #808080; border-radius: 4px; padding:3px 3px; }";
+          "QPushButton:hover { background: #25A619; border: 1px solid #808080; border-radius: 4px; padding:3px 3px; }";
 
     const QString m_smallTimeNoticeStyle = "background: red; color: black; font-size:24px; padding:10px;";
     const QString m_fontSizeStyle = "font-size: 14px;";
@@ -80,15 +86,32 @@ private:
     QString m_colorStyle = "color: #%1;";
     QString m_borderNone = "border: none;";
 
-    QString m_buttonStyle = "QPushButton { background: #%1; border: 1px solid #808080; border-radius: 4px; padding:3px 3px; }"
-                            "QPushButton:hover { background: #%2; border: 1px solid #808080; border-radius: 4px; padding:3px 3px; }"
-                            "QPushButton:disabled { background: #%3; border: 1px solid #808080; border-radius: 4px; padding:3px 3px; }";
+    QString m_buttonStyle =
+        "QPushButton { background: #%1; border: 1px solid #808080; border-radius: 4px; padding:4px 4px; }"
+        "QPushButton:hover { background: #%2; border: 1px solid #808080; border-radius: 4px; padding:4px 4px; }"
+        "QPushButton:disabled { background: #%3; border: 1px solid #808080; border-radius: 4px; padding:4px 4px; }";
+    QString m_comboBoxStyle =
+        "QComboBox { background: #%1; border: 1px solid #808080; border-radius: 4px; padding:4px 4px; }"
+        "QComboBox:hover { background: #%2; border: 1px solid #808080; border-radius: 4px; padding:4px 4px; }"
+        "QAbstractItemView { background: #%1; border: 1px solid #808080; border-radius: 4px; padding:4px 4px; outline: 0px; }"
+        "QAbstractItemView::item:selected { background: #%1; color: #%3; }"
+        "QAbstractItemView::item:hover { background: #%2; color: #%3; border: 1px solid #808080; }";
     QString m_spinBoxStyle = "QSpinBox { background: #%1; }";
-    QString m_messageBoxStyle = "QMessageBox { background: #%1; color: #%2; }"
-                                "QMessageBox QPushButton { background: #%3; border: 1px solid #808080; padding: 4px 4px; }"
-                                "QMessageBox QPushButton:hover { background: #%4; }";
-    QString m_secondWindowStyle = "SettingsWindow { background: #%1; color: #%2; border: 2px solid #808080; border-radius: 10px; }"
-                                  "EndGameWindow { background: #%1; color: #%2; border: 2px solid #808080; border-radius: 10px; }";
+    QString m_checkBoxStyle =
+        "QCheckBox::indicator { width: 16px; height: 16px; }"
+        "QCheckBox::indicator:unchecked { background:#%1; border: 1px solid #808080; border-radius: 3px; }"
+        "QCheckBox::indicator:unchecked:hover { background: #%2; border: 1px solid #808080; border-radius: 3px; }"
+        "QCheckBox::indicator:checked { background: #%3; border: 1px solid #808080; border-radius: 3px;"
+        "image: url(:/src/images/checkmark.png); }"
+        "QCheckBox::indicator:checked:hover { background: #%4; border: 1px solid #808080; border-radius: 3px; }";
+    QString m_messageBoxStyle =
+        "QMessageBox { background: #%1; color: #%2; }"
+        "QMessageBox QPushButton { background: #%3; border: 1px solid #808080; padding: 4px 4px; }"
+        "QMessageBox QPushButton:hover { background: #%4; }";
+    QString m_secondWindowStyle =
+        "SettingsWindow { background: #%1; color: #%2; border: 2px solid #808080; border-radius: 10px; }"
+        "SettingsGameWindow { background: #%1; color: #%2; border: 2px solid #808080; border-radius: 10px; }"
+        "EndGameWindow { background: #%1; color: #%2; border: 2px solid #808080; border-radius: 10px; }";
 
     qint8 m_idIconStyle{0};
     qint8 m_idBoardStyle{0};

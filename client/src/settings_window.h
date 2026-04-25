@@ -1,11 +1,13 @@
-#ifndef SETTINGS_WINDOW_H
-#define SETTINGS_WINDOW_H
+#ifndef SETTINGSWINDOW_H
+#define SETTINGSWINDOW_H
 
-#include "src/style_lib.h"
+#include "style_lib.h"
 
-#include <QCheckBox>
-#include <QPushButton>
+#include <QObject>
 #include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
 
 class SettingsWindow : public QWidget
 {
@@ -14,19 +16,9 @@ class SettingsWindow : public QWidget
 public:
     explicit SettingsWindow(StyleLib *styleLib, QWidget *parent = nullptr);
 
-    void setParams(SettingsParams params, TypeGame gameType, TypeTimeChess timeChessType);
-    void setExitButton(bool flag);
-
 signals:
-    void hideAll();
-    void turnBoard();
-    void turnSecondPlayer();
-    void autoQueen();
-    void autoRotate();
-    void premove();
-    void noticeTime();
+    void settingStyles();
     void exit();
-    void exitGame();
 
 private:
     void setStyle();
@@ -34,19 +26,11 @@ private:
 private:
     StyleLib *m_styleLib;
 
-    QVBoxLayout *m_layoutV;
-    QHBoxLayout *m_layoutH;
+    QVBoxLayout *m_mainLayout;
+    QHBoxLayout *m_topLayout;
 
     QPushButton *m_exitBut;
-    QPushButton *m_turnBoardBut;
-    QPushButton *m_turnChessBut;
-    QPushButton *m_exitGameBut;
-
-    QCheckBox *m_hideAllBut;
-    QCheckBox *m_autoQueenBut;
-    QCheckBox *m_autoRotateBut;
-    QCheckBox *m_premoveBut;
-    QCheckBox *m_noticeTimeBut;
+    QPushButton *m_settingStylesBut;
 };
 
-#endif // SETTINGS_WINDOW_H
+#endif // SETTINGSWINDOW_H

@@ -4,19 +4,22 @@
 
 StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, QWidget *parent)
     : QWidget{parent}
+    , m_styleLib{styleLib}
     , m_params{startParams}
 {
-    m_styleLib = styleLib;
+    m_settings = new SettingsWindow(m_styleLib, this);
     m_saveIdTime = {static_cast<qint8>(TypeTimeChess::UNDEFINED), static_cast<qint8>(TypeTimeChess::UNDEFINED)};
 
     m_mainLayout = new QVBoxLayout();
-    m_stackedTime = new QStackedWidget();
+    m_topLayout = new QHBoxLayout();
     m_buttonLayout = new QHBoxLayout();
+    m_stackedTime = new QStackedWidget();
 
     m_gameTypeButs = new ButtonComplex();
     m_chessTypeButs = new ButtonComplex();
     m_timeChessTypeButs = new ButtonComplex();
     m_timeChessButs = new ButtonComplex();
+    m_settingBut = new QPushButton();
     m_boardSetupBut = new QPushButton("Board setup");
     m_startGameBut = new QPushButton("Start Game");
     m_timeChessSpins = new TimeChess();
@@ -28,18 +31,26 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
     m_timeChessTypeButs->setButtons(m_constans->getTypeTimeChessStr());
 
     m_errorLabel->setStyleSheet("color: red; font-size: 18px;");
+    m_settingBut->setIcon(QIcon(QString(GENERAL_PATH) + "settings.png"));
+    m_settingBut->setIconSize(QSize(FIXED_SIZE_BUTTON_ICON, FIXED_SIZE_BUTTON_ICON));
     m_boardSetupBut->adjustSize();
+
     m_boardSetupBut->setFixedSize(m_boardSetupBut->size());
+    m_settingBut->setFixedSize(FIXED_SIZE_BUTTON, FIXED_SIZE_BUTTON);
     m_startGameBut->setFixedHeight(FIXED_SIZE_BUTTON);
 
     m_stackedTime->addWidget(m_timeChessButs);
     m_stackedTime->addWidget(m_timeChessSpins);
+
+    m_topLayout->addWidget(m_settingBut);
+    m_topLayout->addStretch();
 
     m_buttonLayout->addStretch(7);
     m_buttonLayout->addWidget(m_boardSetupBut);
     m_buttonLayout->addStretch(1);
 
     m_mainLayout->setSpacing(0);
+    m_mainLayout->addLayout(m_topLayout);
     m_mainLayout->addStretch();
     m_mainLayout->addWidget(m_gameTypeButs);
     m_mainLayout->addWidget(m_chessTypeButs);
@@ -53,8 +64,6 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
 
     m_mainLayout->setAlignment(m_stackedTime, Qt::AlignCenter);
     m_mainLayout->setAlignment(m_errorLabel, Qt::AlignCenter);
-
-    this->setLayout(m_mainLayout);
 
     if (m_params.gameType != TypeGame::UNDEFINED)
         m_gameTypeButs->useButton(static_cast<qint8>(m_params.gameType));
@@ -92,17 +101,29 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
     }
     m_timeChessSpins->setTime(m_params.mainTime, m_params.minorTime);
 
+    m_settings->hide();
     this->lookBoardSetupBut();
+
+    this->setLayout(m_mainLayout);
     this->setStyle();
 
+    connect(m_settingBut, &QPushButton::clicked, this, [this]() {
+        if (!m_settings->isVisible()) {
+            m_settings->raise();
+            m_settings->show();
+            this->showSettingWindow();
+        } else {
+            m_settings->hide();
+        }
+    });
     connect(m_gameTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
         m_errorLabel->clear();
-        
+
         m_params.gameType = static_cast<TypeGame>(id);
     });
     connect(m_chessTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
         m_errorLabel->clear();
-        
+
         m_params.chessType = static_cast<TypeChess>(id);
         this->lookBoardSetupBut();
     });
@@ -178,12 +199,24 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
         emit startGame();
     });
 
+    connect(m_settings, &SettingsWindow::exit, this, [this]() {
+        m_settings->hide();
+    });
+    connect(m_settings, &SettingsWindow::settingStyles, this, &StartGameWindow::settingStyles);
+
     connect(m_styleLib, &StyleLib::changeWindowStyle, this, &StartGameWindow::setStyle);
 }
 
 StartParams &StartGameWindow::getStartParams()
 {
     return m_params;
+}
+
+void StartGameWindow::showSettingWindow()
+{
+    const qint16 width = this->width() - MINIMUM_PIECE_SIZE;
+    const qint16 height = this->height();
+    m_settings->setGeometry(width / 5 + MINIMUM_PIECE_SIZE, height / 5, width * 3 / 5, height * 3 / 5);
 }
 
 void StartGameWindow::setStyle()
@@ -195,10 +228,19 @@ void StartGameWindow::setStyle()
     m_chessTypeButs->setStyleSheet(style);
     m_timeChessTypeButs->setStyleSheet(style);
     m_timeChessButs->setStyleSheet(style);
+    m_settingBut->setStyleSheet(style);
     m_boardSetupBut->setStyleSheet(style);
     m_startGameBut->setStyleSheet(style);
 
     m_timeChessSpins->setStyleSheet(m_styleLib->getSpinBoxStyle());
+}
+
+void StartGameWindow::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+
+    if (m_settings->isVisible())
+        this->showSettingWindow();
 }
 
 void StartGameWindow::lookBoardSetupBut()

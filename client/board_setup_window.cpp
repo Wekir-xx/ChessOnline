@@ -111,7 +111,7 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     m_clearResetLayout->addWidget(m_clearBut);
     m_clearResetLayout->addWidget(m_resetPosBut);
 
-    m_castlingLayout->setSpacing(0);
+    m_castlingLayout->setSpacing(5);
     m_castlingLayout->addWidget(m_whiteCastlingLabel, 0, 0);
     m_castlingLayout->addWidget(m_whiteCastlingBut1, 0, 1);
     m_castlingLayout->addWidget(m_whiteCastlingBut2, 0, 2);
@@ -185,23 +185,23 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
         this->clearBoard();
         this->updateIcon();
     });
-    connect(m_whiteCastlingBut1, &QCheckBox::checkStateChanged, this, [this]() {
+    connect(m_whiteCastlingBut1, &QCheckBox::stateChanged, this, [this]() {
         m_errorLabel->clear();
         m_copyBoardParams.castling.first.first ^= true;
     });
-    connect(m_whiteCastlingBut2, &QCheckBox::checkStateChanged, this, [this]() {
+    connect(m_whiteCastlingBut2, &QCheckBox::stateChanged, this, [this]() {
         m_errorLabel->clear();
         m_copyBoardParams.castling.first.second ^= true;
     });
-    connect(m_blackCastlingBut1, &QCheckBox::checkStateChanged, this, [this]() {
+    connect(m_blackCastlingBut1, &QCheckBox::stateChanged, this, [this]() {
         m_errorLabel->clear();
         m_copyBoardParams.castling.second.first ^= true;
     });
-    connect(m_blackCastlingBut2, &QCheckBox::checkStateChanged, this, [this]() {
+    connect(m_blackCastlingBut2, &QCheckBox::stateChanged, this, [this]() {
         m_errorLabel->clear();
         m_copyBoardParams.castling.second.second ^= true;
     });
-    connect(m_960But, &QCheckBox::checkStateChanged, this, [this]() {
+    connect(m_960But, &QCheckBox::stateChanged, this, [this]() {
         m_errorLabel->clear();
 
         m_copyBoardParams.chess960 ^= true;
@@ -245,7 +245,7 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     connect(m_styleLib, &StyleLib::changeWindowStyle, this, &BoardSetupWindow::setStyle);
 }
 
-void BoardSetupWindow::startGame()
+void BoardSetupWindow::startSetup()
 {
     this->updateIcon();
 }

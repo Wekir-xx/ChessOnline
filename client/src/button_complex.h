@@ -1,8 +1,6 @@
 #ifndef BUTTON_COMPLEX_H
 #define BUTTON_COMPLEX_H
 
-#include "src/style_lib.h"
-
 #include <QHBoxLayout>
 #include <QObject>
 #include <QPushButton>

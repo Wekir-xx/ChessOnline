@@ -1,14 +1,16 @@
 #ifndef CHESS_BOARD_WIDGET_H
 #define CHESS_BOARD_WIDGET_H
 
-#include "src/event_button.h"
-#include "src/style_lib.h"
+#include "event_button.h"
+#include "style_lib.h"
 
 #include <QGridLayout>
 #include <QIcon>
 #include <QLabel>
 #include <QObject>
 #include <QWidget>
+
+#include <unordered_map>
 
 class ChessBoardWidget : public QWidget
 {

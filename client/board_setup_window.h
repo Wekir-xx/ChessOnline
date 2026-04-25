@@ -1,7 +1,7 @@
 #ifndef BOARD_SETUP_WINDOW_H
 #define BOARD_SETUP_WINDOW_H
 
-#include "chess_game.h"
+#include "src/chess_game.h"
 #include "src/board_hlayout2.h"
 #include "src/board_vlayout2.h"
 #include "src/chess_board_widget.h"
@@ -24,7 +24,7 @@ class BoardSetupWindow : public QWidget
 public:
     explicit BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardParams, QWidget *parent = nullptr);
 
-    void startGame();
+    void startSetup();
 
     ChessBoardParams &getBoardParams();
 

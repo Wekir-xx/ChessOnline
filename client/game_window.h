@@ -1,12 +1,12 @@
 #ifndef GAME_WINDOW_H
 #define GAME_WINDOW_H
 
-#include "chess_board.h"
+#include "src/chess_board.h"
 #include "src/board_hlayout2.h"
 #include "src/end_game_window.h"
 #include "src/player_vlayout3.h"
 #include "src/rotatable_label.h"
-#include "src/settings_window.h"
+#include "src/settings_game_window.h"
 
 #include <QDateTime>
 #include <QMessageBox>
@@ -53,7 +53,7 @@ private:
 private:
     StyleLib *m_styleLib;
     ChessBoard *m_board;
-    SettingsWindow *m_settings;
+    SettingsGameWindow *m_settings;
     EndGameWindow *m_endGame;
     QWidget *m_sideWidget;
     QMessageBox *m_messageBox;
@@ -64,7 +64,7 @@ private:
 
     QPushButton *m_leftChessHistory;
     QPushButton *m_rightChessHistory;
-    QPushButton *m_settingsButton;
+    QPushButton *m_settingBut;
     QPushButton *m_upBut;
     QPushButton *m_downBut;
     QMetaObject::Connection m_upConnectBut;

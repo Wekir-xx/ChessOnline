@@ -1,25 +1,42 @@
 #include "style_lib.h"
 
+#include "defines.h"
+
 StyleLib::StyleLib(QObject *parent)
     : QObject{parent}
 {}
 
-void StyleLib::setIconStyle(qint8 id)
+void StyleLib::setIdIconStyle(qint8 id)
 {
     m_idIconStyle = id;
     emit changeIconStyle();
 }
 
-void StyleLib::setBoardStyle(qint8 id)
+void StyleLib::setIdBoardStyle(qint8 id)
 {
     m_idBoardStyle = id;
     emit changeBoardStyle();
 }
 
-void StyleLib::setWindowStyle(qint8 id)
+void StyleLib::setIdWindowStyle(qint8 id)
 {
     m_idWindowStyle = id;
     emit changeWindowStyle();
+}
+
+qint8 StyleLib::getIdIconStyle()
+{
+    return m_idIconStyle;
+}
+
+qint8 StyleLib::getIdBoardStyle()
+{
+    return m_idBoardStyle;
+}
+
+qint8 StyleLib::getIdWindowStyle()
+{
+    return m_idWindowStyle;
 }
 
 const std::vector<QString> &StyleLib::getIconStyles()
@@ -94,9 +111,16 @@ QString StyleLib::getColorTextStyle()
 
 QString StyleLib::getButtonStyle()
 {
-    return m_buttonStyle.arg(m_buttonStyles[m_idWindowStyle][0])
-        .arg(m_buttonStyles[m_idWindowStyle][1])
-        .arg(m_buttonStyles[m_idWindowStyle][2]);
+    return m_buttonStyle.arg(m_buttonStyles[m_idWindowStyle][0],
+                             m_buttonStyles[m_idWindowStyle][1],
+                             m_buttonStyles[m_idWindowStyle][2]);
+}
+
+QString StyleLib::getComboBoxStyle()
+{
+    return m_comboBoxStyle.arg(m_buttonStyles[m_idWindowStyle][0],
+                               m_buttonStyles[m_idWindowStyle][1],
+                               m_colorTextStyles[m_idWindowStyle]);
 }
 
 QString StyleLib::getSpinBoxStyle()
@@ -106,20 +130,19 @@ QString StyleLib::getSpinBoxStyle()
 
 QString StyleLib::getCheckBoxStyle()
 {
-    return m_checkBoxStyles[m_idWindowStyle];
+    return m_checkBoxStyle.arg(m_buttonStyles[m_idWindowStyle][0], m_buttonStyles[m_idWindowStyle][1],
+                               m_checkBoxStyles[m_idWindowStyle][0], m_checkBoxStyles[m_idWindowStyle][1]);
 }
 
 QString StyleLib::getMessageBoxStyle()
 {
-    return m_messageBoxStyle.arg(m_colorWindowStyles[m_idWindowStyle])
-        .arg(m_colorTextStyles[m_idWindowStyle])
-        .arg(m_buttonStyles[m_idWindowStyle][0])
-        .arg(m_buttonStyles[m_idWindowStyle][1]);
+    return m_messageBoxStyle.arg(m_colorWindowStyles[m_idWindowStyle], m_colorTextStyles[m_idWindowStyle],
+                                 m_buttonStyles[m_idWindowStyle][0], m_buttonStyles[m_idWindowStyle][1]);
 }
 
 QString StyleLib::getSecondWindowStyle()
 {
-    return m_secondWindowStyle.arg(m_colorWindowStyles[m_idWindowStyle]).arg(m_colorTextStyles[m_idWindowStyle]);
+    return m_secondWindowStyle.arg(m_colorWindowStyles[m_idWindowStyle], m_colorTextStyles[m_idWindowStyle]);
 }
 
 QString StyleLib::getReviewButtonStyle()

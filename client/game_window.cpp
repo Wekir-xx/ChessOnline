@@ -2,13 +2,13 @@
 
 GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidget *parent)
     : QWidget{parent}
+    , m_styleLib{styleLib}
     , m_settingsParams{settingsParams}
 {
-    m_styleLib = styleLib;
     m_connection = false;
 
     m_board = new ChessBoard(m_styleLib);
-    m_settings = new SettingsWindow(m_styleLib, this);
+    m_settings = new SettingsGameWindow(m_styleLib, this);
     m_endGame = new EndGameWindow(m_styleLib, this);
     m_sideWidget = new QWidget();
     m_messageBox = new QMessageBox(this);
@@ -20,7 +20,7 @@ GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidg
 
     m_leftChessHistory = new QPushButton();
     m_rightChessHistory = new QPushButton();
-    m_settingsButton = new QPushButton();
+    m_settingBut = new QPushButton();
     m_upBut = new QPushButton();
     m_downBut = new QPushButton();
 
@@ -38,19 +38,15 @@ GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidg
 
     m_leftChessHistory->setFixedSize(FIXED_SIZE_BUTTON, FIXED_SIZE_BUTTON);
     m_rightChessHistory->setFixedSize(FIXED_SIZE_BUTTON, FIXED_SIZE_BUTTON);
-    m_settingsButton->setFixedSize(FIXED_SIZE_BUTTON, FIXED_SIZE_BUTTON);
+    m_settingBut->setFixedSize(FIXED_SIZE_BUTTON, FIXED_SIZE_BUTTON);
 
     m_leftChessHistory->setIcon(QIcon(QString(GENERAL_PATH) + "leftArrow.png"));
     m_rightChessHistory->setIcon(QIcon(QString(GENERAL_PATH) + "rightArrow.png"));
-    m_settingsButton->setIcon(QIcon(QString(GENERAL_PATH) + "settings.png"));
+    m_settingBut->setIcon(QIcon(QString(GENERAL_PATH) + "settings.png"));
 
     m_leftChessHistory->setIconSize(QSize(FIXED_SIZE_BUTTON_ICON, FIXED_SIZE_BUTTON_ICON));
     m_rightChessHistory->setIconSize(QSize(FIXED_SIZE_BUTTON_ICON, FIXED_SIZE_BUTTON_ICON));
-    m_settingsButton->setIconSize(QSize(FIXED_SIZE_BUTTON_ICON, FIXED_SIZE_BUTTON_ICON));
-
-    m_leftChessHistory->setStyleSheet("QPushButton { padding: 0px; }");
-    m_rightChessHistory->setStyleSheet("QPushButton { padding: 0px; }");
-    m_settingsButton->setStyleSheet("QPushButton { padding: 0px; }");
+    m_settingBut->setIconSize(QSize(FIXED_SIZE_BUTTON_ICON, FIXED_SIZE_BUTTON_ICON));
 
     m_iconPlayers.first->setScaledContents(true);
     m_iconPlayers.second->setScaledContents(true);
@@ -86,7 +82,7 @@ GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidg
 
     m_helperLayout->addWidget(m_leftChessHistory);
     m_helperLayout->addWidget(m_rightChessHistory);
-    m_helperLayout->addWidget(m_settingsButton);
+    m_helperLayout->addWidget(m_settingBut);
 
     m_sideLayout->addWidget(m_players.second, 2);
     m_sideLayout->addWidget(m_upBut, 1);
@@ -129,11 +125,17 @@ GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidg
         this->setTime(0, white);
         m_startMove = QDateTime::currentDateTime();
     });
-    connect(m_board, &ChessBoard::endGame, this, [this](ResultGame result) { this->endGame(result); });
+    connect(m_board, &ChessBoard::endGame, this, [this](ResultGame result) {
+        this->endGame(result);
+    });
 
-    connect(m_leftChessHistory, &QPushButton::clicked, this, [this]() { m_board->historyBack(); });
-    connect(m_rightChessHistory, &QPushButton::clicked, this, [this]() { m_board->historyForward(); });
-    connect(m_settingsButton, &QPushButton::clicked, this, [this]() {
+    connect(m_leftChessHistory, &QPushButton::clicked, this, [this]() {
+        m_board->historyBack();
+    });
+    connect(m_rightChessHistory, &QPushButton::clicked, this, [this]() {
+        m_board->historyForward();
+    });
+    connect(m_settingBut, &QPushButton::clicked, this, [this]() {
         if (!m_settings->isVisible()) {
             m_settings->raise();
             m_settings->show();
@@ -143,24 +145,30 @@ GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidg
         }
     });
 
-    connect(m_settings, &SettingsWindow::hideAll, this, [this]() {
+    connect(m_settings, &SettingsGameWindow::hideAll, this, [this]() {
         m_settingsParams.hideAll ^= true;
         this->hideAll();
     });
-    connect(m_settings, &SettingsWindow::turnBoard, this, &GameWindow::turnBoard);
-    connect(m_settings, &SettingsWindow::turnSecondPlayer, this, &GameWindow::turnSecondPlayer);
-    connect(m_settings, &SettingsWindow::autoQueen, this, [this]() {
+    connect(m_settings, &SettingsGameWindow::turnBoard, this, &GameWindow::turnBoard);
+    connect(m_settings, &SettingsGameWindow::turnSecondPlayer, this, &GameWindow::turnSecondPlayer);
+    connect(m_settings, &SettingsGameWindow::autoQueen, this, [this]() {
         m_settingsParams.checkAutoQueen ^= true;
         m_board->setAutoQueen(m_settingsParams.checkAutoQueen);
     });
-    connect(m_settings, &SettingsWindow::autoRotate, this, [this]() { m_settingsParams.checkAutoRotate ^= true; });
-    connect(m_settings, &SettingsWindow::premove, this, [this]() {
+    connect(m_settings, &SettingsGameWindow::autoRotate, this, [this]() {
+        m_settingsParams.checkAutoRotate ^= true;
+    });
+    connect(m_settings, &SettingsGameWindow::premove, this, [this]() {
         m_settingsParams.checkPremove ^= true;
         m_board->setPremove(m_settingsParams.checkPremove);
     });
-    connect(m_settings, &SettingsWindow::noticeTime, this, [this]() { m_settingsParams.checkNoticeTime ^= true; });
-    connect(m_settings, &SettingsWindow::exit, this, [this]() { m_settings->hide(); });
-    connect(m_settings, &SettingsWindow::exitGame, this, [this]() {
+    connect(m_settings, &SettingsGameWindow::noticeTime, this, [this]() {
+        m_settingsParams.checkNoticeTime ^= true;
+    });
+    connect(m_settings, &SettingsGameWindow::exit, this, [this]() {
+        m_settings->hide();
+    });
+    connect(m_settings, &SettingsGameWindow::exitGame, this, [this]() {
         m_settings->hide();
         m_endGame->hide();
         emit exitGame();
@@ -183,7 +191,9 @@ GameWindow::GameWindow(StyleLib *styleLib, SettingsParams &settingsParams, QWidg
         m_endGame->hide();
         // TODO
     });
-    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() { m_endGame->hide(); });
+    connect(m_endGame, &EndGameWindow::exitSignal, this, [this]() {
+        m_endGame->hide();
+    });
 
     connect(m_timer, &QTimer::timeout, this, [this]() {
         this->setTime(m_startMove.secsTo(QDateTime::currentDateTime()), m_board->getColorMove());
@@ -326,13 +336,13 @@ void GameWindow::endGame(ResultGame result)
     m_endGame->show();
 
     this->showEndGameWindow();
-    
+
     m_upBut->setText("New Game");
     m_downBut->setText("Rematch");
-    
+
     disconnect(m_upConnectBut);
     disconnect(m_downConnectBut);
-    
+
     m_upConnectBut = connect(m_upBut, &QPushButton::clicked, this, [this]() {
         this->startGameInner();
     });
@@ -468,7 +478,7 @@ void GameWindow::setStyle()
     const auto style = m_styleLib->getButtonStyle();
     m_leftChessHistory->setStyleSheet(style);
     m_rightChessHistory->setStyleSheet(style);
-    m_settingsButton->setStyleSheet(style);
+    m_settingBut->setStyleSheet(style);
     m_upBut->setStyleSheet(style);
     m_downBut->setStyleSheet(style);
 

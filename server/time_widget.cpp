@@ -11,7 +11,7 @@ TimeWidget::TimeWidget(QWidget *parent)
 
     m_globalTimeLabel = new QLabel();
     m_inWorkTimeLabel = new QLabel("Work time:");
-    m_inWorkTimerLabel = new QLabel();
+    m_inWorkTimerLabel = new QLabel(QString::asprintf("%2d:%02d:%02d", 0, 0, 0));
 
     m_timer = new QTimer(this);
     m_timer->start(TICK);
