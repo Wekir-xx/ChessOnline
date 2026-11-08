@@ -7,13 +7,6 @@ ChessBoard::ChessBoard(StyleLib *styleLib, QWidget *parent)
     : QWidget(parent)
     , m_styleLib{styleLib}
 {
-#ifdef MOVE_PIECE
-    this->setMouseTracking(true);
-    m_movePiece = new QLabel(this);
-    m_movePiece->setAttribute(Qt::WA_TransparentForMouseEvents, true);
-    m_movePiece->setWindowFlags(Qt::FramelessWindowHint);
-    m_movePiece->hide();
-#endif
     m_transformPawn = false;
 
     m_chessBoard = new ChessBoardWidget(m_styleLib);
@@ -140,48 +133,10 @@ void ChessBoard::resizeEvent(QResizeEvent *event)
     this->updateBoardSize();
 }
 
-#ifdef MOVE_PIECE
-void ChessBoard::mouseReleaseEvent(QMouseEvent *event)
-{
-    QWidget::mouseReleaseEvent(event);
-    if (m_takenPiece) {
-        m_takenPiece = false;
-        const auto takenPiece = m_game.getTakenPiece();
-        const auto &chessFields = m_game.getChessFields();
-        m_chessBoardBut[takenPiece.first][takenPiece.second]->setIcon(
-            m_imagesOfPieces[chessFields[takenPiece.first][takenPiece.second]]);
-        m_movePiece->hide();
-    }
-}
-
-void ChessBoard::mouseMoveEvent(QMouseEvent *event)
-{
-    if (event->buttons() & Qt::LeftButton) {
-        const auto takenPiece = m_game.getTakenPiece();
-        if (takenPiece.first != EMPTY) {
-            if (!m_takenPiece) {
-                m_takenPiece = true;
-                const auto &chessFields = m_game.getChessFields();
-                m_chessBoardBut[takenPiece.first][takenPiece.second]->setIcon(QIcon());
-                QIcon piece = m_imagesOfPieces[chessFields[takenPiece.first][takenPiece.second]];
-                m_movePiece->setPixmap(piece.pixmap(m_chessBoardBut[0][0]->size()));
-                m_movePiece->setFixedSize(m_chessBoardBut[0][0]->size());
-                m_movePiece->show();
-                m_movePiece->raise();
-            }
-            QPoint pos = event->pos();
-            m_movePiece->move(pos.x() - m_movePiece->width() / 2, pos.y() - m_movePiece->height() / 2);
-        }
-    }
-
-    QWidget::mouseMoveEvent(event);
-}
-#endif
-
 void ChessBoard::clickField(QString nameField)
 {
-    qint8 i = nameField[1].digitValue() - 1;
-    qint8 j = nameField[0].unicode() - 'a';
+    int i = nameField[1].digitValue() - 1;
+    int j = nameField[0].unicode() - 'a';
 
     bool whiteMove = m_game.getColorMove();
 
@@ -300,7 +255,7 @@ void ChessBoard::uncheckKing()
     }
 }
 
-void ChessBoard::takePiece(qint8 i, qint8 j)
+void ChessBoard::takePiece(int i, int j)
 {
     this->untakePiece();
     m_chessBoard->moveField(i, j);
@@ -330,13 +285,13 @@ void ChessBoard::untakePiece()
     m_game.untakePiece();
 }
 
-void ChessBoard::transformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields)
+void ChessBoard::transformPawnField(const std::vector<std::pair<int, int>> &beatFields)
 {
     for (const auto &field : beatFields)
         m_chessBoard->whiteField(field.first, field.second);
 }
 
-void ChessBoard::untransformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields)
+void ChessBoard::untransformPawnField(const std::vector<std::pair<int, int>> &beatFields)
 {
     for (const auto &field : beatFields)
         m_chessBoard->baseField(field.first, field.second);
@@ -347,8 +302,8 @@ void ChessBoard::updateIcon()
     const auto &chessFields = m_game.getChessFields();
     const auto &beatFields = m_game.getBeatFields();
 
-    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
-        for (qint8 j = 0; j < SIDE_SIZE; ++j) {
+    for (int i = 0; i < SIDE_SIZE; ++i) {
+        for (int j = 0; j < SIDE_SIZE; ++j) {
             m_chessBoard->setIconSize(i, j);
             m_chessBoard->setIcon(i, j, chessFields[i][j]);
         }
@@ -387,8 +342,8 @@ void ChessBoard::updateBoardSize()
     const auto &chessFields = m_game.getChessFields();
     const auto &beatFields = m_game.getBeatFields();
 
-    for (qint8 i = 0; i < SIDE_SIZE; ++i)
-        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+    for (int i = 0; i < SIDE_SIZE; ++i)
+        for (int j = 0; j < SIDE_SIZE; ++j)
             m_chessBoard->setIconSize(i, j);
 
     for (const auto &field : beatFields)

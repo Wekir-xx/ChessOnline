@@ -35,7 +35,7 @@ void ButtonComplex::setButtons(std::vector<std::string> nameButtons)
     m_idUseBut = i;
 }
 
-void ButtonComplex::useButton(qint8 id)
+void ButtonComplex::useButton(int id)
 {
     m_idUseBut = id;
     m_buttons[id]->setEnabled(false);

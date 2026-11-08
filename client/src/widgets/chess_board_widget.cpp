@@ -1,6 +1,6 @@
 #include "chess_board_widget.h"
 
-#include "defines.h"
+#include "../defines.h"
 
 #include <QChar>
 #include <QIcon>
@@ -32,7 +32,7 @@ ChessBoardWidget::ChessBoardWidget(StyleLib *styleLib, QWidget *parent)
     empty->setFixedHeight(FIXED_SIZE_NUMBERS);
     m_mainLayout->addWidget(empty, SIDE_SIZE, 0);
 
-    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+    for (int i = 0; i < SIDE_SIZE; ++i) {
         QLabel *label = new QLabel();
         label->setMinimumHeight(MINIMUM_PIECE_SIZE);
         label->setFixedWidth(FIXED_SIZE_NUMBERS);
@@ -49,7 +49,7 @@ ChessBoardWidget::ChessBoardWidget(StyleLib *styleLib, QWidget *parent)
         label->setText(QString(QChar('a' + i)));
         m_otherBoardLab[1][i] = label;
 
-        for (qint8 j = 0; j < SIDE_SIZE; ++j) {
+        for (int j = 0; j < SIDE_SIZE; ++j) {
             m_chessBoardBut[i][j] = new EventButton();
             m_chessBoardBut[i][j]->setObjectName(QString(QChar('a' + j)) + QString::number(i + 1));
             m_chessBoardBut[i][j]->setSizePolicy(sizePolicy);
@@ -86,17 +86,17 @@ ChessBoardWidget::ChessBoardWidget(StyleLib *styleLib, QWidget *parent)
 
 void ChessBoardWidget::updateBoard()
 {
-    for (qint8 i = 0; i < SIDE_SIZE; ++i)
-        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+    for (int i = 0; i < SIDE_SIZE; ++i)
+        for (int j = 0; j < SIDE_SIZE; ++j)
             this->baseField(i, j);
 }
 
-void ChessBoardWidget::checkField(qint8 i, qint8 j)
+void ChessBoardWidget::checkField(int i, int j)
 {
     m_chessBoardBut[i][j]->setStyleSheet(m_checkFieldStyle);
 }
 
-void ChessBoardWidget::moveField(qint8 i, qint8 j)
+void ChessBoardWidget::moveField(int i, int j)
 {
     if ((i + j) % 2 == 0)
         m_chessBoardBut[i][j]->setStyleSheet(m_moveDarkFieldStyle);
@@ -104,7 +104,7 @@ void ChessBoardWidget::moveField(qint8 i, qint8 j)
         m_chessBoardBut[i][j]->setStyleSheet(m_moveLightFieldStyle);
 }
 
-void ChessBoardWidget::baseField(qint8 i, qint8 j)
+void ChessBoardWidget::baseField(int i, int j)
 {
     if ((i + j) % 2 == 0)
         m_chessBoardBut[i][j]->setStyleSheet(m_baseDarkFieldStyle);
@@ -112,7 +112,7 @@ void ChessBoardWidget::baseField(qint8 i, qint8 j)
         m_chessBoardBut[i][j]->setStyleSheet(m_baseLightFieldStyle);
 }
 
-void ChessBoardWidget::whiteField(qint8 i, qint8 j)
+void ChessBoardWidget::whiteField(int i, int j)
 {
     m_chessBoardBut[i][j]->setStyleSheet(m_whiteFieldStyle);
 }
@@ -140,19 +140,19 @@ void ChessBoardWidget::turnSecondPlayer()
 void ChessBoardWidget::fillBoard(bool turnBoard)
 {
     if (turnBoard) {
-        for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+        for (int i = 0; i < SIDE_SIZE; ++i) {
             m_mainLayout->addWidget(m_otherBoardLab[0][7 - i], i, 0);
             m_mainLayout->addWidget(m_otherBoardLab[1][7 - i], 8, i + 1);
 
-            for (qint8 j = 0; j < SIDE_SIZE; ++j)
+            for (int j = 0; j < SIDE_SIZE; ++j)
                 m_mainLayout->addWidget(m_chessBoardBut[i][7 - j], i, j + 1);
         }
     } else {
-        for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+        for (int i = 0; i < SIDE_SIZE; ++i) {
             m_mainLayout->addWidget(m_otherBoardLab[0][i], i, 0);
             m_mainLayout->addWidget(m_otherBoardLab[1][i], 8, i + 1);
 
-            for (qint8 j = 0; j < SIDE_SIZE; ++j)
+            for (int j = 0; j < SIDE_SIZE; ++j)
                 m_mainLayout->addWidget(m_chessBoardBut[7 - i][j], i, j + 1);
         }
     }
@@ -193,12 +193,12 @@ void ChessBoardWidget::fillIcan(bool white, bool up)
     }
 }
 
-void ChessBoardWidget::setIcon(qint8 i, qint8 j, QString piece)
+void ChessBoardWidget::setIcon(int i, int j, QString piece)
 {
     m_chessBoardBut[i][j]->setIcon(m_imagesOfPieces[piece]);
 }
 
-void ChessBoardWidget::setIconSize(qint8 i, qint8 j, float koef)
+void ChessBoardWidget::setIconSize(int i, int j, float koef)
 {
     m_chessBoardBut[i][j]->setIconSize(m_chessBoardBut[i][j]->size() * koef);
 }

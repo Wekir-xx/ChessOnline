@@ -1,8 +1,9 @@
 #ifndef STYLESWINDOW_H
 #define STYLESWINDOW_H
 
-#include "src/style_lib.h"
-#include "src/chess_board_widget.h"
+#include "../backend/style_lib.h"
+#include "../widgets/chess_board_widget.h"
+#include "../widgets/player_vlayout2.h"
 
 #include <QObject>
 #include <QWidget>
@@ -36,8 +37,9 @@ private:
 private:
     StyleLib *m_styleLib;
     ChessBoardWidget *m_chessBoard;
+    QWidget *m_downWidget;
 
-    QVBoxLayout *m_mainLayout;
+    PlayerVLayout2 *m_mainLayout;
     QHBoxLayout *m_downLayout;
 
     QPushButton *m_exitBut;

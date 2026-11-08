@@ -10,8 +10,8 @@ SomeConstans &SomeConstans::getInstance()
 
 void SomeConstans::swapWidgetVBox(QVBoxLayout *layout, QWidget *widget1, QWidget *widget2)
 {
-    qint8 id1 = layout->indexOf(widget1);
-    qint8 id2 = layout->indexOf(widget2);
+    int id1 = layout->indexOf(widget1);
+    int id2 = layout->indexOf(widget2);
 
     layout->removeWidget(widget1);
     layout->removeWidget(widget2);
@@ -27,8 +27,8 @@ void SomeConstans::swapWidgetVBox(QVBoxLayout *layout, QWidget *widget1, QWidget
 
 void SomeConstans::swapWidgetHBox(QHBoxLayout *layout, QWidget *widget1, QWidget *widget2)
 {
-    qint8 id1 = layout->indexOf(widget1);
-    qint8 id2 = layout->indexOf(widget2);
+    int id1 = layout->indexOf(widget1);
+    int id2 = layout->indexOf(widget2);
 
     layout->removeWidget(widget1);
     layout->removeWidget(widget2);
@@ -62,7 +62,7 @@ void SomeConstans::fillStandartChessField(std::vector<std::vector<QString>> &che
     chessFields[7][6] = "bN";
     chessFields[7][1] = "bN";
 
-    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+    for (int i = 0; i < SIDE_SIZE; ++i) {
         chessFields[1][i] = "wP";
         chessFields[6][i] = "bP";
     }
@@ -70,7 +70,7 @@ void SomeConstans::fillStandartChessField(std::vector<std::vector<QString>> &che
 
 void SomeConstans::fill960ChessField(std::vector<std::vector<QString>> &chessFields)
 {
-    std::vector<qint8> numPos{0, 1, 2, 3, 4, 5, 6, 7};
+    std::vector<int> numPos{0, 1, 2, 3, 4, 5, 6, 7};
     std::random_device rd;
     std::mt19937 gen(rd());
 
@@ -79,7 +79,7 @@ void SomeConstans::fill960ChessField(std::vector<std::vector<QString>> &chessFie
     std::uniform_int_distribution<> randomKnight1(0, 4);
     std::uniform_int_distribution<> randomKnight2(0, 3);
 
-    qint8 pos = randomBishop(gen) * 2 - 2;
+    int pos = randomBishop(gen) * 2 - 2;
     chessFields[0][pos] = "wB";
     chessFields[7][pos] = "bB";
     auto it = std::find(numPos.begin(), numPos.end(), pos);
@@ -109,7 +109,7 @@ void SomeConstans::fill960ChessField(std::vector<std::vector<QString>> &chessFie
     it = std::find(numPos.begin(), numPos.end(), numPos[pos]);
     numPos.erase(it);
 
-    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
+    for (int i = 0; i < SIDE_SIZE; ++i) {
         chessFields[1][i] = "wP";
         chessFields[6][i] = "bP";
     }
@@ -152,7 +152,7 @@ const std::vector<std::vector<std::string>> &SomeConstans::getTimeChessStr() con
     return m_timeChessStr;
 }
 
-const std::vector<std::vector<std::pair<qint32, qint8>>> &SomeConstans::getTimeChessValue() const
+const std::vector<std::vector<std::pair<int, int>>> &SomeConstans::getTimeChessValue() const
 {
     return m_timeChessValue;
 }

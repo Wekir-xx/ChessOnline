@@ -1,7 +1,7 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
-#include "style_lib.h"
+#include "../backend/style_lib.h"
 
 #include <QObject>
 #include <QWidget>

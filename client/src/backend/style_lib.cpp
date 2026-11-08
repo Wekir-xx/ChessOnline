@@ -1,40 +1,40 @@
 #include "style_lib.h"
 
-#include "defines.h"
+#include "../defines.h"
 
 StyleLib::StyleLib(QObject *parent)
     : QObject{parent}
 {}
 
-void StyleLib::setIdIconStyle(qint8 id)
+void StyleLib::setIdIconStyle(int id)
 {
     m_idIconStyle = id;
     emit changeIconStyle();
 }
 
-void StyleLib::setIdBoardStyle(qint8 id)
+void StyleLib::setIdBoardStyle(int id)
 {
     m_idBoardStyle = id;
     emit changeBoardStyle();
 }
 
-void StyleLib::setIdWindowStyle(qint8 id)
+void StyleLib::setIdWindowStyle(int id)
 {
     m_idWindowStyle = id;
     emit changeWindowStyle();
 }
 
-qint8 StyleLib::getIdIconStyle()
+int StyleLib::getIdIconStyle()
 {
     return m_idIconStyle;
 }
 
-qint8 StyleLib::getIdBoardStyle()
+int StyleLib::getIdBoardStyle()
 {
     return m_idBoardStyle;
 }
 
-qint8 StyleLib::getIdWindowStyle()
+int StyleLib::getIdWindowStyle()
 {
     return m_idWindowStyle;
 }

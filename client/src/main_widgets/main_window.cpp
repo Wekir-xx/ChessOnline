@@ -219,8 +219,8 @@ void MainWindow::setBoard(QString board)
         SomeConstans::fillStandartChessField(m_boardParams.chessFields);
     } else {
         auto it = board.begin();
-        for (qint8 i = 0; i < SIDE_SIZE; ++i) {
-            for (qint8 j = 0; j < SIDE_SIZE; ++j) {
+        for (int i = 0; i < SIDE_SIZE; ++i) {
+            for (int j = 0; j < SIDE_SIZE; ++j) {
                 if (*it == '.') {
                     ++it;
                 } else {

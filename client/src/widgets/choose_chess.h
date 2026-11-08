@@ -1,8 +1,8 @@
 #ifndef CHOOSE_CHESS_H
 #define CHOOSE_CHESS_H
 
-#include "src/style_lib.h"
-#include "src/defines.h"
+#include "../defines.h"
+#include "../backend/style_lib.h"
 
 #include <QGridLayout>
 #include <QPushButton>

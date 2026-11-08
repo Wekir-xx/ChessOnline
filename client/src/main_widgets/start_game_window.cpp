@@ -8,7 +8,7 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
     , m_params{startParams}
 {
     m_settings = new SettingsWindow(m_styleLib, this);
-    m_saveIdTime = {static_cast<qint8>(TypeTimeChess::UNDEFINED), static_cast<qint8>(TypeTimeChess::UNDEFINED)};
+    m_saveIdTime = {static_cast<int>(TypeTimeChess::UNDEFINED), static_cast<int>(TypeTimeChess::UNDEFINED)};
 
     m_mainLayout = new QVBoxLayout();
     m_topLayout = new QHBoxLayout();
@@ -66,13 +66,13 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
     m_mainLayout->setAlignment(m_errorLabel, Qt::AlignCenter);
 
     if (m_params.gameType != TypeGame::UNDEFINED)
-        m_gameTypeButs->useButton(static_cast<qint8>(m_params.gameType));
+        m_gameTypeButs->useButton(static_cast<int>(m_params.gameType));
 
     if (m_params.chessType != TypeChess::UNDEFINED)
-        m_chessTypeButs->useButton(static_cast<qint8>(m_params.chessType));
+        m_chessTypeButs->useButton(static_cast<int>(m_params.chessType));
 
     if (m_params.timeChessType != TypeTimeChess::UNDEFINED) {
-        qint8 id = static_cast<qint8>(m_params.timeChessType);
+        int id = static_cast<int>(m_params.timeChessType);
         m_timeChessTypeButs->useButton(id);
 
         if (m_params.timeChessType != TypeTimeChess::NO_TIME) {
@@ -116,18 +116,18 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
             m_settings->hide();
         }
     });
-    connect(m_gameTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
+    connect(m_gameTypeButs, &ButtonComplex::selectButton, this, [this](int id) {
         m_errorLabel->clear();
 
         m_params.gameType = static_cast<TypeGame>(id);
     });
-    connect(m_chessTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
+    connect(m_chessTypeButs, &ButtonComplex::selectButton, this, [this](int id) {
         m_errorLabel->clear();
 
         m_params.chessType = static_cast<TypeChess>(id);
         this->lookBoardSetupBut();
     });
-    connect(m_timeChessTypeButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
+    connect(m_timeChessTypeButs, &ButtonComplex::selectButton, this, [this](int id) {
         m_errorLabel->clear();
 
         m_params.timeChessType = static_cast<TypeTimeChess>(id);
@@ -148,7 +148,7 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
             m_stackedTime->show();
 
             m_timeChessButs->setButtons(m_constans->getTimeChessStr()[id]);
-            if (id == m_saveIdTime.first && m_saveIdTime.second != static_cast<qint8>(TypeTimeChess::UNDEFINED)) {
+            if (id == m_saveIdTime.first && m_saveIdTime.second != static_cast<int>(TypeTimeChess::UNDEFINED)) {
                 m_timeChessButs->useButton(m_saveIdTime.second);
                 const auto &time = m_constans->getTimeChessValue()[m_saveIdTime.first][m_saveIdTime.second];
                 m_params.mainTime = time.first;
@@ -160,10 +160,10 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
         }
     });
     connect(m_boardSetupBut, &QPushButton::clicked, this, &StartGameWindow::boardSetup);
-    connect(m_timeChessButs, &ButtonComplex::selectButton, this, [this](qint8 id) {
+    connect(m_timeChessButs, &ButtonComplex::selectButton, this, [this](int id) {
         m_errorLabel->clear();
 
-        m_saveIdTime = {static_cast<qint8>(m_params.timeChessType), id};
+        m_saveIdTime = {static_cast<int>(m_params.timeChessType), id};
         const auto &time = m_constans->getTimeChessValue()[m_saveIdTime.first][m_saveIdTime.second];
         m_params.mainTime = time.first;
         m_params.minorTime = time.second;
@@ -172,7 +172,7 @@ StartGameWindow::StartGameWindow(StyleLib *styleLib, StartParams &startParams, Q
     connect(m_timeChessSpins, &TimeChess::changeTime, this, [this]() {
         m_errorLabel->clear();
 
-        m_saveIdTime = {static_cast<qint8>(TypeTimeChess::UNDEFINED), static_cast<qint8>(TypeTimeChess::UNDEFINED)};
+        m_saveIdTime = {static_cast<int>(TypeTimeChess::UNDEFINED), static_cast<int>(TypeTimeChess::UNDEFINED)};
         const auto &time = m_timeChessSpins->getTime();
         m_params.mainTime = time.first;
         m_params.minorTime = time.second;
@@ -214,8 +214,8 @@ StartParams &StartGameWindow::getStartParams()
 
 void StartGameWindow::showSettingWindow()
 {
-    const qint16 width = this->width() - MINIMUM_PIECE_SIZE;
-    const qint16 height = this->height();
+    const int width = this->width() - MINIMUM_PIECE_SIZE;
+    const int height = this->height();
     m_settings->setGeometry(width / 5 + MINIMUM_PIECE_SIZE, height / 5, width * 3 / 5, height * 3 / 5);
 }
 

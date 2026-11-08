@@ -1,6 +1,6 @@
 #include "settings_window.h"
 
-#include "defines.h"
+#include "../defines.h"
 
 SettingsWindow::SettingsWindow(StyleLib *styleLib, QWidget *parent)
     : QWidget{parent}

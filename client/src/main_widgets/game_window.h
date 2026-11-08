@@ -1,12 +1,12 @@
 #ifndef GAME_WINDOW_H
 #define GAME_WINDOW_H
 
-#include "src/chess_board.h"
-#include "src/board_hlayout2.h"
-#include "src/end_game_window.h"
-#include "src/player_vlayout3.h"
-#include "src/rotatable_label.h"
-#include "src/settings_game_window.h"
+#include "../widgets/chess_board.h"
+#include "../widgets/board_hlayout2.h"
+#include "../widgets/end_game_window.h"
+#include "../widgets/player_vlayout3.h"
+#include "../widgets/rotatable_label.h"
+#include "../widgets/settings_game_window.h"
 
 #include <QDateTime>
 #include <QMessageBox>
@@ -45,7 +45,7 @@ private:
                           RotatableLabel *timePlayer, QPixmap pixmap, bool up);
 
     void tick();
-    void setTime(qint32 seconds, bool white);
+    void setTime(int seconds, bool white);
     void resetTime();
 
     void setStyle();
@@ -78,15 +78,15 @@ private:
     std::pair<RotatableLabel *, RotatableLabel *> m_timePlayers;
 
     QTimer *m_timer;
-    std::pair<qint32, qint32> m_time;
+    std::pair<int, int> m_time;
     QDateTime m_startMove;
-    qint32 m_saveTime;
+    int m_saveTime;
 
     SettingsParams m_settingsParams;
     StartParams m_startParams;
     ChessBoardParams m_boardParams;
     std::pair<QString, QString> m_nicknames;
-    std::pair<qint16, qint16> m_ratings;
+    std::pair<int, int> m_ratings;
     QString m_smallTimeNoticeStyle;
     bool m_connection;
 };

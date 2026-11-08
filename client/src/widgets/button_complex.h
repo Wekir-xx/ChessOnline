@@ -16,10 +16,10 @@ public:
     explicit ButtonComplex(QWidget *parent = nullptr);
 
     void setButtons(std::vector<std::string> nameButtons);
-    void useButton(qint8 id);
+    void useButton(int id);
 
 signals:
-    void selectButton(qint8 id);
+    void selectButton(int id);
 
 private:
     void unUseButton();

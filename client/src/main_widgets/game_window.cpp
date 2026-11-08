@@ -274,15 +274,15 @@ void GameWindow::resizeEvent(QResizeEvent *event)
 
 void GameWindow::showSettingWindow()
 {
-    const qint16 width = m_board->width() - MINIMUM_PIECE_SIZE;
-    const qint16 height = m_board->height();
+    const int width = m_board->width() - MINIMUM_PIECE_SIZE;
+    const int height = m_board->height();
     m_settings->setGeometry(width / 5 + MINIMUM_PIECE_SIZE, height / 5, width * 3 / 5, height * 3 / 5);
 }
 
 void GameWindow::showEndGameWindow()
 {
-    const qint16 width = m_board->width() - MINIMUM_PIECE_SIZE;
-    const qint16 height = m_board->height();
+    const int width = m_board->width() - MINIMUM_PIECE_SIZE;
+    const int height = m_board->height();
     m_endGame->setGeometry(width / 6 + MINIMUM_PIECE_SIZE, height / 6, width * 2 / 3, height * 2 / 3);
 }
 
@@ -421,9 +421,9 @@ void GameWindow::turnPlayerLayout(QLabel *iconPlayer, RotatableLabel *infoPlayer
     timePlayer->swapRotatable();
 }
 
-void GameWindow::setTime(qint32 seconds, bool white)
+void GameWindow::setTime(int seconds, bool white)
 {
-    qint32 resultTime;
+    int resultTime;
     if (white)
         resultTime = m_time.first - seconds;
     else
@@ -448,9 +448,9 @@ void GameWindow::setTime(qint32 seconds, bool white)
     if (resultTime == 0)
         this->endGame(white ? ResultGame::WIN_BLACK : ResultGame::WIN_WHITE);
 
-    const qint8 s = resultTime % 60;
-    const qint8 m = resultTime / 60 % 60;
-    const qint8 h = resultTime / 60 / 60;
+    const int s = resultTime % 60;
+    const int m = resultTime / 60 % 60;
+    const int h = resultTime / 60 / 60;
 
     QString time;
     if (h > 0)

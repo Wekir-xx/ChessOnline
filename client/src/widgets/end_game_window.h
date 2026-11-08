@@ -1,9 +1,9 @@
 #ifndef END_GAME_WINDOW_H
 #define END_GAME_WINDOW_H
 
-#include "src/player_vlayout2.h"
-#include "src/style_lib.h"
-#include "src/defines.h"
+#include "../defines.h"
+#include "../backend/style_lib.h"
+#include "../widgets/player_vlayout2.h"
 
 #include <QLabel>
 #include <QObject>
@@ -17,7 +17,7 @@ public:
     explicit EndGameWindow(StyleLib *styleLib, QWidget *parent = nullptr);
 
     void setParams(PlayerParams params, TypeTimeChess timeChessType);
-    void setResult(ResultGame result, std::pair<qint16, qint16> newRatings = {0, 0});
+    void setResult(ResultGame result, std::pair<int, int> newRatings = {0, 0});
 
 signals:
     void newGameSignal();

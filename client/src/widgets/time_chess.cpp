@@ -47,7 +47,7 @@ TimeChess::TimeChess(QWidget *parent)
     this->setLayout(m_mainLayout);
 }
 
-void TimeChess::setTime(qint32 mainTime, qint8 minorTime)
+void TimeChess::setTime(int mainTime, int minorTime)
 {
     m_block = true;
     m_timeH->setValue(mainTime / 60 / 60);
@@ -57,7 +57,7 @@ void TimeChess::setTime(qint32 mainTime, qint8 minorTime)
     m_block = false;
 }
 
-std::pair<qint32, qint8> TimeChess::getTime()
+std::pair<int, int> TimeChess::getTime()
 {
     return std::pair{(m_timeH->value() * 60 + m_timeM->value()) * 60 + m_timeS->value(), m_timeMinorS->value()};
 }

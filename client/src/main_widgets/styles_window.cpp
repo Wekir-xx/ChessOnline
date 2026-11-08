@@ -10,8 +10,9 @@ StylesWindow::StylesWindow(StyleLib *styleLib, QWidget *parent)
     SomeConstans::fillStandartChessField(m_chessFields);
 
     m_chessBoard = new ChessBoardWidget(m_styleLib);
+    m_downWidget = new QWidget();
 
-    m_mainLayout = new QVBoxLayout();
+    m_mainLayout = new PlayerVLayout2();
     m_downLayout = new QHBoxLayout();
 
     m_exitBut = new QPushButton();
@@ -44,8 +45,10 @@ StylesWindow::StylesWindow(StyleLib *styleLib, QWidget *parent)
     m_downLayout->addWidget(m_boardStyle);
     m_downLayout->addWidget(m_windowStyle);
 
+    m_downWidget->setLayout(m_downLayout);
+
     m_mainLayout->addWidget(m_chessBoard);
-    m_mainLayout->addLayout(m_downLayout);
+    m_mainLayout->addWidget(m_downWidget);
 
     this->setLayout(m_mainLayout);
     this->setStyle();
@@ -81,22 +84,22 @@ void StylesWindow::resizeEvent(QResizeEvent *event)
 
 void StylesWindow::updateIcon()
 {
-    for (qint8 i = 0; i < SIDE_SIZE; ++i)
-        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+    for (int i = 0; i < SIDE_SIZE; ++i)
+        for (int j = 0; j < SIDE_SIZE; ++j)
             m_chessBoard->setIcon(i, j, m_chessFields[i][j]);
 }
 
 void StylesWindow::updateBoard()
 {
-    for (qint8 i = 0; i < SIDE_SIZE; ++i)
-        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+    for (int i = 0; i < SIDE_SIZE; ++i)
+        for (int j = 0; j < SIDE_SIZE; ++j)
             m_chessBoard->baseField(i, j);
 }
 
 void StylesWindow::updateBoardSize()
 {
-    for (qint8 i = 0; i < SIDE_SIZE; ++i)
-        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+    for (int i = 0; i < SIDE_SIZE; ++i)
+        for (int j = 0; j < SIDE_SIZE; ++j)
             m_chessBoard->setIconSize(i, j);
 }
 

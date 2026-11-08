@@ -221,8 +221,8 @@ BoardSetupWindow::BoardSetupWindow(StyleLib *styleLib, ChessBoardParams &boardPa
     connect(m_chessBoard, &ChessBoardWidget::clickField, this, [this](QString field) {
         m_errorLabel->clear();
 
-        qint8 i = field[1].digitValue() - 1;
-        qint8 j = field[0].unicode() - 'a';
+        int i = field[1].digitValue() - 1;
+        int j = field[0].unicode() - 'a';
 
         if (m_copyBoardParams.chessFields[i][j] == m_piece)
             m_copyBoardParams.chessFields[i][j].clear();
@@ -269,22 +269,22 @@ void BoardSetupWindow::resizeEvent(QResizeEvent *event)
 
 void BoardSetupWindow::updateIcon()
 {
-    for (qint8 i = 0; i < SIDE_SIZE; ++i)
-        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+    for (int i = 0; i < SIDE_SIZE; ++i)
+        for (int j = 0; j < SIDE_SIZE; ++j)
             m_chessBoard->setIcon(i, j, m_copyBoardParams.chessFields[i][j]);
 }
 
 void BoardSetupWindow::updateIconSize()
 {
-    for (qint8 i = 0; i < SIDE_SIZE; ++i)
-        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+    for (int i = 0; i < SIDE_SIZE; ++i)
+        for (int j = 0; j < SIDE_SIZE; ++j)
             m_chessBoard->setIconSize(i, j);
 }
 
 void BoardSetupWindow::clearBoard()
 {
-    for (qint8 i = 0; i < SIDE_SIZE; ++i)
-        for (qint8 j = 0; j < SIDE_SIZE; ++j)
+    for (int i = 0; i < SIDE_SIZE; ++i)
+        for (int j = 0; j < SIDE_SIZE; ++j)
             m_copyBoardParams.chessFields[i][j] = "";
 }
 
@@ -295,10 +295,10 @@ void BoardSetupWindow::checkSave()
         return;
     }
 
-    std::vector<std::pair<qint8, qint8>> whiteKings;
-    std::vector<std::pair<qint8, qint8>> blackKings;
-    for (qint8 i = 0; i < SIDE_SIZE; ++i) {
-        for (qint8 j = 0; j < SIDE_SIZE; ++j) {
+    std::vector<std::pair<int, int>> whiteKings;
+    std::vector<std::pair<int, int>> blackKings;
+    for (int i = 0; i < SIDE_SIZE; ++i) {
+        for (int j = 0; j < SIDE_SIZE; ++j) {
             if (m_copyBoardParams.chessFields[i][j] == "wK")
                 whiteKings.push_back({i, j});
             else if (m_copyBoardParams.chessFields[i][j] == "bK")
@@ -338,7 +338,7 @@ void BoardSetupWindow::checkSave()
         if (castling.first.first) {
             bool flag = true;
 
-            for (qint8 i = 0; i < whiteKings[0].second; ++i)
+            for (int i = 0; i < whiteKings[0].second; ++i)
                 if (m_copyBoardParams.chessFields[0][i] == "wR")
                     flag = false;
 
@@ -350,7 +350,7 @@ void BoardSetupWindow::checkSave()
         if (castling.first.second) {
             bool flag = true;
 
-            for (qint8 i = whiteKings[0].second + 1; i < SIDE_SIZE; ++i)
+            for (int i = whiteKings[0].second + 1; i < SIDE_SIZE; ++i)
                 if (m_copyBoardParams.chessFields[0][i] == "wR")
                     flag = false;
 
@@ -362,7 +362,7 @@ void BoardSetupWindow::checkSave()
         if (castling.second.first) {
             bool flag = true;
 
-            for (qint8 i = 0; i < blackKings[0].second; ++i)
+            for (int i = 0; i < blackKings[0].second; ++i)
                 if (m_copyBoardParams.chessFields[7][i] == "bR")
                     flag = false;
 
@@ -374,7 +374,7 @@ void BoardSetupWindow::checkSave()
         if (castling.second.second) {
             bool flag = true;
 
-            for (qint8 i = blackKings[0].second + 1; i < SIDE_SIZE; ++i)
+            for (int i = blackKings[0].second + 1; i < SIDE_SIZE; ++i)
                 if (m_copyBoardParams.chessFields[7][i] == "bR")
                     flag = false;
 

@@ -1,11 +1,11 @@
 #ifndef STARTGAMEWINDOW_H
 #define STARTGAMEWINDOW_H
 
-#include "src/button_complex.h"
-#include "src/time_chess.h"
-#include "src/defines.h"
-#include "src/style_lib.h"
-#include "src/settings_window.h"
+#include "../defines.h"
+#include "../backend/style_lib.h"
+#include "../widgets/button_complex.h"
+#include "../widgets/time_chess.h"
+#include "../widgets/settings_window.h"
 
 #include <QLabel>
 #include <QStackedWidget>
@@ -40,7 +40,7 @@ private:
     SomeConstans *m_constans;
 
     StartParams m_params;
-    std::pair<qint8, qint8> m_saveIdTime;
+    std::pair<int, int> m_saveIdTime;
 
     QVBoxLayout *m_mainLayout;
     QHBoxLayout *m_topLayout;

@@ -1,8 +1,8 @@
 #ifndef SETTINGS_GAME_WINDOW_H
 #define SETTINGS_GAME_WINDOW_H
 
-#include "src/style_lib.h"
-#include "src/defines.h"
+#include "../defines.h"
+#include "../backend/style_lib.h"
 
 #include <QCheckBox>
 #include <QPushButton>

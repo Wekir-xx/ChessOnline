@@ -10,13 +10,13 @@ class StyleLib : public QObject
 public:
     explicit StyleLib(QObject *parent = nullptr);
 
-    void setIdIconStyle(qint8 id);
-    void setIdBoardStyle(qint8 id);
-    void setIdWindowStyle(qint8 id);
+    void setIdIconStyle(int id);
+    void setIdBoardStyle(int id);
+    void setIdWindowStyle(int id);
 
-    qint8 getIdIconStyle();
-    qint8 getIdBoardStyle();
-    qint8 getIdWindowStyle();
+    int getIdIconStyle();
+    int getIdBoardStyle();
+    int getIdWindowStyle();
 
     const std::vector<QString> &getIconStyles();
     const std::vector<QString> &getBoardStyles();
@@ -113,9 +113,9 @@ private:
         "SettingsGameWindow { background: #%1; color: #%2; border: 2px solid #808080; border-radius: 10px; }"
         "EndGameWindow { background: #%1; color: #%2; border: 2px solid #808080; border-radius: 10px; }";
 
-    qint8 m_idIconStyle{0};
-    qint8 m_idBoardStyle{0};
-    qint8 m_idWindowStyle{0};
+    int m_idIconStyle{0};
+    int m_idBoardStyle{0};
+    int m_idWindowStyle{0};
 };
 
 #endif // STYLE_LIB_H

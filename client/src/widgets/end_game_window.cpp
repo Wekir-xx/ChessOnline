@@ -153,7 +153,7 @@ void EndGameWindow::setParams(PlayerParams params, TypeTimeChess timeChessType)
     }
 }
 
-void EndGameWindow::setResult(ResultGame result, std::pair<qint16, qint16> newRatings)
+void EndGameWindow::setResult(ResultGame result, std::pair<int, int> newRatings)
 {
     if (result == ResultGame::WIN_WHITE)
         m_result->setText("White win!");

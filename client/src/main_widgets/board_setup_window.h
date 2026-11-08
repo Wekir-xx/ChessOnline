@@ -1,11 +1,11 @@
 #ifndef BOARD_SETUP_WINDOW_H
 #define BOARD_SETUP_WINDOW_H
 
-#include "src/chess_game.h"
-#include "src/board_hlayout2.h"
-#include "src/board_vlayout2.h"
-#include "src/chess_board_widget.h"
-#include "src/choose_chess.h"
+#include "../backend/chess_game.h"
+#include "../widgets/board_hlayout2.h"
+#include "../widgets/board_vlayout2.h"
+#include "../widgets/chess_board_widget.h"
+#include "../widgets/choose_chess.h"
 
 #include <QButtonGroup>
 #include <QCheckBox>

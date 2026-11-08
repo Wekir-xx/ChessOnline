@@ -2,7 +2,7 @@
 #define CHESS_BOARD_WIDGET_H
 
 #include "event_button.h"
-#include "style_lib.h"
+#include "../backend/style_lib.h"
 
 #include <QGridLayout>
 #include <QIcon>
@@ -21,10 +21,10 @@ public:
 
     void updateBoard();
 
-    void checkField(qint8 i, qint8 j);
-    void moveField(qint8 i, qint8 j);
-    void baseField(qint8 i, qint8 j);
-    void whiteField(qint8 i, qint8 j);
+    void checkField(int i, int j);
+    void moveField(int i, int j);
+    void baseField(int i, int j);
+    void whiteField(int i, int j);
 
     void turnBoard();
     void turnSecondPlayer();
@@ -32,8 +32,8 @@ public:
     void fillBoard(bool turnBoard);
     void fillIcan(bool white, bool up);
 
-    void setIcon(qint8 i, qint8 j, QString piece);
-    void setIconSize(qint8 i, qint8 j, float koef = 1);
+    void setIcon(int i, int j, QString piece);
+    void setIconSize(int i, int j, float koef = 1);
 
     bool getTurnBoard();
     bool getTurnSecondPlayer();

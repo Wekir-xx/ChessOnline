@@ -1,19 +1,13 @@
 #ifndef CHESS_BOARD_H
 #define CHESS_BOARD_H
 
-//#define MOVE_PIECE
-
-#include "chess_game.h"
+#include "../backend/chess_game.h"
 #include "chess_board_widget.h"
 
 #include <QLabel>
 #include <QResizeEvent>
 #include <QShowEvent>
 #include <QWidget>
-
-#ifdef MOVE_PIECE
-#include <QMouseEvent>
-#endif
 
 class ChessBoard : public QWidget
 {
@@ -49,11 +43,6 @@ protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
 
-#ifdef MOVE_PIECE
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-#endif
-
 private:
     void clickField(QString nameField);
 
@@ -61,11 +50,11 @@ private:
     void checkKing();
     void uncheckKing();
 
-    void takePiece(qint8 i, qint8 j);
+    void takePiece(int i, int j);
     void untakePiece();
 
-    void transformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields);
-    void untransformPawnField(const std::vector<std::pair<qint8, qint8>> &beatFields);
+    void transformPawnField(const std::vector<std::pair<int, int>> &beatFields);
+    void untransformPawnField(const std::vector<std::pair<int, int>> &beatFields);
 
     void updateIcon();
     void updateBoard();
@@ -78,11 +67,6 @@ private:
     ChessBoardWidget *m_chessBoard;
 
     QVBoxLayout *m_mainLayout;
-
-#ifdef MOVE_PIECE
-    QLabel *m_movePiece;
-    bool m_takenPiece;
-#endif
 
     bool m_blockBoard;
     bool m_blockBoardHistory;

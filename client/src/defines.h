@@ -16,6 +16,8 @@
 #define GENERAL_PATH ":/src/images/"
 #define CONFIG_FILE "config.ini"
 
+#include <QDebug>
+
 #include <QHBoxLayout>
 #include <QPixmap>
 #include <QString>
@@ -69,8 +71,8 @@ struct StartParams
     TypeGame gameType{TypeGame::UNDEFINED};
     TypeChess chessType{TypeChess::UNDEFINED};
     TypeTimeChess timeChessType{TypeTimeChess::UNDEFINED};
-    qint32 mainTime{0};
-    qint8 minorTime{0};
+    int mainTime{0};
+    int minorTime{0};
 };
 
 struct ChessBoardParams
@@ -85,8 +87,45 @@ struct PlayerParams
 {
     std::pair<QString, QString> nicknames{"", ""};
     std::pair<QPixmap, QPixmap> icons;
-    std::pair<qint16, qint16> ratings{0, 0};
+    std::pair<int, int> ratings{0, 0};
     bool mainPlayerWhite{true};
+};
+
+struct PieceInfo {
+    int lastLine;
+    int preLastLine;
+    QChar color;
+    QString king;
+    QString queen;
+    QString rook;
+    QString bishop;
+    QString knight;
+    QString pawn;
+
+    PieceInfo(bool white)
+    {
+        if (white) {
+            lastLine = 0;
+            preLastLine = 1;
+            color = 'w';
+            king = "wK";
+            queen = "wQ";
+            rook = "wR";
+            bishop = "wB";
+            knight = "wN";
+            pawn = "wP";
+        } else {
+            lastLine = 7;
+            preLastLine = 6;
+            color = 'b';
+            king = "bK";
+            queen = "bQ";
+            rook = "bR";
+            bishop = "bB";
+            knight = "bN";
+            pawn = "bP";
+        }
+    }
 };
 
 class SomeConstans
@@ -107,7 +146,7 @@ public:
     const std::vector<std::string> &getTypeChessStr() const;
     const std::vector<std::string> &getTypeTimeChessStr() const;
     const std::vector<std::vector<std::string>> &getTimeChessStr() const;
-    const std::vector<std::vector<std::pair<qint32, qint8>>> &getTimeChessValue() const;
+    const std::vector<std::vector<std::pair<int, int>>> &getTimeChessValue() const;
 
 private:
     SomeConstans() = default;
@@ -145,7 +184,7 @@ private:
         {"1h", "1h|30s", "2h", "2h|30s", "3h", "3h|30s"}
     };
 
-    const std::vector<std::vector<std::pair<qint32, qint8>>> m_timeChessValue
+    const std::vector<std::vector<std::pair<int, int>>> m_timeChessValue
     = {{{30, 0}, {MIN, 0}, {MIN, 1}, {2 * MIN, 0}, {2 * MIN, 1}, {2 * MIN, 2}},
         {{3 * MIN, 0}, {3 * MIN, 2}, {3 * MIN, 3}, {5 * MIN, 0}, {5 * MIN, 3}, {5 * MIN, 5}},
         {{10 * MIN, 0}, {10 * MIN, 5}, {10 * MIN, 10}, {30 * MIN, 0}, {30 * MIN, 5}, {30 * MIN, 10}},
