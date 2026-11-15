@@ -1,5 +1,8 @@
 #include "chess_game.h"
 
+#include <algorithm>
+#include <cstdlib>
+
 #include <QChar>
 
 ChessGame::ChessGame()
@@ -577,60 +580,53 @@ void ChessGame::addCastling()
     int row = posRooks.first.first;
 
     if (m_boardParams.chess960) {
-        bool possibleCastling = true;
-
-        if (castling.first) {
-            auto posRookCol = posRooks.first.second;
-            QString rook = m_boardParams.chessFields[row][posRookCol];
-            m_boardParams.chessFields[row][posRookCol].clear();
-
-            for (int col = (posKingCol - 1) <= 3 ? 3 : (posKingCol - 1); col > 1; --col) {
-                if (col != posKingCol && (!m_boardParams.chessFields[row][col].isEmpty() || !this->checkMove(row, col, true))) {
-                    possibleCastling = false;
-                    break;
-                }
+        auto innerTryCastling = [&](int rookCol, int kingFinalCol, int rookFinalCol) -> bool {
+            const int leftCol = std::min({posKingCol, rookCol, kingFinalCol, rookFinalCol});
+            const int rightCol = std::max({posKingCol, rookCol, kingFinalCol, rookFinalCol});
+            for (int col = leftCol; col <= rightCol; ++col) {
+                if (col == posKingCol || col == rookCol)
+                    continue;
+                if (!m_boardParams.chessFields[row][col].isEmpty())
+                    return false;
             }
 
-            if (possibleCastling) {
-                m_beatFields.push_back({row, posRookCol});
-
-                if (posRookCol != 2 && posKingCol > 3)
-                    m_beatFields.push_back({row, 2});
-            } else {
-                possibleCastling = true;
+            const int kingLeftCol = std::min(posKingCol, kingFinalCol);
+            const int kingRightCol = std::max(posKingCol, kingFinalCol);
+            for (int col = kingLeftCol; col <= kingRightCol; ++col) {
+                if (col == posKingCol)
+                    continue;
+                if (!this->checkMove(row, col, true))
+                    return false;
             }
 
-            m_boardParams.chessFields[row][posRookCol] = rook;
-        }
+            return true;
+        };
 
-        if (castling.second) {
-            auto posRookCol = posRooks.second.second;
-            QString rook = m_boardParams.chessFields[row][posRookCol];
-            m_boardParams.chessFields[row][posRookCol].clear();
+        auto tryCastling = [&](int rookCol, int kingFinalCol, int rookFinalCol) {
+            const QString rook = m_boardParams.chessFields[row][rookCol];
+            m_boardParams.chessFields[row][rookCol].clear();
 
-            for (int col = (posKingCol + 1) >= 5 ? 5 : (posKingCol + 1); col < 7; ++col) {
-                if (col != posKingCol && (!m_boardParams.chessFields[row][col].isEmpty() || !this->checkMove(row, col, true))) {
-                    possibleCastling = false;
-                    break;
-                }
+            if (innerTryCastling(rookCol, kingFinalCol, rookFinalCol)) {
+                m_beatFields.push_back({row, rookCol});
+                if (rookCol != kingFinalCol && std::abs(posKingCol - kingFinalCol) > 1)
+                    m_beatFields.push_back({row, kingFinalCol});
             }
 
-            if (possibleCastling) {
-                m_beatFields.push_back({row, posRookCol});
+            m_boardParams.chessFields[row][rookCol] = rook;
+        };
 
-                if (posRookCol != 6 && posKingCol < 5)
-                    m_beatFields.push_back({row, 6});
-            }
-
-            m_boardParams.chessFields[row][posRookCol] = rook;
-        }
+        if (castling.first)
+            tryCastling(posRooks.first.second, 2, 3);
+        if (castling.second)
+            tryCastling(posRooks.second.second, 6, 5);
     } else {
-        if (castling.first && m_boardParams.chessFields[row][1].isEmpty() && m_boardParams.chessFields[row][2].isEmpty()
-                && this->checkMove(row, 2, true) && m_boardParams.chessFields[row][3].isEmpty() && this->checkMove(row, 3, true))
+        if (castling.first && m_boardParams.chessFields[row][1].isEmpty()
+                && m_boardParams.chessFields[row][2].isEmpty() && this->checkMove(row, 2, true)
+                && m_boardParams.chessFields[row][3].isEmpty() && this->checkMove(row, 3, true))
             m_beatFields.push_back({row, 2});
 
         if (castling.second && m_boardParams.chessFields[row][5].isEmpty() && this->checkMove(row, 5, true)
-                && m_boardParams.chessFields[row][6].isEmpty() && this->checkMove(row, 6, true))
+                            && m_boardParams.chessFields[row][6].isEmpty() && this->checkMove(row, 6, true))
             m_beatFields.push_back({row, 6});
     }
 }
